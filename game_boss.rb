@@ -8,8 +8,7 @@
 # Boss game script, once called, launches a level with a fight against
 # a configured boss.
 
-($imported ||= {})["Galv_Invaders"] = true
-module Tomi_BOSS
+module IB_BOSS
 
   #------------------------------------------------------------------------------#
   #  SCRIPT SETTINGS
@@ -145,7 +144,7 @@ end
 
 module Cache
   def self.space(filename)
-    load_bitmap(Tomi_BOSS::GRAPHICS_ROOT, filename)
+    load_bitmap(IB_BOSS::GRAPHICS_ROOT, filename)
   end
 end # module Cache
 
@@ -172,13 +171,13 @@ class Scene_Invaders_Boss < Scene_Base
   end
 
   def play_bgm(bgm_name = '')
-    ##m = Tomi_BOSS::BGM_LIST[rand(Tomi_BOSS::BGM_LIST.count)]
-    m = Tomi_BOSS::BGM
+    ##m = IB_BOSS::BGM_LIST[rand(IB_BOSS::BGM_LIST.count)]
+    m = IB_BOSS::BGM
     if bgm_name == "win"
-      m = Tomi_BOSS::ME_WIN
+      m = IB_BOSS::ME_WIN
       RPG::ME.new(m[0],m[1],m[2]).play
     elsif bgm_name == "loss"
-      m = Tomi_BOSS::ME_LOSS
+      m = IB_BOSS::ME_LOSS
       RPG::ME.new(m[0],m[1],m[2]).play
     else
       RPG::BGM.new(m[0],m[1],m[2]).play
@@ -187,33 +186,33 @@ class Scene_Invaders_Boss < Scene_Base
 
   def init_variables
     @nukeall = false
-    @sound_timer = Tomi_BOSS::SOUND_TIMER
+    @sound_timer = IB_BOSS::SOUND_TIMER
     @enemy_wave = 1
     @guns = 1
     @gun_type = 0
     @bonus_shields = 0
-    @reset_pup = Tomi_BOSS::RESET_PUP * 60
-    @player_shields = Tomi_BOSS::PLAYER_SHIELDS
-    $game_variables[Tomi_BOSS::SCORE_VAR] = 0
+    @reset_pup = IB_BOSS::RESET_PUP * 60
+    @player_shields = IB_BOSS::PLAYER_SHIELDS
+    $game_variables[IB_BOSS::SCORE_VAR] = 0
     @plazors = []
     @elazors = []
     @enemies = []
     @explodes = []
     @pups = []
-    @spawn_timer = rand(Tomi_BOSS::SPAWN_SPEED)
+    @spawn_timer = rand(IB_BOSS::SPAWN_SPEED)
     @ticker = 100
     @game_time = 0
     @alien_count = 0
     @pups_count = 0
-    @difficulty = Tomi_BOSS::BOSS_INITIAL_DIFFICULTY.to_f
+    @difficulty = IB_BOSS::BOSS_INITIAL_DIFFICULTY.to_f
     @finished = false
 
-    @shooting_cooldown = Tomi_BOSS::SHOOTING_COOLDOWN
+    @shooting_cooldown = IB_BOSS::SHOOTING_COOLDOWN
   end
 
   def create_backdrop
     @backdrop = Plane.new
-    @backdrop.bitmap = Cache.space(Tomi_BOSS::FONDO)
+    @backdrop.bitmap = Cache.space(IB_BOSS::FONDO)
     @backdrop.z = -1
     @flash = Sprite.new
     @flash.bitmap = Bitmap.new(Graphics.width,Graphics.height)
@@ -280,7 +279,7 @@ class Scene_Invaders_Boss < Scene_Base
     #Game_Interpreter::msgbg("claroquesi",-80)
     #end
 
-    alien_type_to_spawn = Tomi_BOSS::BOSS_SPRITE_TYPE
+    alien_type_to_spawn = IB_BOSS::BOSS_SPRITE_TYPE
     # when spawn_timer finishes, display new enemy BOSS sprite.
     if @spawn_timer <= 0 && @alien_count < 1
       @enemies << Sprite_Alien.new(@viewport1,@alien_count,alien_type_to_spawn)
@@ -298,13 +297,13 @@ class Scene_Invaders_Boss < Scene_Base
     #     @alien_count += 1
     #   end
     #
-    #   @spawn_timer = 50 + rand(Tomi_BOSS::SPAWN_SPEED) / 2 - @difficulty
+    #   @spawn_timer = 50 + rand(IB_BOSS::SPAWN_SPEED) / 2 - @difficulty
     # end
 
     @ticker -= 1
     if @ticker <= 0
-      @difficulty += Tomi_BOSS::BOSS_DIFFICULTY_INCREASE_AMOUNT
-      @ticker = Tomi_BOSS::BOSS_DIFFICULTY_INCREASE_INTERVAL
+      @difficulty += IB_BOSS::BOSS_DIFFICULTY_INCREASE_AMOUNT
+      @ticker = IB_BOSS::BOSS_DIFFICULTY_INCREASE_INTERVAL
     end
 
     @spawn_timer -= 1
@@ -312,11 +311,11 @@ class Scene_Invaders_Boss < Scene_Base
 
   # def alien_type
   #   r = rand(play_time)
-  #   if r < Tomi_BOSS::LEVEL2
+  #   if r < IB_BOSS::LEVEL2
   #     return 0
-  #   elsif r < Tomi_BOSS::LEVEL3
+  #   elsif r < IB_BOSS::LEVEL3
   #     return 1
-  #   elsif r < Tomi_BOSS::LEVEL4
+  #   elsif r < IB_BOSS::LEVEL4
   #     return 2
   #   else
   #     return 3
@@ -356,7 +355,7 @@ class Scene_Invaders_Boss < Scene_Base
     @shooting_cooldown -= 1
 
     if Input.press?(:C) && !@finished  && @shooting_cooldown <= 0
-      return if Tomi_BOSS::MAX_SHOTS * @guns <= @plazors.count
+      return if IB_BOSS::MAX_SHOTS * @guns <= @plazors.count
       player_shoot
     end
 
@@ -365,7 +364,7 @@ class Scene_Invaders_Boss < Scene_Base
     end
     if Input.trigger?(:X) && @item && !@finished
       @nukeall = true
-      RPG::SE.new(Tomi_BOSS::NSE[0],Tomi_BOSS::NSE[1],Tomi_BOSS::NSE[2]).play
+      RPG::SE.new(IB_BOSS::NSE[0],IB_BOSS::NSE[1],IB_BOSS::NSE[2]).play
       @difficulty *= 0.75
       @flash.opacity = 225
       @item = nil
@@ -374,10 +373,10 @@ class Scene_Invaders_Boss < Scene_Base
   end
 
   def player_shoot
-    @shooting_cooldown = Tomi_BOSS::SHOOTING_COOLDOWN
+    @shooting_cooldown = IB_BOSS::SHOOTING_COOLDOWN
     case @gun_type
       when 0  # Normal Lazers
-        RPG::SE.new(Tomi_BOSS::SE[0],Tomi_BOSS::SE[1],Tomi_BOSS::SE[2]).play
+        RPG::SE.new(IB_BOSS::SE[0],IB_BOSS::SE[1],IB_BOSS::SE[2]).play
         case @guns
           when 1
             @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y)
@@ -399,7 +398,7 @@ class Scene_Invaders_Boss < Scene_Base
             }
         end
       when 1  # Lazer Ball
-        RPG::SE.new(Tomi_BOSS::SE1[0],Tomi_BOSS::SE1[1],Tomi_BOSS::SE1[2]).play
+        RPG::SE.new(IB_BOSS::SE1[0],IB_BOSS::SE1[1],IB_BOSS::SE1[2]).play
         case @guns
           when 1
             @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y,1,0)
@@ -460,7 +459,7 @@ class Scene_Invaders_Boss < Scene_Base
         # enemy.dispose
         # @enemies[i] = nil
 
-        damage_player(Tomi_BOSS::PLAYER_SHIELDS)
+        damage_player(IB_BOSS::PLAYER_SHIELDS)
       end
 
       # check enemy  hit collision or nuke
@@ -472,7 +471,7 @@ class Scene_Invaders_Boss < Scene_Base
           enemy.dispose
           @enemies[i] = nil
         else
-          RPG::SE.new(Tomi_BOSS::PSE[0],Tomi_BOSS::PSE[1],Tomi_BOSS::PSE[2]).play
+          RPG::SE.new(IB_BOSS::PSE[0],IB_BOSS::PSE[1],IB_BOSS::PSE[2]).play
           enemy.flash(Color.new(255,155,155),20)
         end
       end
@@ -481,8 +480,8 @@ class Scene_Invaders_Boss < Scene_Base
   end
 
   def boss_shoot(shooting_ship)
-    if @sound_timer >= Tomi_BOSS::SOUND_TIMER
-      RPG::SE.new(Tomi_BOSS::ASE[0],Tomi_BOSS::ASE[1],Tomi_BOSS::ASE[2]).play
+    if @sound_timer >= IB_BOSS::SOUND_TIMER
+      RPG::SE.new(IB_BOSS::ASE[0],IB_BOSS::ASE[1],IB_BOSS::ASE[2]).play
       @sound_timer = 0
     end
 
@@ -492,7 +491,7 @@ class Scene_Invaders_Boss < Scene_Base
 
     case boss_gun_type
       # when 0  # Normal Lazers
-      #   RPG::SE.new(Tomi_BOSS::SE[0],Tomi_BOSS::SE[1],Tomi_BOSS::SE[2]).play
+      #   RPG::SE.new(IB_BOSS::SE[0],IB_BOSS::SE[1],IB_BOSS::SE[2]).play
       #   # case @guns
       #   #   when 1
       #   #     @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y)
@@ -514,13 +513,13 @@ class Scene_Invaders_Boss < Scene_Base
       #   #     }
       #   # end
       when 1  # Diagonal Lazer Ball
-        RPG::SE.new(Tomi_BOSS::SE1[0],Tomi_BOSS::SE1[1],Tomi_BOSS::SE1[2]).play
+        RPG::SE.new(IB_BOSS::SE1[0],IB_BOSS::SE1[1],IB_BOSS::SE1[2]).play
 
         boss_damage = ( shooting_ship.mhp - shooting_ship.hp ) / shooting_ship.mhp.to_f
         guns = 1 + (( 5 * boss_damage ).floor)
 
         #limit guns to BOSS_GUNS_MIN and BOSS_GUNS_MAX, between 1 and 5
-        guns = [[guns, Tomi_BOSS::BOSS_GUNS_MIN, 1].max, Tomi_BOSS::BOSS_GUNS_MAX, 5].min
+        guns = [[guns, IB_BOSS::BOSS_GUNS_MIN, 1].max, IB_BOSS::BOSS_GUNS_MAX, 5].min
 
         case guns
           when 1
@@ -542,17 +541,17 @@ class Scene_Invaders_Boss < Scene_Base
   def update_pups
     if @reset_pup <= 0
       @pups << Sprite_Powerup.new(@viewport1,@pups_count,999)
-      @reset_pup = (Tomi_BOSS::RESET_PUP + @enemy_wave) * 60
+      @reset_pup = (IB_BOSS::RESET_PUP + @enemy_wave) * 60
     end
-    if rand(1000) > (1000 - Tomi_BOSS::POWERUP_FREQUENCY) && !@finished
-      @pups << Sprite_Powerup.new(@viewport1,@pups_count, Tomi_BOSS::AVAILABLE_PUPS.sample)
+    if rand(1000) > (1000 - IB_BOSS::POWERUP_FREQUENCY) && !@finished
+      @pups << Sprite_Powerup.new(@viewport1,@pups_count, IB_BOSS::AVAILABLE_PUPS.sample)
       @pups_count += 1
     end
     @pups.each_with_index { |pup,i|
       next if pup.nil?
       pup.update
-      if enemy_hit?(pup,false) && Tomi_BOSS::DESTROY_PUPS
-        RPG::SE.new(Tomi_BOSS::DSE[0],Tomi_BOSS::DSE[1],Tomi_BOSS::DSE[2]).play
+      if enemy_hit?(pup,false) && IB_BOSS::DESTROY_PUPS
+        RPG::SE.new(IB_BOSS::DSE[0],IB_BOSS::DSE[1],IB_BOSS::DSE[2]).play
         @explodes << Sprite_Splosion.new(@viewport1,pup.x,pup.y)
         pup.dispose
         @pups[i] = nil
@@ -569,42 +568,42 @@ class Scene_Invaders_Boss < Scene_Base
     @player.flash(Color.new(155,255,155),20)
     case type
       when 0 # Shield Restore
-        RPG::SE.new(Tomi_BOSS::BSE[0],Tomi_BOSS::BSE[1],Tomi_BOSS::BSE[2]).play
-        if @player_shields == Tomi_BOSS::PLAYER_SHIELDS
-          if @bonus_shields < Tomi_BOSS::PLAYER_SHIELDS
+        RPG::SE.new(IB_BOSS::BSE[0],IB_BOSS::BSE[1],IB_BOSS::BSE[2]).play
+        if @player_shields == IB_BOSS::PLAYER_SHIELDS
+          if @bonus_shields < IB_BOSS::PLAYER_SHIELDS
             @bonus_shields += 1
           end
         else
-          @player_shields = Tomi_BOSS::PLAYER_SHIELDS
+          @player_shields = IB_BOSS::PLAYER_SHIELDS
         end
         @score_window.refresh(@player_shields.to_f,@bonus_shields)
       when 1 # Gun Type: 0 (Normal Lazor)
-        RPG::SE.new(Tomi_BOSS::PUSE[0],Tomi_BOSS::PUSE[1],Tomi_BOSS::PUSE[2]).play
+        RPG::SE.new(IB_BOSS::PUSE[0],IB_BOSS::PUSE[1],IB_BOSS::PUSE[2]).play
         if @gun_type != 0
           @gun_type = 0
-        elsif @guns < Tomi_BOSS::MAX_GUN_LEVEL
+        elsif @guns < IB_BOSS::MAX_GUN_LEVEL
           @guns += 1
         end
       when 2 # Gun Type: 1 (Lazor Ball)
-        RPG::SE.new(Tomi_BOSS::PUSE[0],Tomi_BOSS::PUSE[1],Tomi_BOSS::PUSE[2]).play
+        RPG::SE.new(IB_BOSS::PUSE[0],IB_BOSS::PUSE[1],IB_BOSS::PUSE[2]).play
         if @gun_type != 1
           @gun_type = 1
-        elsif @guns < Tomi_BOSS::MAX_GUN_LEVEL
+        elsif @guns < IB_BOSS::MAX_GUN_LEVEL
           @guns += 1
         end
       when 3
-        RPG::SE.new(Tomi_BOSS::PUSE[0],Tomi_BOSS::PUSE[1],Tomi_BOSS::PUSE[2]).play
+        RPG::SE.new(IB_BOSS::PUSE[0],IB_BOSS::PUSE[1],IB_BOSS::PUSE[2]).play
         @item = "nuke"
         draw_item_held
       when 999 # Reset
-        RPG::SE.new(Tomi_BOSS::PUSE[0],Tomi_BOSS::PUSE[1],Tomi_BOSS::PUSE[2]).play
-        @difficulty *= Tomi_BOSS::RESET_AMOUNT
+        RPG::SE.new(IB_BOSS::PUSE[0],IB_BOSS::PUSE[1],IB_BOSS::PUSE[2]).play
+        @difficulty *= IB_BOSS::RESET_AMOUNT
         @enemy_wave += 1
     end
   end
 
   def damage_player(amount)
-    RPG::SE.new(Tomi_BOSS::PSE[0],Tomi_BOSS::PSE[1],Tomi_BOSS::PSE[2]).play
+    RPG::SE.new(IB_BOSS::PSE[0],IB_BOSS::PSE[1],IB_BOSS::PSE[2]).play
     @player.flash(Color.new(255,155,155),20)
     if @bonus_shields > 0
       @bonus_shields = [@bonus_shields - amount,0].max
@@ -616,10 +615,10 @@ class Scene_Invaders_Boss < Scene_Base
   end
 
   def destroy_enemy(score)
-    RPG::SE.new(Tomi_BOSS::DSE[0],Tomi_BOSS::DSE[1],Tomi_BOSS::DSE[2]).play
-    $game_variables[Tomi_BOSS::SCORE_VAR] += score
-    if $game_variables[Tomi_BOSS::SCORE_VAR] > $game_variables[Tomi_BOSS::HIGH_SCORE_VAR]
-      $game_variables[Tomi_BOSS::HIGH_SCORE_VAR] += score
+    RPG::SE.new(IB_BOSS::DSE[0],IB_BOSS::DSE[1],IB_BOSS::DSE[2]).play
+    $game_variables[IB_BOSS::SCORE_VAR] += score
+    if $game_variables[IB_BOSS::SCORE_VAR] > $game_variables[IB_BOSS::HIGH_SCORE_VAR]
+      $game_variables[IB_BOSS::HIGH_SCORE_VAR] += score
     end
     @score_window.refresh(@player_shields.to_f,@bonus_shields)
 
@@ -633,7 +632,7 @@ class Scene_Invaders_Boss < Scene_Base
     @explodes << Sprite_Splosion.new(@viewport1,@player.x,@player.y,2)
     @player.opacity = 0
     @player.x = -100
-    RPG::SE.new(Tomi_BOSS::KSE[0],Tomi_BOSS::KSE[1],Tomi_BOSS::KSE[2]).play
+    RPG::SE.new(IB_BOSS::KSE[0],IB_BOSS::KSE[1],IB_BOSS::KSE[2]).play
     @score_window.refresh(@player_shields.to_f,@bonus_shields)
     init_game_over("loss")
   end
@@ -729,7 +728,7 @@ class Sprite_Player < Sprite
 
   def setup_player_image
     @cell = 1
-    self.bitmap = Cache.space(Tomi_BOSS::NAVE_PLAYER)
+    self.bitmap = Cache.space(IB_BOSS::NAVE_PLAYER)
     @cw = bitmap.width / 3
     self.src_rect.set(@cell * @cw, 0, @cw, height)
     self.ox = @cw / 2
@@ -754,10 +753,10 @@ class Sprite_Player < Sprite
   def update_position
     if Input.press?(:LEFT) && !Input.press?(:RIGHT)
       @cell = 0
-      self.x -= Tomi_BOSS::SHIP_SPEED if self.x > width / 2
+      self.x -= IB_BOSS::SHIP_SPEED if self.x > width / 2
     elsif Input.press?(:RIGHT) && !Input.press?(:LEFT)
       @cell = 2
-      self.x += Tomi_BOSS::SHIP_SPEED if self.x < Graphics.width - width / 2
+      self.x += IB_BOSS::SHIP_SPEED if self.x < Graphics.width - width / 2
     else
       @cell = 1
     end
@@ -766,11 +765,11 @@ class Sprite_Player < Sprite
 
     # if Input.press?(:UP) #&& !Input.press?(:LEFT)
     #   #@cell = 1
-    #   self.y -= Tomi_BOSS::SHIP_SPEED if self.y > height / 2
+    #   self.y -= IB_BOSS::SHIP_SPEED if self.y > height / 2
     # end
     # if Input.press?(:DOWN) #&& !Input.press?(:LEFT)
     #   #@cell = 1
-    #   self.y += Tomi_BOSS::SHIP_SPEED if self.y < Graphics.height - height / 4
+    #   self.y += IB_BOSS::SHIP_SPEED if self.y < Graphics.height - height / 4
     # end
 
   end
@@ -812,16 +811,16 @@ class Sprite_Lazor < Sprite
   end
 
   def update_position
-    self.y -= Tomi_BOSS::LAZOR_SPEED
+    self.y -= IB_BOSS::LAZOR_SPEED
     case @dir
       when 1
-        self.x -= Tomi_BOSS::LAZOR_SPEED.to_f / 4
+        self.x -= IB_BOSS::LAZOR_SPEED.to_f / 4
       when 2
-        self.x += Tomi_BOSS::LAZOR_SPEED.to_f / 4 + 1
+        self.x += IB_BOSS::LAZOR_SPEED.to_f / 4 + 1
       when 3
-        self.x -= Tomi_BOSS::LAZOR_SPEED
+        self.x -= IB_BOSS::LAZOR_SPEED
       when 4
-        self.x += Tomi_BOSS::LAZOR_SPEED
+        self.x += IB_BOSS::LAZOR_SPEED
     end
   end
 end # Sprite_Lazor < Sprite
@@ -830,7 +829,7 @@ end # Sprite_Lazor < Sprite
 class Sprite_ELazor < Sprite
   attr_reader :damage
 
-  def initialize(viewport,x,y, damage = Tomi_BOSS::LAZOR_DAMAGE)
+  def initialize(viewport,x,y, damage = IB_BOSS::LAZOR_DAMAGE)
     super(viewport)
     self.x = x
     self.y = y
@@ -855,7 +854,7 @@ class Sprite_ELazor < Sprite
   end
 
   def update_position
-    self.y += Tomi_BOSS::ELAZOR_SPEED
+    self.y += IB_BOSS::ELAZOR_SPEED
   end
 end # Sprite_ELazor < Sprite
 
@@ -863,7 +862,7 @@ end # Sprite_ELazor < Sprite
 class Sprite_BLazor < Sprite
   attr_reader :damage
 
-  def initialize(viewport,x,y, type = 0,dir = 0, damage = Tomi_BOSS::LAZOR_DAMAGE)
+  def initialize(viewport,x,y, type = 0,dir = 0, damage = IB_BOSS::LAZOR_DAMAGE)
     super(viewport)
     self.x = x
     self.y = y
@@ -894,16 +893,16 @@ class Sprite_BLazor < Sprite
   end
 
   def update_position
-    self.y += Tomi_BOSS::BOSS_LAZOR_SPEED
+    self.y += IB_BOSS::BOSS_LAZOR_SPEED
     case @dir
       when 1
-        self.x -= Tomi_BOSS::BOSS_LAZOR_SPEED.to_f / 4
+        self.x -= IB_BOSS::BOSS_LAZOR_SPEED.to_f / 4
       when 2
-        self.x += Tomi_BOSS::BOSS_LAZOR_SPEED.to_f / 4 + 1
+        self.x += IB_BOSS::BOSS_LAZOR_SPEED.to_f / 4 + 1
       when 3
-        self.x -= Tomi_BOSS::BOSS_LAZOR_SPEED
+        self.x -= IB_BOSS::BOSS_LAZOR_SPEED
       when 4
-        self.x += Tomi_BOSS::BOSS_LAZOR_SPEED
+        self.x += IB_BOSS::BOSS_LAZOR_SPEED
     end
   end
 end # Sprite_BLazor < Sprite
@@ -970,71 +969,71 @@ class Sprite_Alien < Sprite
 
     case @move_v
       when true  # Down
-        self.y += 1 * (@ticker_v * 0.06) if self.y <= Graphics.height * Tomi_BOSS::BOSS_MAX_Y
+        self.y += 1 * (@ticker_v * 0.06) if self.y <= Graphics.height * IB_BOSS::BOSS_MAX_Y
       when false # Up
-        self.y -= 1 * (@ticker_v * 0.06) if self.y > Graphics.height * Tomi_BOSS::BOSS_MIN_Y
+        self.y -= 1 * (@ticker_v * 0.06) if self.y > Graphics.height * IB_BOSS::BOSS_MIN_Y
     end
 
     @ticker_v -= 1
     if @ticker_v <= 0
-      @move_v = self.y >= Graphics.height * Tomi_BOSS::BOSS_MAX_Y * 0.98 ? false : true
+      @move_v = self.y >= Graphics.height * IB_BOSS::BOSS_MAX_Y * 0.98 ? false : true
       @ticker_v = rand(90)
     end
 
     # case @move_v
     #   when true  # Down
-    #     self.y += 1 * (@ticker_v * 0.06) if self.y <= Graphics.height * Tomi_BOSS::BOSS_MAX_Y
+    #     self.y += 1 * (@ticker_v * 0.06) if self.y <= Graphics.height * IB_BOSS::BOSS_MAX_Y
     #   when false # Up
-    #     self.y -= 1 * (@ticker_v * 0.06) if self.y > Graphics.height * Tomi_BOSS::BOSS_MIN_Y
+    #     self.y -= 1 * (@ticker_v * 0.06) if self.y > Graphics.height * IB_BOSS::BOSS_MIN_Y
     # end
     #
     # @ticker_v -= 1
     # if @ticker_v <= 0
-    #   # @move_v = self.y >= Graphics.height * Tomi_BOSS::BOSS_MAX_Y * 0.98 ? false : true
+    #   # @move_v = self.y >= Graphics.height * IB_BOSS::BOSS_MAX_Y * 0.98 ? false : true
     #   @ticker_v = rand(90)
     # end
     #
     # #  el boss esta ABAJO, se queda un rato y despues sube
-    # if self.y >= Graphics.height * Tomi_BOSS::BOSS_MAX_Y * 0.95
+    # if self.y >= Graphics.height * IB_BOSS::BOSS_MAX_Y * 0.95
     #   @ticker_down -= 1
     # end
     #
     # if @ticker_down <= 0
     #   @move_v = false #go up
-    #   @ticker_down = rand(Tomi_BOSS::TIME_BOSS_DOWN) #tiempo que el boss estara abajo la proxima
+    #   @ticker_down = rand(IB_BOSS::TIME_BOSS_DOWN) #tiempo que el boss estara abajo la proxima
     # end
     #
     # #  el boss esta arriba, se queda un rato y despues BAJA
-    # if self.y < Graphics.height * Tomi_BOSS::BOSS_MIN_Y * 0.95
+    # if self.y < Graphics.height * IB_BOSS::BOSS_MIN_Y * 0.95
     #   @ticker_up -= 1
     # end
     #
     # if @ticker_up <= 0
     #   @move_v = true  #go down
-    #   @ticker_up = rand(Tomi_BOSS::TIME_BOSS_UP) #tiempo que el boss estara arriba la proxima
+    #   @ticker_up = rand(IB_BOSS::TIME_BOSS_UP) #tiempo que el boss estara arriba la proxima
     # end
 
   end
 
   def setup_enemy
-    self.bitmap = Cache.space(Tomi_BOSS::NAVE_ENEMIGO  + @type.to_s)
+    self.bitmap = Cache.space(IB_BOSS::NAVE_ENEMIGO  + @type.to_s)
     self.ox = bitmap.width / 2
     self.oy = bitmap.height / 2
 
     case @type
       when 0
-        @hp = Tomi_BOSS::LEVEL1_HP
+        @hp = IB_BOSS::LEVEL1_HP
       when 1
-        @hp = Tomi_BOSS::LEVEL2_HP
+        @hp = IB_BOSS::LEVEL2_HP
       when 2
-        @hp = Tomi_BOSS::LEVEL3_HP
+        @hp = IB_BOSS::LEVEL3_HP
         @speed = 1
       when 3
-        @hp = Tomi_BOSS::LEVEL4_HP
+        @hp = IB_BOSS::LEVEL4_HP
         @speed = 1
       else # BOSS type case...
-        @hp = Tomi_BOSS::BOSS_HP
-        @speed = Tomi_BOSS::BOSS_SPEED
+        @hp = IB_BOSS::BOSS_HP
+        @speed = IB_BOSS::BOSS_SPEED
     end
     @mhp = @hp
   end
@@ -1148,7 +1147,7 @@ class Window_InvaderScore < Window_Base
     refresh
   end
 
-  def refresh(shields = Tomi_BOSS::PLAYER_SHIELDS.to_f,bonus_shields = 0)
+  def refresh(shields = IB_BOSS::PLAYER_SHIELDS.to_f,bonus_shields = 0)
     contents.clear
     draw_score("Score: ", score, 4, 0, contents.width - 8, 2)
     draw_score("MaxScore: ", high_score, -(Graphics.width / 2) + 70, 0, contents.width - 8, 2)
@@ -1157,21 +1156,21 @@ class Window_InvaderScore < Window_Base
   end
 
   def draw_shields(shields, x, y, width = Graphics.width / 4)
-    draw_gauge(x, y, width, shields / Tomi_BOSS::PLAYER_SHIELDS.to_f, text_color(1),
+    draw_gauge(x, y, width, shields / IB_BOSS::PLAYER_SHIELDS.to_f, text_color(1),
                text_color(4))
   end
 
   def draw_bonus_shields(x,width = Graphics.width / 4)
-    w = width * x / Tomi_BOSS::PLAYER_SHIELDS.to_f
+    w = width * x / IB_BOSS::PLAYER_SHIELDS.to_f
     rect = Rect.new(4, 0, w, 12)
     contents.fill_rect(rect, text_color(1))
   end
 
   def score
-    $game_variables[Tomi_BOSS::SCORE_VAR]
+    $game_variables[IB_BOSS::SCORE_VAR]
   end
   def high_score
-    $game_variables[Tomi_BOSS::HIGH_SCORE_VAR]
+    $game_variables[IB_BOSS::HIGH_SCORE_VAR]
   end
 
   def draw_score(value, unit, x, y, width, align)
@@ -1187,10 +1186,10 @@ class Window_InvaderScore < Window_Base
 end # Window_InvaderScore < Window_Base
 
 
-## 1) para modificar el fondo hacer desde el juego: Tomi_BOSS::FONDO = "nombreNuevoFondo"
-## 2) para modificar la nave del jugador: Tomi_BOSS::NAVE_PLAYER = "nueva_nave_superpower"
-## 3) para modificar el pack de naves enemigas: Tomi_BOSS::NAVE_ENEMIGO = "monster_op"
+## 1) para modificar el fondo hacer desde el juego: IB_BOSS::FONDO = "nombreNuevoFondo"
+## 2) para modificar la nave del jugador: IB_BOSS::NAVE_PLAYER = "nueva_nave_superpower"
+## 3) para modificar el pack de naves enemigas: IB_BOSS::NAVE_ENEMIGO = "monster_op"
 ## El nombre de NAVE_ENEMIGO que usemos debe estar tener 3 imagenes, cuyo nombre de archivo debe
 ## estar terminado c/u en -"0.png", -"1.png" y -"2.png".
 ##Por ejemplo si mi nombre es "monster" , debo tener: "monster0.png", "monster1.png", etc
-## 4) Cambiar Musica: Tomi_BOSS::BGM = ["Town4", 100, 100]
+## 4) Cambiar Musica: IB_BOSS::BGM = ["Town4", 100, 100]
