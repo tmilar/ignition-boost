@@ -8,10 +8,13 @@
 # file, just delete setup.rb and rename this file into setup.rb
 #==============================================================================
 plugins = {
-  :src => [  "IB_BOSS_module", "IB_BOSS_game" ]
+    "src" => {order: ["IB_BOSS_module",
+                      "IB_BOSS_game"  ]
+    }
+
 }
 
-ROOT_PATH = "ignition-boost"
+ROOT_PATH = "ignitionBoost"
 load_script "Data/#{ROOT_PATH}/plugins_module.rb" # Do not edit
 
 
