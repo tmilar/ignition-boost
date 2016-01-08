@@ -8,6 +8,7 @@
 .settings
 gwt-unitCache
 target
+target.rb
 .metadata
 Servers
 /bin/
