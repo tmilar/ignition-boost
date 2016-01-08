@@ -94,6 +94,8 @@ module Tomi_BOSS
   SCORE_VAR = 100         # Variable id to keep track of score
   HIGH_SCORE_VAR = 101    # Variable id to keep track of highest score
 
+  AVAILABLE_PUPS = [0,1,2] #  Available pups on map. 0 heal  1 lazor  2 lazerball  3 nuke  999 reset
+
   POWERUP_FREQUENCY = 2   # Frecuencia en la q aparecen pups,
   # entre mayor numero, mayor PROBABILIDAD de que aparezca.
   # si es 0 entonces no aparece ninguno.
@@ -541,7 +543,7 @@ class Scene_Invaders_Boss < Scene_Base
       @reset_pup = (Tomi_BOSS::RESET_PUP + @enemy_wave) * 60
     end
     if rand(1000) > (1000 - Tomi_BOSS::POWERUP_FREQUENCY) && !@finished
-      @pups << Sprite_Powerup.new(@viewport1,@pups_count,rand(4))
+      @pups << Sprite_Powerup.new(@viewport1,@pups_count, Tomi_BOSS::AVAILABLE_PUPS.sample)
       @pups_count += 1
     end
     @pups.each_with_index { |pup,i|
