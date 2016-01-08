@@ -454,11 +454,13 @@ class Scene_Invaders_Boss < Scene_Base
 
       # check player hit collision
       if player_hit?(enemy.x,enemy.y) #enemy.y > (Graphics.height - @player.height) &&
-        destroy_enemy(enemy.mhp)
-        @explodes << Sprite_Splosion.new(@viewport1,enemy.x,enemy.y)
-        enemy.dispose
-        @enemies[i] = nil
-        damage_player(Tomi_BOSS::COLLIDE_DAMAGE)
+        # BOSS DOESN'T EXPLODE ON COLLISION
+        # destroy_enemy(enemy.mhp)
+        # @explodes << Sprite_Splosion.new(@viewport1,enemy.x,enemy.y)
+        # enemy.dispose
+        # @enemies[i] = nil
+
+        damage_player(Tomi_BOSS::PLAYER_SHIELDS)
       end
 
       # check enemy  hit collision or nuke
