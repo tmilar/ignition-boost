@@ -14,7 +14,7 @@ plugins = {
 
 }
 
-ROOT_PATH = "ignitionBoost"
+ROOT_PATH = "ignition-boost"
 load_script "Data/#{ROOT_PATH}/plugins_module.rb" # Do not edit
 
 
