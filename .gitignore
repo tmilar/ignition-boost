@@ -1,0 +1,13 @@
+*.iml
+*.swp
+.DS_Store
+.classpath
+.error
+.idea
+.project
+.settings
+gwt-unitCache
+target
+.metadata
+Servers
+/bin/
