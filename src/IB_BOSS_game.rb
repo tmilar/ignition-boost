@@ -443,9 +443,10 @@ class Scene_Invaders_Boss < Scene_Base
       when 0 # Shield Restore
         RPG::SE.new(IB_BOSS::BSE[0],IB_BOSS::BSE[1],IB_BOSS::BSE[2]).play
         if @player_shields == IB_BOSS::PLAYER_SHIELDS
-          if @bonus_shields < IB_BOSS::PLAYER_SHIELDS
-            @bonus_shields += 1
-          end
+          # no bonus shields on BOSS map
+          # if @bonus_shields < IB_BOSS::PLAYER_SHIELDS
+          #   @bonus_shields += 1
+          # end
         else
           @player_shields = IB_BOSS::PLAYER_SHIELDS
         end
