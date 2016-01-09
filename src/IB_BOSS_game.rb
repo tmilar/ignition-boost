@@ -636,14 +636,14 @@ class Sprite_Player < Sprite
 
     # In BOSS map, player can't move up nor down.
 
-    # if Input.press?(:UP) #&& !Input.press?(:LEFT)
-    #   #@cell = 1
-    #   self.y -= IB_BOSS::SHIP_SPEED if self.y > height / 2
-    # end
-    # if Input.press?(:DOWN) #&& !Input.press?(:LEFT)
-    #   #@cell = 1
-    #   self.y += IB_BOSS::SHIP_SPEED if self.y < Graphics.height - height / 4
-    # end
+    if Input.press?(:UP) #&& !Input.press?(:LEFT)
+      #@cell = 1
+      self.y -= IB_BOSS::SHIP_SPEED if self.y > height / 2
+    end
+    if Input.press?(:DOWN) #&& !Input.press?(:LEFT)
+      #@cell = 1
+      self.y += IB_BOSS::SHIP_SPEED if self.y < Graphics.height - height / 4
+    end
 
   end
 end # Sprite_Player < Sprite
