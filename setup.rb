@@ -8,7 +8,8 @@
 # file, just delete setup.rb and rename this file into setup.rb
 #==============================================================================
 plugins = {
-    "src" => {order: ["IB_BOSS_module",
+    "src" => {order: ["game",
+                      "IB_BOSS_module",
                       "IB_BOSS_game"  ]
     }
 
