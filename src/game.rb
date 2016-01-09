@@ -448,13 +448,7 @@ class Scene_Invaders < Scene_Base
     case type
       when 0 # Shield Restore
         RPG::SE.new(Galv_SI::BSE[0],Galv_SI::BSE[1],Galv_SI::BSE[2]).play
-        if @player_shields == Galv_SI::PLAYER_SHIELDS
-          if @bonus_shields < Galv_SI::PLAYER_SHIELDS
-            @bonus_shields += 1
-          end
-        else
-          @player_shields = Galv_SI::PLAYER_SHIELDS
-        end
+        @player_shields = Galv_SI::PLAYER_SHIELDS
         @score_window.refresh(@player_shields.to_f,@bonus_shields)
       when 1 # Gun Type: 0 (Normal Lazor)
         RPG::SE.new(Galv_SI::PUSE[0],Galv_SI::PUSE[1],Galv_SI::PUSE[2]).play
