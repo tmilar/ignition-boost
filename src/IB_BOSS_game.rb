@@ -217,12 +217,15 @@ class Scene_Invaders_Boss < Scene_Base
     @game_over.z = 500
   end
 
+
   def update_game_over
     @game_over.opacity += 3
-    if @game_over.opacity >= 255 && Input.trigger?(:C)
-      dispose_graphics
+    if @game_over.opacity >= 255 #&& Input.trigger?(:C)
+      # terminate
+      # dispose_graphics
       # Return to previous screen
       SceneManager.goto(Scene_Map)
+      # update
     end
   end
 
