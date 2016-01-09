@@ -485,7 +485,7 @@ class Scene_Invaders_Boss < Scene_Base
       @sound_timer = 0
     end
 
-    enemy_center_y = shooting_ship.y - (shooting_ship.height / 2)
+    enemy_center_y = shooting_ship.y + (shooting_ship.height * 0.2)
 
     boss_gun_type = 1 # por ahora solo un tipo
 
