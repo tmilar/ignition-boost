@@ -19,7 +19,6 @@ module IB_BOSS
   # BOSS OPTIONS   #
   #----------------#
 
-  BOSS_SPRITE_TYPE = "Boss" # Code of the boss sprite type, to be spawned. Also latter name of the sprite.
   BOSS_HP = 20
   BOSS_SPEED = 2
 

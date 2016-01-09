@@ -152,7 +152,8 @@ class Scene_Invaders_Boss < Scene_Base
     #Game_Interpreter::msgbg("claroquesi",-80)
     #end
 
-    alien_type_to_spawn = IB_BOSS::BOSS_SPRITE_TYPE
+    alien_type_to_spawn = '' # boss "type" is NULL
+
     # when spawn_timer finishes, display new enemy BOSS sprite.
     if @spawn_timer <= 0 && @alien_count < 1
       @enemies << Sprite_Alien.new(@viewport1,@alien_count,alien_type_to_spawn)
