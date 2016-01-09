@@ -46,6 +46,8 @@ module IB_BOSS
   # PLAYER OPTIONS #
   #----------------#
 
+  MAXIMUM_PLAYER_Y = 0.45
+
   PLAYER_SHIELDS = 30  # Hits player can take before game over
 
   SHOOTING_COOLDOWN = 5 #cooldown entre cada tiro
