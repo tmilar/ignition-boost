@@ -95,7 +95,7 @@ class Scene_Invaders_Boss < Scene_Base
   end
 
   def create_sprites
-    @player = Sprite_Player.new(@viewport1)
+    @player = Sprite_Player_Boss.new(@viewport1)
     @item_held = Sprite.new
     @item_held.x = Graphics.width / 4 + 40
     @item_held.y = 15
@@ -156,7 +156,7 @@ class Scene_Invaders_Boss < Scene_Base
 
     # when spawn_timer finishes, display new enemy BOSS sprite.
     if @spawn_timer <= 0 && @alien_count < 1
-      @enemies << Sprite_Alien.new(@viewport1,@alien_count,alien_type_to_spawn)
+      @enemies << Sprite_Alien_Boss.new(@viewport1, @alien_count, alien_type_to_spawn)
       @alien_count += 1
     end
 
@@ -164,10 +164,10 @@ class Scene_Invaders_Boss < Scene_Base
     # if @spawn_timer <= 0
     #   alien_type_to_spawn = alien_type
     #   if rand(alien_type).to_i == alien_type
-    #     @enemies << Sprite_Alien.new(@viewport1,@alien_count,alien_type_to_spawn)
+    #     @enemies << Sprite_Alien_Boss.new(@viewport1,@alien_count,alien_type_to_spawn)
     #     @alien_count += 1
     #   else
-    #     @enemies << Sprite_Alien.new(@viewport1,@alien_count,0)
+    #     @enemies << Sprite_Alien_Boss.new(@viewport1,@alien_count,0)
     #     @alien_count += 1
     #   end
     #
@@ -257,36 +257,36 @@ class Scene_Invaders_Boss < Scene_Base
         RPG::SE.new(IB_BOSS::SE[0],IB_BOSS::SE[1],IB_BOSS::SE[2]).play
         case @guns
           when 1
-            @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y)
+            @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x, @player.y)
           when 2
             2.times { |i|
-              @plazors << Sprite_Lazor.new(@viewport1,@player.x - 20 + i * 40,@player.y)
+              @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x - 20 + i * 40, @player.y)
             }
           when 3
             3.times { |i|
-              @plazors << Sprite_Lazor.new(@viewport1,@player.x - 20 + i * 20,@player.y)
+              @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x - 20 + i * 20, @player.y)
             }
           when 4
             4.times { |i|
-              @plazors << Sprite_Lazor.new(@viewport1,@player.x - 30 + i * 20,@player.y)
+              @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x - 30 + i * 20, @player.y)
             }
           when 5
             5.times { |i|
-              @plazors << Sprite_Lazor.new(@viewport1,@player.x - 30 + i * 15,@player.y)
+              @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x - 30 + i * 15, @player.y)
             }
         end
       when 1  # Lazer Ball
         RPG::SE.new(IB_BOSS::SE1[0],IB_BOSS::SE1[1],IB_BOSS::SE1[2]).play
         case @guns
           when 1
-            @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y,1,0)
+            @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x, @player.y, 1, 0)
           when 2
             2.times { |i|
-              @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y,1,1 + i)
+              @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x, @player.y, 1, 1 + i)
             }
           when 3,4,5
             @guns.times { |i|
-              @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y,1,i)
+              @plazors << Sprite_Lazor_Boss.new(@viewport1, @player.x, @player.y, 1, i)
             }
         end
     end
@@ -333,7 +333,7 @@ class Scene_Invaders_Boss < Scene_Base
       if player_hit?(enemy.x,enemy.y) #enemy.y > (Graphics.height - @player.height) &&
         # BOSS DOESN'T EXPLODE ON COLLISION
         # destroy_enemy(enemy.mhp)
-        # @explodes << Sprite_Splosion.new(@viewport1,enemy.x,enemy.y)
+        # @explodes << Sprite_Splosion_Boss.new(@viewport1,enemy.x,enemy.y)
         # enemy.dispose
         # @enemies[i] = nil
 
@@ -345,7 +345,7 @@ class Scene_Invaders_Boss < Scene_Base
         enemy.hp -= @nukeall ? enemy.mhp : 1
         if enemy.hp <= 0
           destroy_enemy(enemy.mhp)
-          @explodes << Sprite_Splosion.new(@viewport1,enemy.x,enemy.y)
+          @explodes << Sprite_Splosion_Boss.new(@viewport1, enemy.x, enemy.y)
           enemy.dispose
           @enemies[i] = nil
         else
@@ -373,22 +373,22 @@ class Scene_Invaders_Boss < Scene_Base
       #   RPG::SE.new(IB_BOSS::SE[0],IB_BOSS::SE[1],IB_BOSS::SE[2]).play
       #   # case @guns
       #   #   when 1
-      #   #     @plazors << Sprite_Lazor.new(@viewport1,@player.x,@player.y)
+      #   #     @plazors << Sprite_Lazor_Boss.new(@viewport1,@player.x,@player.y)
       #   #   when 2
       #   #     2.times { |i|
-      #   #       @plazors << Sprite_Lazor.new(@viewport1,@player.x - 20 + i * 40,@player.y)
+      #   #       @plazors << Sprite_Lazor_Boss.new(@viewport1,@player.x - 20 + i * 40,@player.y)
       #   #     }
       #   #   when 3
       #   #     3.times { |i|
-      #   #       @plazors << Sprite_Lazor.new(@viewport1,@player.x - 20 + i * 20,@player.y)
+      #   #       @plazors << Sprite_Lazor_Boss.new(@viewport1,@player.x - 20 + i * 20,@player.y)
       #   #     }
       #   #   when 4
       #   #     4.times { |i|
-      #   #       @plazors << Sprite_Lazor.new(@viewport1,@player.x - 30 + i * 20,@player.y)
+      #   #       @plazors << Sprite_Lazor_Boss.new(@viewport1,@player.x - 30 + i * 20,@player.y)
       #   #     }
       #   #   when 5
       #   #     5.times { |i|
-      #   #       @plazors << Sprite_Lazor.new(@viewport1,@player.x - 30 + i * 15,@player.y)
+      #   #       @plazors << Sprite_Lazor_Boss.new(@viewport1,@player.x - 30 + i * 15,@player.y)
       #   #     }
       #   # end
       when 1  # Diagonal Lazer Ball
@@ -419,11 +419,11 @@ class Scene_Invaders_Boss < Scene_Base
 
   def update_pups
     if @reset_pup <= 0
-      @pups << Sprite_Powerup.new(@viewport1,@pups_count,999)
+      @pups << Sprite_Powerup_Boss.new(@viewport1, @pups_count, 999)
       @reset_pup = (IB_BOSS::RESET_PUP + @enemy_wave) * 60
     end
     if rand(1000) > (1000 - IB_BOSS::POWERUP_FREQUENCY) && !@finished
-      @pups << Sprite_Powerup.new(@viewport1,@pups_count, IB_BOSS::AVAILABLE_PUPS.sample)
+      @pups << Sprite_Powerup_Boss.new(@viewport1, @pups_count, IB_BOSS::AVAILABLE_PUPS.sample)
       @pups_count += 1
     end
     @pups.each_with_index { |pup,i|
@@ -431,7 +431,7 @@ class Scene_Invaders_Boss < Scene_Base
       pup.update
       if enemy_hit?(pup,false) && IB_BOSS::DESTROY_PUPS
         RPG::SE.new(IB_BOSS::DSE[0],IB_BOSS::DSE[1],IB_BOSS::DSE[2]).play
-        @explodes << Sprite_Splosion.new(@viewport1,pup.x,pup.y)
+        @explodes << Sprite_Splosion_Boss.new(@viewport1, pup.x, pup.y)
         pup.dispose
         @pups[i] = nil
       elsif #pup.y > (Graphics.height - @player.height) &&
@@ -509,7 +509,7 @@ class Scene_Invaders_Boss < Scene_Base
 
   def destroy_player
     @player_shields = 0
-    @explodes << Sprite_Splosion.new(@viewport1,@player.x,@player.y,2)
+    @explodes << Sprite_Splosion_Boss.new(@viewport1, @player.x, @player.y, 2)
     @player.opacity = 0
     @player.x = -100
     RPG::SE.new(IB_BOSS::KSE[0],IB_BOSS::KSE[1],IB_BOSS::KSE[2]).play
@@ -586,7 +586,7 @@ end # Scene_Invaders_Boss < Scene_Base
 #  PLAYER SPRITE
 #-------------------------------------------------------------------------------
 
-class Sprite_Player < Sprite
+class Sprite_Player_Boss < Sprite
   def initialize(viewport)
     super(viewport)
     init_position
@@ -658,7 +658,7 @@ end # Sprite_Player < Sprite
 #  LAZOR SPRITES
 #-------------------------------------------------------------------------------
 
-class Sprite_Lazor < Sprite
+class Sprite_Lazor_Boss < Sprite
   def initialize(viewport,x,y,type = 0,dir = 0)
     super(viewport)
     self.x = x
@@ -701,10 +701,10 @@ class Sprite_Lazor < Sprite
         self.x += IB_BOSS::LAZOR_SPEED
     end
   end
-end # Sprite_Lazor < Sprite
+end # Sprite_Lazor_Boss < Sprite
 
 
-class Sprite_ELazor < Sprite
+class Sprite_ELazor_Boss < Sprite
   attr_reader :damage
 
   def initialize(viewport,x,y, damage = IB_BOSS::LAZOR_DAMAGE)
@@ -734,7 +734,7 @@ class Sprite_ELazor < Sprite
   def update_position
     self.y += IB_BOSS::ELAZOR_SPEED
   end
-end # Sprite_ELazor < Sprite
+end # Sprite_ELazor_Boss < Sprite
 
 # Sprite lazor for boss
 class Sprite_BLazor < Sprite
@@ -789,7 +789,7 @@ end # Sprite_BLazor < Sprite
 #  ALIEN SPRITES
 #-------------------------------------------------------------------------------
 
-class Sprite_Alien < Sprite
+class Sprite_Alien_Boss < Sprite
   attr_accessor :hp
   attr_reader :mhp
 
@@ -922,13 +922,13 @@ class Sprite_Alien < Sprite
   def height
     self.bitmap.height
   end
-end # Sprite_Alien < Sprite
+end # Sprite_Alien_Boss < Sprite
 
 #-------------------------------------------------------------------------------
 #  EXPLOSION SPRITES
 #-------------------------------------------------------------------------------
 
-class Sprite_Splosion < Sprite
+class Sprite_Splosion_Boss < Sprite
   def initialize(viewport,x,y,zoom = 1)
     super(viewport)
     self.x = x
@@ -962,14 +962,14 @@ class Sprite_Splosion < Sprite
   def finished?
     @finished
   end
-end # Sprite_Splosion < Sprite
+end # Sprite_Splosion_Boss < Sprite
 
 
 #-------------------------------------------------------------------------------
 #  POWERUP SPRITES
 #-------------------------------------------------------------------------------
 
-class Sprite_Powerup < Sprite
+class Sprite_Powerup_Boss < Sprite
   attr_reader :type
 
   def initialize(viewport,id,type)
@@ -1011,7 +1011,7 @@ class Sprite_Powerup < Sprite
   def height
     self.bitmap.height
   end
-end # Sprite_Powerup < Sprite
+end # Sprite_Powerup_Boss < Sprite
 
 #-------------------------------------------------------------------------------
 #  SCORE WINDOW
