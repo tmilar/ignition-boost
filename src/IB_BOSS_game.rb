@@ -359,7 +359,8 @@ class Scene_Invaders_Boss < Scene_Base
       @sound_timer = 0
     end
 
-    enemy_center_y = shooting_ship.y - (shooting_ship.height / 2)
+    boss_gun_y = shooting_ship.y + IB_BOSS::BOSS_GUN_OFFSET_Y
+    boss_gun_x = shooting_ship.x + IB_BOSS::BOSS_GUN_OFFSET_X
 
     boss_gun_type = 1 # por ahora solo un tipo
 
@@ -397,14 +398,14 @@ class Scene_Invaders_Boss < Scene_Base
 
         case guns
           when 1
-            @elazors << Sprite_BLazor.new(@viewport1,shooting_ship.x,enemy_center_y,1,0)
+            @elazors << Sprite_BLazor.new(@viewport1,boss_gun_x ,boss_gun_y,1,0)
           when 2
             2.times { |i|
-              @elazors << Sprite_BLazor.new(@viewport1,shooting_ship.x,enemy_center_y,1,1 + i)
+              @elazors << Sprite_BLazor.new(@viewport1,boss_gun_x,boss_gun_y,1,1 + i)
             }
           when 3,4,5
             guns.times { |i|
-              @elazors << Sprite_BLazor.new(@viewport1,shooting_ship.x,enemy_center_y,1,i)
+              @elazors << Sprite_BLazor.new(@viewport1,boss_gun_x,boss_gun_y,1,i)
             }
         end
     end

@@ -31,6 +31,9 @@ module IB_BOSS
   BOSS_GUNS_MIN = 1 # minimum number of bullets boss can shoot
   BOSS_GUNS_MAX = 5 # maximum number of bullets boss can shoot
 
+  BOSS_GUN_OFFSET_X = 0
+  BOSS_GUN_OFFSET_Y = 0
+
   BOSS_LAZOR_SPEED = 5
 
   BOSS_MAX_Y = 0.5  # Boss maximum height "y"  (en porcentaje de altura del mapa)
