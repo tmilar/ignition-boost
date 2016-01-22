@@ -2,9 +2,13 @@ class Level
   # basic enemy ship config
   DEFAULT_ENEMY1 = {
       :name => "alien1",
-      :power => 1,
-      :speed => 1,
-      :mhp => 2,
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 2,
+          :collide_damage => 4,
+          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+      },
       :weapon => {
           :type => "elazor",
           :damage => 1,
@@ -12,25 +16,25 @@ class Level
           :SE => ["Attack2",80,110]
       },
       :DSE => ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
-      :collide_damage => 3,
-      :shoot_freq => 2, ## TODO por ahora esto remplazara la @difficulty
       # :movement => :linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
   }
 
   # basic enemy ship config
   DEFAULT_ENEMY2 = {
       :name => "alien2",
-      :power => 1,
-      :speed => 1,
-      :mhp => 3,
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 3,
+          :collide_damage => 4,
+          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+      },
       :weapon => {
           :type => "elazor",
           :damage => 2,
           :speed => 5,
           :SE => ["Attack2",80,110]
       },
-      :collide_damage => 4,
-      :shoot_freq => 3, ## TODO por ahora esto remplazara la @difficulty,
       :DSE => ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
   }
 

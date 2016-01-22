@@ -36,9 +36,15 @@ module IB
   # default config for base PLAYER ship
   NAVE_BASE = {
       :name => "player_ship",
-      :power => 1, #factor de multiplicacion al danio del arma
-      :speed => 2,
-      :mhp => 20,
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 5,
+          :collide_damage => 99,
+          :collide_resistance => 0,
+          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+          :nuke_power => 99            # Damage caused by nuke
+      },
       :weapon => {
           type: "lazor",
           damage: 1,
@@ -47,8 +53,6 @@ module IB
           cooldown: 5,
           SE: ["Heal5",80,160]
       },
-      :collide_damage => 9999,
-      :nuke_power => 5
   }
 
   #-------------------------------------------------------------------------------
@@ -59,9 +63,13 @@ module IB
   # basic enemy ship config
   ENEMIGO1 = {
       :name => "alien1",
-      :power => 1,
-      :speed => 1,
-      :mhp => 2,
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 2,
+          :collide_damage => 4,
+          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+      },
       :weapon => {
           :type => "elazor",
           :damage => 1,
@@ -69,7 +77,6 @@ module IB
           :SE => ["Attack2",80,110]
       },
       :DSE => ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
-      :collide_damage => 3,
       :shoot_freq => 2, ## TODO por ahora esto remplazara la @difficulty
       # :movement => :linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
   }
@@ -77,33 +84,40 @@ module IB
   # basic enemy ship config
   ENEMIGO2 = {
       :name => "alien2",
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 3,
+          :collide_damage => 4,
+          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+      },
       :power => 1,
       :speed => 1,
-      :mhp => 3,
+      :hp => 3,
       :weapon => {
           :type => "elazor",
           :damage => 2,
           :speed => 5,
           :SE => ["Attack2",80,110]
       },
-      :collide_damage => 4,
-      :shoot_freq => 3, ## TODO por ahora esto remplazara la @difficulty,
       :DSE => ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
   }
 
   BOSS1 = {
       :name => "boss1",
-      :power => 1,
-      :speed => 1,
-      :mhp => 3,
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 3,
+          :collide_damage => 9999,
+          :collide_resistance => 9999,
+          :shoot_freq => 3,             ## TODO por ahora esto remplazara la @difficulty
+      },
       :weapon => {
           :type => "elazor",
           :damage => 2,
           :speed => 5
       },
-      :collide_damage => 9999,
-      :collide_resistance => 9999,
-      :shoot_freq => 3, ## TODO por ahora esto remplazara la @difficulty
       :position => {
           max_y: 0.5,
           min_y: 0.3
