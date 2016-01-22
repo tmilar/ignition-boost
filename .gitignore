@@ -7,6 +7,8 @@
 .project
 .settings
 gwt-unitCache
+src/target
+src/target/target.rb
 target
 target/target.rb
 .metadata
