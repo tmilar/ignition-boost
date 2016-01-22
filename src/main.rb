@@ -116,20 +116,21 @@ module IB
 
 
   LEVEL1 = {
+      name: 'first level',
       backdrop: 'backdrop',
       spawn_speed: 100,
       phases: {
           1 => {
-              enemy: ENEMIGO1,
+              enemies: [ENEMIGO1],
               start: 0          #time phase can start spawning enemies
           },
           2 => {
-              enemy: ENEMIGO2,
+              enemies: [ENEMIGO2],
               start: 3,
               BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
           },
           3 => {
-              enemy: BOSS1,
+              enemies: [BOSS1],
               start: 7,
               max_spawn: 1,
               BGM: ["Battle3", 60, 110]

@@ -39,21 +39,21 @@ class Level
       spawn_speed: 100,
       phases: {
           1 => {
-              enemy: DEFAULT_ENEMY1,
+              enemies: [DEFAULT_ENEMY1],
               start: 0          # time when phase can start spawning enemies
           },
           2 => {
-              enemy: DEFAULT_ENEMY2,
+              enemies: [DEFAULT_ENEMY2],
               start: 35         # time when phase can start spawning enemies
           }
           # 3 => {
-          #     enemy: BOSS1,
+          #     enemies: [BOSS1],
           #     start: 100,
           #     max_spawn: 1,
           #     BGM: ["Battle3", 60, 110]
           # }
       },
-      BGM: ["Battle2", 60, 110]
+      BGM: ["Battle2", 60, 110],
   }
 
   def update
