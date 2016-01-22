@@ -58,6 +58,7 @@ class Level
           # }
       },
       BGM: ["Battle2", 60, 110],
+      target_score: 50
   }
 
   def update
@@ -103,6 +104,12 @@ class Level
   end
 
   def disposed?
+    false
+  end
+
+  def finished?
+    "loss" if @player.nil? || @player.destroyed?
+    "win" if @player.score >= @config[:target_score]
     false
   end
 
