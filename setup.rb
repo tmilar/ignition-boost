@@ -24,16 +24,13 @@ plugins = {
     "src" => {
         excluded: ["old"],
         "movement" => {
-            order: ["Movement", "KeyboardMovement"]
+            order: ["movement", "keyboard_movement", "zig_zag_movement"]
         },
-        "ship" => {},
-        "player" => {
-            exclude: [
-                "player_test-spec",
-                "player_test",
-                "player_rspec"
-            ]
+        "ship" => {
+            order: ["ship", :rest]
         },
+        "enemy" => {},
+        "player" => {},
     }
 }
 
