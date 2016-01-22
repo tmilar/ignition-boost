@@ -157,7 +157,7 @@ module Plugins
     end
 
     begin
-      file = File.open("#{root_path}/target.rb", 'w')
+      file = File.open("#{root_path}/target/target.rb", 'w')
     rescue
       # We are in encrypted mode, do nothing
     end
