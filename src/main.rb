@@ -199,6 +199,7 @@ class Main_IB < Scene_Base
   def initialize_game
     configure
     init_variables
+
     #TODO create screen elements: score, item, timeleft
     start_level
   end
@@ -213,31 +214,48 @@ class Main_IB < Scene_Base
     @game_objects = []
     @score = 0
     @high_score = $game_variables[IB::HIGH_SCORE_VAR] || 0
-    @finished = false
+  end
+
+  def start_level
+    Logger.info("Starting new level: #{IB::CURRENT_LEVEL[:name]}")
+    @level = Level.new(IB::CURRENT_LEVEL, IB::PLAYER_SHIP)
+
+    Logger.debug("Configured level >> #{@level}")
   end
 
   def update
     super
     @@game_time += 1
-    @game_objects.each_with_index { |game_obj, i|
-      if  game_obj.nil? ##|| game_obj.disposed?
-        @game_objects.delete_at(i)
-        next
-      end
 
-      game_obj.update
-    }
+    update_level
+    # TODO update_screen
+    check_exit
   end
 
-  def start_level
-    Logger.info("Starting new level...")
-    level = Level.new(IB::CURRENT_LEVEL, IB::PLAYER_SHIP)
-    @game_objects << level
+  def check_exit
 
-    Logger.debug("Configured game objects >> #{@game_objects}")
+    if Input.trigger?(:B)
+      SceneManager.goto(Scene_Map)
+    end
   end
 
+  def update_level
+    @level.update
+  end
+
+  def terminate
+    super
+    SceneManager.snapshot_for_background
+    dispose_graphics
+    $game_system.replay_bgm
+  end
+
+  def dispose_graphics
+    Logger.info( "<< FAKE >> all graphics disposed!!")
+  end
+  
   def self.game_time
     @@game_time / 60
   end
+
 end
