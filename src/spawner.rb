@@ -11,42 +11,55 @@ class Spawner
     Logger.start("spawner", @config)
 
     @spawn_speed = @config[:spawn_speed]
-    @timer = 5
-    @enemy_phases = @config[:phases]
-    # @current_phases << @enemy_phases[0]
+    @spawn_timer = 5
+    @ticker = 0
+
+    @enemy_phases = @config[:phases].values
+    @current_phases = []
+    @next_phases = []
   end
 
   def update
-    @timer -= 1
-    check_phases ##TODO manage opened phases
-    check_new_bgm
+    @spawn_timer -= 1
+    @ticker -= 1
+    check_phases if @ticker < 0
   end
 
   def check_phases
-    ##
-    # @current_phases = @enemy_phases.values.select {
-    #     |phase| Main_IB.game_time >= phase[:start]
-    # }
-  end
+    old_phases = @current_phases
 
-  def check_new_bgm
-    # @enemy_phases.values.seleasd
+    @current_phases, @next_phases = @enemy_phases.partition {
+      |phase| Main_IB.game_time >= phase[:start]
+    }
+    # Logger.debug("checking phases.... old phases: #{old_phases}. Timer: #{@spawn_timer}")
+    Logger.debug("checking phases.... Current phases: #{@current_phases}. SpawnTimer: #{@spawn_timer},\n Game time: #{Main_IB.game_time} \n)")
+    Logger.debug(" Next phases: #{@next_phases}")
+
+    new_phases = @current_phases - old_phases
+
+    if new_phases.any?
+      new_bgm, enemies = false, []
+      new_phases.each { |np|
+        new_bgm  = np[:BGM] if np.key?(:BGM)
+        enemies << np[:enemy][:name]
+      }
+      Logger.debug("New phase(s) started! #{new_phases}. New enemy: #{enemies}.#{" Has BGM! #{new_bgm} Playing music..." if new_bgm}")
+
+      Sound.bgm(new_bgm) if new_bgm
+    end
+
+    @ticker = 60 # Use this to only check phases once per second (60 frames)
   end
 
   def spawn_enemy
-    return if @timer > 0
+    return if @spawn_timer > 0
 
-    @timer = @spawn_speed
+    @spawn_timer = @spawn_speed
 
-    Logger.debug("values: #{@enemy_phases} \n")
-    Logger.debug("values: #{@enemy_phases.values} \n")
-    Logger.debug(" game time: #{Main_IB.game_time} \n")
+    Logger.debug("Checking enemies for current phases : #{@enemy_phases} \n Game time: #{Main_IB.game_time}")
 
-    spawnable_enemies = @enemy_phases.values.select {
-        |phase|
-      phase[:enemy] if Main_IB.game_time >= phase[:start]
-    }
-    Logger.debug("selected... #{spawnable_enemies}")
+    spawnable_enemies = @current_phases.select { |phase| phase[:enemy] }
+    Logger.debug("spawnable_enemies... #{spawnable_enemies}")
 
     # spawn a random spawnable enemy
     new_enemy = spawnable_enemies.sample
