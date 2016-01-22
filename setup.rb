@@ -12,12 +12,29 @@
 # The first thing we want to do is set up our folder structure. We do this by
 # creating a hash. An explanation can be found below this structure
 #------------------------------------------------------------------------------
-plugins = {
-    "src" => {order: ["game",
-                      "IB_BOSS_module",
-                      "IB_BOSS_game"  ]
-    }
 
+
+plugins = {
+    "lib" => {
+        "misc" => {},
+        "util" => {
+            exclude: ["print_backtrace"]
+        },
+    },
+    "src" => {
+        excluded: ["old"],
+        "movement" => {
+            order: ["Movement", "KeyboardMovement"]
+        },
+        "ship" => {},
+        "player" => {
+            exclude: [
+                "player_test-spec",
+                "player_test",
+                "player_rspec"
+            ]
+        },
+    }
 }
 
 # Folder structure explanation |
@@ -48,11 +65,11 @@ plugins = {
 #
 # Here we see that within the folder "Example 1", we nest two sub-folders:
 # "classes" and "modules". "classes" is the defined as earlier with no options,
-# while "modules" has an option called exclude:
+# while "smodules" has an option called exclude:
 # exclude: is a symbol; it could also be written as :exclude =>
 # in the example above, but exclude: is simply shorthand for that.
 # The exclude: option takes an array (a comma separated list of values inside
-# [] brackets) of files which you do not wish to load. This can be very useful
+# [] brackets) of file which you do not wish to load. This can be very useful
 # if you're debugging your game, so that you don't have to go in and delete the
 # script file, or comment it out in any way.
 #
@@ -129,4 +146,4 @@ Plugins.load_recursive(plugins)
 Plugins.package
 
 # Finally we load the packaged scripts.rb file into Ace.
-load_script("Data/#{ROOT_PATH}/target.rb")
+load_script("Data/#{ROOT_PATH}/target/target.rb")
