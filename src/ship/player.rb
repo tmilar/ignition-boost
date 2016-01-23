@@ -5,11 +5,12 @@ class Player < Ship
   include KeyboardMovement
   include Subject
 
+  attr_reader :hp
+
   def initialize(config = {})
     super(config)
     self.score = 0
     self.high_score = $game_variables[IB::HIGH_SCORE_VAR] || 0
-    notify_observers("score", {score: self.score, high_score: self.high_score})
   end
 
   # @Override Ship init_position
@@ -29,9 +30,14 @@ class Player < Ship
     # @hp <= 0
   end
 
+  # ---------------------------------------------------------------------
+  # PROPERTIES
+  # ---------------------------------------------------------------------
   def hp=(hp)
     @stats[:hp] = hp
+    Logger.debug("Player hp changed, now is #{@stats[:hp]}")
     notify_observers("hp", {hp: @stats[:hp], mhp: @stats[:mhp]})
+    notify_observers("game_over", {result: 'loss'}) if @stats[:hp] < 0
   end
 
 
@@ -46,6 +52,7 @@ class Player < Ship
 
   def high_score=(hs)
     $game_variables[IB::HIGH_SCORE_VAR] = hs
+    notify_observers("high_score", {high_score: self.high_score})
   end
 
   def score
@@ -55,7 +62,7 @@ class Player < Ship
   def score=(num)
     $game_variables[IB::SCORE_VAR] = num
     self.high_score = self.score if self.score > self.high_score
-    notify_observers("score", {score: self.score, high_score: self.high_score})
+    notify_observers("score", {score: self.score})
   end
 
 end

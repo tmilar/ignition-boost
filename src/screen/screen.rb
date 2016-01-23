@@ -3,6 +3,7 @@ class Screen
   def initialize(viewport)
     @reactions = {
         'score' => lambda { |scores| draw_scores(scores) },
+        'high_score' => lambda { |hs| draw_scores(hs) },
         'hp' => lambda { |hp_data| draw_hp_bar(hp_data) },
         'nuke' => lambda { |_| init_nuke },
         'time' => lambda { |time| draw_time(time)},
@@ -78,8 +79,8 @@ class Screen
   def draw_scores(scores)
     contents = @window.contents
     contents.clear
-    window_draw_score("Score: ", scores[:score], 4, 0, contents.width - 8)
-    window_draw_score("MaxScore: ", scores[:high_score], -(Graphics.width / 2) + 70, 0, contents.width - 8)
+    window_draw_score("Score: ", scores[:score], 4, 0, contents.width - 8) if scores.key?(:score)
+    window_draw_score("MaxScore: ", scores[:high_score], -(Graphics.width / 2) + 70, 0, contents.width - 8) if scores.key?(:high_score)
   end
 
   def window_draw_score(score_text, score_value, x, y, width)
