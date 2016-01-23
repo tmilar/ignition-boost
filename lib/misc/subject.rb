@@ -6,6 +6,8 @@ module Subject
   # def_instance_delegator :@observers, :<<, :add_observer
   # def_instance_delegator :@observers, :delete, :delete_observer
 
+  attr_accessor :observers
+
   def initialize(config = {})
     @observers = []
     super(config)

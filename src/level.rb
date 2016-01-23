@@ -91,6 +91,7 @@ class Level
 
   def init_game_helpers
     @spawner = Spawner.new(@config[:spawn_speed], @config[:phases])
+    @spawner.add_observer(self)
     @collider = Collider.new
   end
 
@@ -116,18 +117,22 @@ class Level
     false
   end
 
-  private
+
   def enemies_update
-    check_new_enemy
-    @enemies.each {
-        |enemy|
-      enemy.update
-    }
+    @enemies.each { |enemy|  enemy.update }
   end
 
-  def check_new_enemy
-    new_enemy = @spawner.spawn_enemy
-    @enemies << new_enemy unless new_enemy.nil?
+  def notified(msg, data={})
+    reactions = {
+        'new_enemy' => lambda { |enemy| add_new_enemy(enemy) }
+    }
+    reactions[msg].call(data)
+  end
+
+  def add_new_enemy(enemy)
+    raise 'New enemy is nil!' if enemy.nil?
+    Logger.debug("New enemy #{enemy.name} entered level #{@config[:name]}.")
+    @enemies << enemy
   end
 
 end

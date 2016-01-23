@@ -1,12 +1,13 @@
 # Factory for spawning new enemies whenever available
 class Spawner
+  include Subject
 
   def initialize(spawn_speed = 10, phases = {})
-
     @config = {
         spawn_speed: spawn_speed,
         phases: phases
-    }.deep_clone
+    }
+    super(@config)
 
     # @config[:phases].each { |p| p[:spawned] = 0 }
     Logger.start('spawner', @config)
@@ -24,7 +25,7 @@ class Spawner
 
   def update
     @spawn_timer -= 1
-
+    spawn_enemy
   end
 
   def check_phases
@@ -79,9 +80,9 @@ class Spawner
 
     # spawn a random spawnable enemy
     new_enemy = pick_spawnable_enemy(@current_phases)
-    Logger.info("Spawning enemy: #{new_enemy}\n")
+    Logger.info("Spawning enemy: #{new_enemy}\n.#{" Observers notified >> #{observers.map {|o| o.class.name}}" if !observers.empty?}")
 
-    Enemy.new(new_enemy)
+    notify_observers('new_enemy', Enemy.new(new_enemy))
   end
 
   def pick_spawnable_enemy(spawnable_phases_enemies)

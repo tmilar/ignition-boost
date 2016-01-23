@@ -3,6 +3,7 @@
 ## Sprite to load ship image
 class Ship
   extend Forwardable
+  extend Subject
 
   def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width
   def_delegators :@sprite, :position, :position=, :rectangle
@@ -39,7 +40,7 @@ class Ship
   }
 
   def initialize(config = {})
-
+    super(config)
     #config setup
     Logger.start("ship#'#{config[:name]}'", config, DEFAULTS)
     @config = DEFAULTS.merge(config)
@@ -64,6 +65,10 @@ class Ship
   def stats_init
     @stats = @config[:stats].deep_clone
     @stats[:mhp] = @stats[:hp]
+  end
+
+  def name
+    @config[:name]
   end
 
   def update
