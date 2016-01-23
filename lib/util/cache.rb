@@ -3,7 +3,7 @@ module Cache
   # Store image to relative path
   #-----------------------------------------------------------------------------
   def self.space(filename)
-    Logger.info("CACHE spacing image: PATH: #{@relative_path}, FILENAME: #{filename}")
+    Logger.info("CACHE spacing image: PATH: #{@relative_path}/#{filename}")
     load_bitmap(@relative_path || '', filename)
   end
 
