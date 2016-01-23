@@ -23,14 +23,6 @@ class Player < Ship
   end
 
 
-  def sprite_init
-    @sprite = Sprite.create({bitmap: @config[:name]})
-
-    @sprite.ox = width / 2 ## @cw / 2
-    @sprite.oy = height
-    @sprite.x = Graphics.width / 2
-    @sprite.y = Graphics.height - height / 4
-  end
 
   def destroyed?
     false
