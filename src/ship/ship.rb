@@ -41,10 +41,11 @@ class Ship
   def initialize(config = {})
 
     #config setup
-    Logger.start("ship", config, DEFAULTS)
+    Logger.start("ship#'#{config[:name]}'", config, DEFAULTS)
     @config = DEFAULTS.merge(config)
-
+    stats_init
     sprite_init
+    position_init
   end
 
   def sprite_init
@@ -53,7 +54,17 @@ class Ship
     @sprite.ox = width / 2 ## @cw / 2
     @sprite.oy = height
     @sprite.x = Graphics.width / 2
-    @sprite.y = Graphics.height - height / 4
+    @sprite.y = 0 ##Graphics.height - height / 4
+  end
+
+  # Place initial sprite position
+  def position_init
+    raise "position_init method NotImplemented! Please implement in the correct Ship implementation."
+  end
+
+  def stats_init
+    @stats = @config[:stats].deep_clone
+    @stats[:mhp] = @stats[:hp]
   end
 
   def update
@@ -63,5 +74,4 @@ class Ship
   def dispose
     @sprite.dispose
   end
-
 end
