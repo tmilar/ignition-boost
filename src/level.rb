@@ -115,10 +115,16 @@ class Level
 
   private
   def enemies_update
-    @enemies << @spawner.spawn_enemy
+    check_new_enemy
     @enemies.each {
         |enemy|
-      # enemy.update
+      enemy.update
     }
   end
+
+  def check_new_enemy
+    new_enemy = @spawner.spawn_enemy
+    @enemies << new_enemy unless new_enemy.nil?
+  end
+
 end

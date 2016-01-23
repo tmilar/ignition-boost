@@ -1,11 +1,6 @@
 module KeyboardMovement
   include Movement
 
-  def update
-    super
-    update_movement
-  end
-
   def update_movement
     move(:LEFT)  if Input.press?(:LEFT) && !Input.press?(:RIGHT)
     move(:RIGHT) if Input.press?(:RIGHT) && !Input.press?(:LEFT)

@@ -1,32 +1,31 @@
 module Movement
   MOVEMENTS = {
-      :LEFT => lambda { |sprite| sprite.move_x(-1)},
-      :RIGHT => lambda { |sprite| sprite.move_x(+1) },
-      :UP => lambda { |sprite| sprite.move_y(-1) },
-      :DOWN => lambda { |sprite| sprite.move_y(+1) }
+      :LEFT => lambda { |sprite, speed| sprite.move_x(-1 * speed)},
+      :RIGHT => lambda { |sprite, speed| sprite.move_x(+1 * speed) },
+      :UP => lambda { |sprite, speed| sprite.move_y(-1 * speed) },
+      :DOWN => lambda { |sprite, speed| sprite.move_y(+1 * speed) }
   }
+
+  attr_accessor :limits
 
   def initialize(config = {})
     super(config)
-    init_position
-    init_limits(config[:position_limits])
+    defined_limits = config[:position_limits]
+    init_limits(defined_limits)
   end
 
-  def init_position
-    @position = Point.new(0,0)
-  end
+  def init_limits(defined_limits = nil)
 
-  def init_limits(limits)
-    if limits.kind_of?(Rectangle)
-      @limits = limits
-    elsif valid_config_limits?(limits)
+
+    if valid_config_limits?(defined_limits)
       @limits = Rectangle.new(Graphics.width * limits[:x][0],
                               Graphics.height * limits[:y][0],
                               Graphics.width * limits[:x][1],
                               Graphics.height * limits[:y][1])
+    else
+      @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
     end
 
-    @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
 
     Logger.debug("initialized limits! -> #{@limits}")
   end
@@ -40,9 +39,19 @@ module Movement
         limits[:y].size.equal?(2)
   end
 
+  def update
+    super
+    update_movement
+  end
+
+  ## must be defined in child implementations
+  def update_movement
+    raise 'Not implemented!'
+  end
+
   # Method to be included in movible game objects
-  def move(direction = :DOWN)
-    MOVEMENTS[direction].call(self)
+  def move(direction = :DOWN, calculated_speed = false)
+    MOVEMENTS[direction].call(self, calculated_speed || self.stats[:speed])
   end
 
   def move_x(offset_x)
@@ -56,7 +65,7 @@ module Movement
   end
 
   def try_move(new_pos)
-    self.position = new_pos if @limits.contains_point(new_pos)
+    self.position = new_pos if @limits.contains_point(new_pos, true)
   end
 
 end

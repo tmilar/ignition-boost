@@ -6,34 +6,43 @@ class Spawner
     @config = {
         spawn_speed: spawn_speed,
         phases: phases
-    }
+    }.deep_clone
 
-    Logger.start("spawner", @config)
+    # @config[:phases].each { |p| p[:spawned] = 0 }
+    Logger.start('spawner', @config)
 
     @spawn_speed = @config[:spawn_speed]
-    @spawn_timer = 5
+    @spawn_timer = 0
     @ticker = 0
 
     @enemy_phases = @config[:phases].values
+    @enemy_phases.each { |p| p[:spawned] = 0 }
+
     @current_phases = []
     @next_phases = []
   end
 
   def update
     @spawn_timer -= 1
-    @ticker -= 1
-    check_phases if @ticker < 0
+
   end
 
   def check_phases
     old_phases = @current_phases
 
+    # Find phases that are started, separate from 'next_phases'
     @current_phases, @next_phases = @enemy_phases.partition {
-        |phase| Main_IB.game_time >= phase[:start]
+        |phase|
+      Main_IB.game_time >= phase[:start]
     }
 
-    Logger.trace("checking phases.... Current phases: #{@current_phases}. SpawnTimer: #{@spawn_timer},\n Game time: #{Main_IB.game_time} \n)")
-    Logger.trace(" Next phases: #{@next_phases}")
+    @finished_phases, @current_phases = @current_phases.partition {
+        |phase|
+      (phase[:max_spawn] && phase[:spawned] >= phase[:max_spawn]) ||
+          (phase[:end] && Main_IB.game_time >= phase[:end] )
+    }
+
+    Logger.trace("checking phases.... \nCurrent phases: #{@current_phases}. \nNext phases: #{@next_phases}. \nFinished: #{@finished_phases}. SpawnTimer: #{@spawn_timer},\nGame time: #{Main_IB.game_time})")
 
     new_phases = @current_phases - old_phases
 
@@ -48,34 +57,38 @@ class Spawner
       Sound.bgm(new_bgm) if new_bgm
     end
 
-    @ticker = 60 # Use this to only check phases once per second (60 frames)
   end
 
   def spawn_enemy
     return if @spawn_timer > 0
 
+    check_phases
+    return if @current_phases.empty?
+
     # Restart spawn timer to configured speed
-    @spawn_timer = @spawn_speed
+    @spawn_timer = rand(@spawn_speed)
 
     # Check current available phases enemies
-    Logger.trace("Checking enemies for current phases : #{@enemy_phases} \n Game time: #{Main_IB.game_time}")
+    Logger.trace("Checking enemies for current phases : #{@current_phases} \n Game time: #{Main_IB.game_time}")
 
-    # Get all current phase enemies
-    spawnable_enemies, names = [], []
+    spawnable_enemies_names = []
     @current_phases.each { |phase|
-      phase[:enemies].each { |e|
-        spawnable_enemies << e
-        names << e[:name]
-      }
+      spawnable_enemies_names << phase[:enemies].map { |e| e[:name] }
     }
-    Logger.trace("spawnable_enemies... #{names}")
+    Logger.trace("spawnable_enemies... #{spawnable_enemies_names}")
 
     # spawn a random spawnable enemy
-    new_enemy = spawnable_enemies.sample
+    new_enemy = pick_spawnable_enemy(@current_phases)
     Logger.info("Spawning enemy: #{new_enemy}\n")
 
-    new_enemy
-    # Enemy.new(new_enemy)
+    Enemy.new(new_enemy)
+  end
+
+  def pick_spawnable_enemy(spawnable_phases_enemies)
+    rand_phase = spawnable_phases_enemies.sample
+
+    rand_phase[:spawned] += 1
+    rand_phase[:enemies].sample
   end
 
 end
