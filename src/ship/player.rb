@@ -11,9 +11,9 @@ class Player < Ship
     @score  = 0
   end
 
-  # @Override Movement init_position
-  def init_position
-    @position = Point.new(Graphics.width / 2, Graphics.height - self.height)
+  # @Override Ship init_position
+  def position_init
+    self.position = Point.new(Graphics.width / 2, Graphics.height - self.height)
   end
 
   # Scene update, one per frame
