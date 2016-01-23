@@ -1,7 +1,7 @@
 class Level
   # basic enemy ship config
   DEFAULT_ENEMY1 = {
-      :name => "alien1",
+      :name => 'alien1',
       :stats => {
           :power => 1,
           :speed => 1,
@@ -10,18 +10,18 @@ class Level
           :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
-          :type => "elazor",
+          :type => 'elazor',
           :damage => 1,
           :speed => 5,
-          :SE => ["Attack2",80,110]
+          :SE => ['Attack2', 80, 110]
       },
-      :DSE => ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
+      :DSE => ['Fire3', 90, 150], # "SE_Name",volume,pitch - SE for enemy dying
       # :movement => :linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
   }
 
   # basic enemy ship config
   DEFAULT_ENEMY2 = {
-      :name => "alien2",
+      :name => 'alien2',
       :stats => {
           :power => 1,
           :speed => 1,
@@ -30,17 +30,18 @@ class Level
           :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
-          :type => "elazor",
+          :type => 'elazor',
           :damage => 2,
           :speed => 5,
-          :SE => ["Attack2",80,110]
+          :SE => ['Attack2', 80, 110]
       },
-      :DSE => ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
+      :DSE => ['Fire2', 90, 150], # "SE_Name",volume,pitch - SE for enemy dying
   }
 
   DEFAULTS = {
       backdrop: 'backdrop',
       spawn_speed: 100,
+      name: 'first_level',
       phases: {
           1 => {
               enemies: [DEFAULT_ENEMY1],
@@ -57,7 +58,7 @@ class Level
           #     BGM: ["Battle3", 60, 110]
           # }
       },
-      BGM: ["Battle2", 60, 110],
+      BGM: ['Battle2', 60, 110],
       target_score: 50
   }
 
@@ -76,8 +77,8 @@ class Level
   def initialize(level_options = {}, player_ship = {})
     #config setup
     level_options[:player_ship] = player_ship
-    Logger.start("level", level_options, DEFAULTS)
-    @config = DEFAULTS.merge(level_options)
+    Logger.start('level', level_options, DEFAULTS)
+    @config = DEFAULTS.merge(level_options).deep_clone
 
     play_bgm
     init_level_graphics
@@ -110,8 +111,8 @@ class Level
   end
 
   def finished?
-    "loss" if @player.nil? || @player.destroyed?
-    "win" if @player.score >= @config[:target_score]
+    'loss' if @player.nil? || @player.destroyed?
+    'win' if @player.score >= @config[:target_score]
     false
   end
 
