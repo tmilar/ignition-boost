@@ -20,7 +20,7 @@ class Screen
     @window = Window_Base.new(0, 0, Graphics.width, Graphics.height)
     @window.opacity = 0
     draw_scores({score: 0, high_score: 0})
-    draw_hp_bar({hp_percentage: 1.0})
+    draw_hp_bar({rate: 1.0})
     init_item_hold
   end
 
@@ -67,11 +67,11 @@ class Screen
   def draw_hp_bar(hp_data)
     x, y = 4, 0
     width = Graphics.width / 4
-    rate = hp_data[:hp] / hp_data[:mhp].to_f || 1.0
+    rate = hp_data[:rate] || hp_data[:hp] / hp_data[:mhp].to_f || 1.0
     color1 = @window.text_color(1)
     color2 = @window.text_color(2)
 
-    Logger.debug("Drawing hp_bar with HP data %#{hp_percentage}.")
+    Logger.debug("Drawing hp_bar with HP data %#{rate*100}.")
     @window.draw_gauge(x, y, width, rate, color1, color2)
   end
 
