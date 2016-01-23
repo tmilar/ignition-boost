@@ -23,6 +23,7 @@ plugins = {
     },
     "src" => {
         excluded: ["old"],
+        "screen" => {},
         "movement" => {
             order: ["movement", "keyboard_movement", "zig_zag_movement"]
         },

@@ -3,12 +3,13 @@
 class Player < Ship
 
   include KeyboardMovement
-
-  attr_accessor :score
+  include Subject
 
   def initialize(config = {})
     super(config)
-    @score  = 0
+    self.score = 0
+    self.high_score = $game_variables[IB::HIGH_SCORE_VAR] || 0
+    notify_observers("score", {score: self.score, high_score: self.high_score})
   end
 
   # @Override Ship init_position
@@ -23,10 +24,38 @@ class Player < Ship
   end
 
 
-
   def destroyed?
     false
     # @hp <= 0
+  end
+
+  def hp=(hp)
+    @stats[:hp] = hp
+    notify_observers("hp", {hp: @stats[:hp], mhp: @stats[:mhp]})
+  end
+
+
+  def item_held=(item)
+    @item = item
+    notify_observers("item", {item: item})
+  end
+
+  def high_score
+    $game_variables[IB::HIGH_SCORE_VAR]
+  end
+
+  def high_score=(hs)
+    $game_variables[IB::HIGH_SCORE_VAR] = hs
+  end
+
+  def score
+    $game_variables[IB::SCORE_VAR]
+  end
+
+  def score=(num)
+    $game_variables[IB::SCORE_VAR] = num
+    self.high_score = self.score if self.score > self.high_score
+    notify_observers("score", {score: self.score, high_score: self.high_score})
   end
 
 end

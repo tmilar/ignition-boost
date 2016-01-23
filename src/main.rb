@@ -141,6 +141,7 @@ module IB
           2 => {
               enemies: [ENEMIGO2],
               start: 3,
+              end: 10,
               BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
           },
           3 => {
@@ -199,10 +200,10 @@ class Main_IB < Scene_Base
   def initialize_game
     configure
     init_variables
-
-    #TODO create screen elements: score, item, timeleft
+    init_screen
     start_level
   end
+
 
   def configure
     Cache.relative_path(IB::GRAPHICS_ROOT)
@@ -211,14 +212,17 @@ class Main_IB < Scene_Base
 
   def init_variables
     @@game_time = 0
-    @game_objects = []
-    @score = 0
-    @high_score = $game_variables[IB::HIGH_SCORE_VAR] || 0
   end
+
+  def init_screen
+    @screen = Screen.new(@viewport1)
+  end
+
 
   def start_level
     Logger.info("Starting new level: #{IB::CURRENT_LEVEL[:name]}")
     @level = Level.new(IB::CURRENT_LEVEL, IB::PLAYER_SHIP)
+    @level.player.add_observer(@screen)
 
     Logger.debug("Configured level >> #{@level}")
   end
@@ -228,20 +232,24 @@ class Main_IB < Scene_Base
     @@game_time += 1
 
     update_level
-    # TODO update_screen
+    update_screen
     check_exit
   end
 
   def check_exit
-
     if Input.trigger?(:B)
       SceneManager.goto(Scene_Map)
     end
   end
 
+  def update_screen
+    @screen.update
+  end
+
   def update_level
     @level.update
   end
+
 
   def terminate
     super
@@ -253,7 +261,8 @@ class Main_IB < Scene_Base
   def dispose_graphics
     Logger.info( "<< FAKE >> all graphics disposed!!")
   end
-  
+
+
   def self.game_time
     @@game_time / 60
   end

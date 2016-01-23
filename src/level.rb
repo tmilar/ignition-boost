@@ -61,6 +61,8 @@ class Level
       target_score: 50
   }
 
+  attr_reader :player
+
   def update
     @backdrop.update
     @spawner.update
