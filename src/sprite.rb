@@ -7,8 +7,6 @@ class Sprite
 
   def self.create(args = {})
     defaults = {
-        ox: 30,
-        oy: 30,
         x: 30,
         y: 30,
         bitmap: "NO_IMAGE",
@@ -19,18 +17,17 @@ class Sprite
 
     config = defaults.merge(args)
 
-    Logger.info("Creating new sprite. ")
-    Logger.start("sprite", args, defaults)
     new_sprite = Sprite.new(@viewport)
-    new_sprite.ox = config[:ox]
-    new_sprite.oy = config[:oy]
     new_sprite.x = config[:x]
     new_sprite.y = config[:y]
     new_sprite.bitmap = Cache.space(config[:bitmap])
+    new_sprite.ox = new_sprite.width / 2
+    new_sprite.oy = new_sprite.height
     new_sprite.zoom_x = config[:zoom_x]
     new_sprite.zoom_y = config[:zoom_y]
     new_sprite.name = config[:name]
 
+    Logger.info("Created new sprite: #{new_sprite.bitmap}. ")
     new_sprite
   end
 

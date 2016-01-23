@@ -49,12 +49,11 @@ class Ship
   end
 
   def sprite_init
-    @sprite = Sprite.create({bitmap: @config[:name]})
-
-    @sprite.ox = width / 2 ## @cw / 2
-    @sprite.oy = height
-    @sprite.x = Graphics.width / 2
-    @sprite.y = 0 ##Graphics.height - height / 4
+    @sprite = Sprite.create({
+                                bitmap: @config[:name],
+                                x: Graphics.width / 2,
+                                y: 0 ##Graphics.height - height / 4
+                            })
   end
 
   # Place initial sprite position
