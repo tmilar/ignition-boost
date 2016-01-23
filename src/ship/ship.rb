@@ -8,11 +8,12 @@ class Ship
   def_delegators :@sprite, :position, :position=, :rectangle
 
   attr_accessor :sprite
+  attr_accessor :stats
 
   DEFAULT_WEAPON = {
       type: "lazor",          # weapon name (also image '.png' name)
       damage: 1,              # bullet damage
-      speed: 5,               # bullet speed
+      speed: 4,               # bullet speed
       cooldown: 5,            # time to wait before shooting again
       SE: ["Attack2",80,150], # sound when shooting
       level: 1                # starting weapon level (optional, default 1)
@@ -20,18 +21,20 @@ class Ship
 
   DEFAULTS = {
       :name => "DEFAULT_SHIP",
-      :power => 1,
-      :speed => 1,
-      :mhp => 5,
+      :stats => {
+          :power => 1,
+          :speed => 1,
+          :hp => 5,
+          :collide_damage => 1,
+          :collide_resistance => 0,
+          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+          :nuke_power => 99            # Damage caused by nuke
+      },
       :weapon => DEFAULT_WEAPON,
-      :collide_damage => 1,
-      :collide_resistance => 0,
-      :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
       :position_limits => {         # Percentage limits ship can move, mostly for bosses
           x: [0.0, 1.0],
           y: [0.0, 1.0]
       },
-      :nuke_power => 99,            # Damage caused by nuke
       :DSE => ["Fire1",90,150],     # SE for death | "SE_Name",volume,pitch
   }
 
