@@ -9,7 +9,7 @@ module ZigZagMovement
 
   def update_movement
     move(@dir_x, @ticker * 0.06)
-    move(:DOWN, self.stats[:speed]) ###TODO test ignoring the second stat.
+    move(:DOWN)
 
     @ticker -= 1
     if @ticker <= 0

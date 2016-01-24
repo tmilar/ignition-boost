@@ -51,6 +51,13 @@ module Movement
     MOVEMENTS[direction].call(self, calculated_speed || self.stats[:speed])
   end
 
+  def move_dir(dir_xy = Point.new(1,0), calculated_speed = false)
+    # Logger.trace("[#{self}] Trying to move sprite to direction: #{dir_xy}, stats are: #{self.stats}")
+    speed = calculated_speed || self.stats[:speed]
+    self.move_x(dir_xy.x * speed)
+    self.move_y(dir_xy.y * speed)
+  end
+
   def move_x(offset_x)
     new_pos = self.position + Point.new(offset_x, 0)
     try_move(new_pos)
