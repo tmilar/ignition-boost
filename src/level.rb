@@ -150,22 +150,64 @@ class Level
     false
   end
 
-
-  def enemies_update
-    @enemies.each { |enemy|  enemy.update }
-  end
-
   def notified(msg, data={})
     reactions = {
-        'new_enemy' => lambda { |enemy| add_new_enemy(enemy) }
+        'new_enemy' => lambda { |enemy| add_new_enemy(enemy) },
+        'new_lazors' => lambda { |lazors| add_new_lazors(lazors)},
+        'enemy_hit' => lambda { |enemy| check_enemy_hp(enemy)},
+        'player_hit' => lambda { |_| check_player_hp },
+        'player_disposed' => lambda { |_| init_game_over("loss")},
+        'enemy_disposed' => lambda { |enemy| handle_enemy_disposed(enemy)}
+
     }
     reactions[msg].call(data)
   end
 
+  def handle_enemy_disposed(enemy)
+    @player.score += enemy.stats[:mhp]
+    notify_observers("game-over", "win") if @player.score >= @config[:target_score]
+  end
+
+  def check_player_hp
+    @player.dispose if @player.stats[:hp] <= 0
+  end
+
+  def check_enemy_hp(enemy)
+    enemy.dispose if enemy.stats[:hp] <= 0
+  end
+
+  def init_game_over(result)
+    @screen.init_game_over(result)
+  end
+
+
   def add_new_enemy(enemy)
     raise 'New enemy is nil!' if enemy.nil?
     Logger.debug("New enemy #{enemy.name} entered level #{@config[:name]}.")
+    Logger.trace("Enemy is... #{enemy}. Ancestors: #{enemy.class.ancestors}")
+    enemy.level_observe(self)
     @enemies << enemy
+  end
+
+  def add_new_lazors(data)
+    raise 'Lazor(s) are empty or nil!' if data[:lazors].nil_empty?
+    Logger.trace("New lazors were shooted!!! data received: #{data}")
+    case data[:data][:shooter]
+      when 'player' then @plazors.push(*data[:lazors])
+      when 'enemy'  then @elazors.push(*data[:lazors])
+    end
+
+    Logger.trace("Level lazors present: Plazors > #{@plazors} | Elazors > #{@elazors}")
+  end
+
+  def dispose
+    @backdrop.dispose
+    @player.dispose
+  end
+
+  def screen_observe(screen)
+    @player.add_observer(screen)
+    self.add_observer(screen)
   end
 
 end
