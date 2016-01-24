@@ -110,7 +110,7 @@ class Ship
   end
 
   def ship_type
-    self.class.uncapitalize
+    self.class.to_s.uncapitalize
   end
 
   def level_observe(observer)
