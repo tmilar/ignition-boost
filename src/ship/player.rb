@@ -8,7 +8,13 @@ class Player < Ship
   attr_reader :hp
 
   def initialize(config = {})
+    Logger.trace("Config before player super... Config -> #{config}, Ancestors are #{self.class.ancestors}")
     super(config)
+    @config = config
+    init_score
+  end
+
+  def init_score
     self.score = 0
     self.high_score = $game_variables[IB::HIGH_SCORE_VAR] || 0
   end
@@ -25,10 +31,20 @@ class Player < Ship
   end
 
 
+  def weapon_pos
+    Point.new(self.x, self.y - self.height)
+  end
+
+  # @return [boolean check_shoot ] if true -> ship will shoot
+  def check_shoot
+    Input.press?(:C)
+  end
+
   def destroyed?
     false
     # @hp <= 0
   end
+
 
   # ---------------------------------------------------------------------
   # PROPERTIES
