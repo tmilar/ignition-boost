@@ -25,13 +25,17 @@ plugins = {
         excluded: ["old"],
         "screen" => {},
         "movement" => {
-            order: ["movement", "keyboard_movement", "zig_zag_movement"]
+            order: ["movement", "keyboard_movement", "zig_zag_movement", :rest]
         },
         "ship" => {
             order: ["ship", :rest]
         },
         "enemy" => {},
         "player" => {},
+        "weapon" => {
+            order: ["weapon", :rest]
+        },
+        "bullet" => {}
     }
 }
 
