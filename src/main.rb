@@ -11,20 +11,28 @@ module IB
     #TODO definir :phases , evolucion de las armas con pups - u otras condiciones
     #TODO definir :type & :subtype
   WEAPON1 = {
-      type: "lazor",          # weapon name (also image '.png' name)
-      damage: 1,              # bullet damage
-      speed: 5,               # bullet speed
+      name: "lazor1",         # weapon name (also lazor image '.png' name)
+      type: "lazor",          # weapon type // por ahora no hace nada //
+      stats: {
+          damage: 1,              # bullet damage
+          speed: 5,               # bullet speed
+      },
+      direction: [0, -1],     # Initial direction for bullets [x, -y]
       cooldown: 5,            # time to wait before shooting again
-      SE: ["Attack2",80,150]  # sound when shooting
-      #level: 1,              # starting weapon level (optional, default 1)
+      SE: ["Attack2",80,150], # sound when shooting
+      # level: 1,             # starting weapon level (optional, default 1)
 
   }
 
   WEAPON2 = {
+      name: "lazor1",         # weapon name (also lazor image '.png' name)
       type: "ball",
-      damage: 1,
+      stats: {
+          damage: 1,              # bullet damage
+          speed: 5,               # bullet speed
+      },
+      direction: [0, -1],     # Initial direction for bullets [x, -y]
       level: 1, # starting weapon level (optional)
-      speed: 5,
       cooldown: 5,
       SE: ["Heal5",80,160]
   }
@@ -45,14 +53,7 @@ module IB
           :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
           :nuke_power => 99            # Damage caused by nuke
       },
-      :weapon => {
-          type: "lazor",
-          damage: 1,
-          level: 1, # starting weapon level (optional)
-          speed: 5,
-          cooldown: 5,
-          SE: ["Heal5",80,160]
-      },
+      :weapon => WEAPON1
   }
 
   #-------------------------------------------------------------------------------
@@ -68,13 +69,16 @@ module IB
           :speed => 1,
           :hp => 2,
           :collide_damage => 4,
-          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+          :shoot_freq => 6,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
           :type => "elazor",
-          :damage => 1,
-          :speed => 5,
-          :SE => ["Attack2",80,110]
+          stats: {
+              damage: 1,              # bullet damage
+              speed: 5,               # bullet speed
+          },
+          :SE => ["Attack2",80,110],
+          :direction => [0, 1],     # Initial direction for bullets [x, -y]
       },
       :DSE => ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
       :shoot_freq => 2, ## TODO por ahora esto remplazara la @difficulty
@@ -89,16 +93,19 @@ module IB
           :speed => 1,
           :hp => 3,
           :collide_damage => 4,
-          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+          :shoot_freq => 10,             ## TODO por ahora esto remplazara la @difficulty
       },
       :power => 1,
       :speed => 1,
       :hp => 3,
       :weapon => {
           :type => "elazor",
-          :damage => 2,
-          :speed => 5,
-          :SE => ["Attack2",80,110]
+          stats: {
+              damage: 1,              # bullet damage
+              speed: 5,               # bullet speed
+          },
+          :SE => ["Attack2",80,110],
+          :direction => [0, 1],     # Initial direction for bullets [x, -y]
       },
       :DSE => ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
   }
@@ -111,12 +118,15 @@ module IB
           :hp => 3,
           :collide_damage => 9999,
           :collide_resistance => 9999,
-          :shoot_freq => 3,             ## TODO por ahora esto remplazara la @difficulty
+          :shoot_freq => 15,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
           :type => "elazor",
-          :damage => 2,
-          :speed => 5
+          stats: {
+              damage: 2,              # bullet damage
+              speed: 6,               # bullet speed
+          },
+          :direction => [0, 1],     # Initial direction for bullets [x, -y]
       },
       :position => {
           max_y: 0.5,
@@ -136,17 +146,18 @@ module IB
       phases: {
           1 => {
               enemies: [ENEMIGO1],
-              start: 0          #time phase can start spawning enemies
+              start: 0,             #time phase can start spawning enemies
+              max_spawn: 6,
           },
           2 => {
               enemies: [ENEMIGO2],
-              start: 3,
+              start: 4,
               end: 10,
               BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
           },
           3 => {
               enemies: [BOSS1],
-              start: 7,
+              start: 15,
               max_spawn: 1,
               BGM: ["Battle3", 60, 110]
           }
