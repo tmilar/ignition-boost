@@ -1,12 +1,13 @@
 class Screen
 
+
   def initialize(viewport)
     @reactions = {
         'score' => lambda { |scores| draw_scores(scores) },
         'high_score' => lambda { |hs| draw_scores(hs) },
-        'hp' => lambda { |hp_data| draw_hp_bar(hp_data) },
+        'player_hit' => lambda { |hp_data| draw_hp_bar(hp_data) },
+        'enemy_disposed' => lambda { |enemy| draw_explosion(enemy) },
         'nuke' => lambda { |_| init_nuke },
-        'time' => lambda { |time| draw_time(time)},
         'game_over' => lambda { |result| init_game_over(result) },
         'item' => lambda { |item| draw_item_hold(item)}
     }
@@ -68,7 +69,7 @@ class Screen
   def draw_hp_bar(hp_data)
     x, y = 4, 0
     width = Graphics.width / 4
-    rate = hp_data[:rate] || hp_data[:hp] / hp_data[:mhp].to_f || 1.0
+    rate = hp_data[:rate] || hp_data[:stats][:hp] / hp_data[:stats][:mhp].to_f || 1.0
     color1 = @window.text_color(1)
     color2 = @window.text_color(2)
 

@@ -1,4 +1,6 @@
 class Level
+  include Subject
+
   # basic enemy ship config
   DEFAULT_ENEMY1 = {
       :name => 'alien1',
@@ -10,6 +12,7 @@ class Level
           :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
+          :name => 'elazor',
           :type => 'elazor',
           :damage => 1,
           :speed => 5,
@@ -30,6 +33,7 @@ class Level
           :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
+          :name => 'elazor',
           :type => 'elazor',
           :damage => 2,
           :speed => 5,
@@ -64,22 +68,17 @@ class Level
 
   attr_reader :player
 
-  def update
-    @backdrop.update
-    @spawner.update
-
-    enemies_update
-    @player.update
-
-    # @collider.update TODO fix collider
-  end
 
   def initialize(level_options = {}, player_ship = {})
     #config setup
     level_options[:player_ship] = player_ship
+    Logger.trace("starter level opts: #{level_options}")
     Logger.start('level', level_options, DEFAULTS)
     @config = DEFAULTS.merge(level_options).deep_clone
 
+    Logger.trace("initializing level with config: #{@config}")
+
+    super(@config)
     play_bgm
     init_level_graphics
     init_game_helpers
@@ -96,19 +95,53 @@ class Level
   end
 
   def init_level_graphics
+    Logger.trace("strating lvl graphics...  opts: #{@config}")
     @backdrop = Backdrop.new(@config[:backdrop])
-    @enemies = []
+    Logger.trace("Conf for player ... #{@config[:player_ship]}")
     @player = Player.new(@config[:player_ship])
+    @player.level_observe(self)
+    @enemies = []
+    @plazors = []
+    @elazors = []
   end
 
+  def update
+    @backdrop.update
+    @spawner.update
 
-  def dispose
-    @backdrop.dispose
-    @player.dispose
+    update_enemies
+    update_player
+    update_plazors
+    update_elazors
+
+
+    # @collider.update TODO fix collider
   end
 
-  def disposed?
-    false
+  def update_elazors
+    @elazors.delete_if { |el|
+      el.update
+      el.disposed?
+    }
+  end
+
+  def update_plazors
+    @plazors.delete_if { |pl|
+      pl.update
+      pl.disposed?
+    }
+  end
+
+  def update_enemies
+    @enemies.delete_if { |enemy|  
+      # next true if enemy.disposed?
+      enemy.update
+      enemy.disposed?
+    }
+  end
+
+  def update_player
+    @player.update
   end
 
   def finished?

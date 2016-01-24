@@ -3,7 +3,7 @@
 ## Sprite to load ship image
 class Ship
   extend Forwardable
-  extend Subject
+  include Subject
 
   def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width
   def_delegators :@sprite, :position, :position=, :rectangle
@@ -77,5 +77,30 @@ class Ship
 
   def dispose
     @sprite.dispose
+    notify_observers("#{ship_type}_disposed", self)
   end
+
+  def ship_type
+    self.class.uncapitalize
+  end
+
+  def level_observe(observer)
+    Logger.warn("Can't observe this ship @weapon because is nil!") if @weapon.nil?
+    @weapon.add_observer(observer) unless @weapon.nil?
+    self.add_observer(observer)
+  end
+
+  def disposed?
+    @sprite.disposed?
+  end
+
+  def hp
+    @stats[:hp]
+  end
+
+  def hp=(new_hp)
+    @stats[:hp] = new_hp
+    notify_observers("#{ship_type}_hit", self)
+  end
+
 end

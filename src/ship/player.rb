@@ -37,7 +37,6 @@ class Player < Ship
     @stats[:hp] = hp
     Logger.debug("Player hp changed, now is #{@stats[:hp]}")
     notify_observers("hp", {hp: @stats[:hp], mhp: @stats[:mhp]})
-    notify_observers("game_over", {result: 'loss'}) if @stats[:hp] < 0
   end
 
 

@@ -222,8 +222,7 @@ class Main_IB < Scene_Base
   def start_level
     Logger.info("Starting new level: #{IB::CURRENT_LEVEL[:name]}")
     @level = Level.new(IB::CURRENT_LEVEL, IB::PLAYER_SHIP)
-    @level.player.add_observer(@screen)
-
+    @level.screen_observe(@screen)
     Logger.debug("Configured level >> #{@level}")
   end
 
