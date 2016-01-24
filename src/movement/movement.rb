@@ -10,12 +10,10 @@ module Movement
 
   def initialize(config = {})
     super(config)
-    defined_limits = config[:position_limits]
-    init_limits(defined_limits)
+    init_limits(config[:position_limits])
   end
 
   def init_limits(defined_limits = nil)
-
 
     if valid_config_limits?(defined_limits)
       @limits = Rectangle.new(Graphics.width * limits[:x][0],
@@ -25,7 +23,6 @@ module Movement
     else
       @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
     end
-
 
     Logger.debug("initialized limits! -> #{@limits}")
   end
