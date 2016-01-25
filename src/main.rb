@@ -222,6 +222,10 @@ class Main_IB < Scene_Base
 
   def init_variables
     @@game_time = 0
+    @@start_time = Time.now
+    @@old_second = -1
+    @@current_second = @@start_time.sec
+    @@frames_in_second = 0
   end
 
   def init_screen
@@ -239,10 +243,18 @@ class Main_IB < Scene_Base
   def update
     super
     @@game_time += 1
+    update_frames_in_second
 
     update_level
     update_screen
     check_exit
+  end
+
+  def update_frames_in_second
+    @current_second = Time.now.sec
+    @@frames_in_second = 0 if @old_second != @current_second
+    @@frames_in_second += 1
+    @old_second = @current_second
   end
 
   def check_exit
@@ -268,12 +280,23 @@ class Main_IB < Scene_Base
   end
 
   def dispose_graphics
+    @level.dispose
+    @screen.dispose
     Logger.info( "<< FAKE >> all graphics disposed!!")
   end
 
 
   def self.game_time
     @@game_time / 60
+  end
+
+  def self.elapsed_time
+    ((Date.now - @@start_time)*1000.0).to_i
+  end
+
+
+  def self.frames_in_second
+    @@frames_in_second
   end
 
 end
