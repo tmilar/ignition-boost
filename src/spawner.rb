@@ -21,6 +21,7 @@ class Spawner
 
     @current_phases = []
     @next_phases = []
+    check_phases
   end
 
   def update
@@ -36,6 +37,7 @@ class Spawner
         |phase|
       Main_IB.game_time >= phase[:start]
     }
+
 
     @finished_phases, @current_phases = @current_phases.partition {
         |phase|
@@ -63,7 +65,7 @@ class Spawner
   def spawn_enemy
     return if @spawn_timer > 0
 
-    check_phases
+    check_phases if @current_phases.any? || @next_phases.any?
     return if @current_phases.empty?
 
     # Restart spawn timer to configured speed
@@ -82,7 +84,8 @@ class Spawner
     new_enemy = pick_spawnable_enemy(@current_phases)
     Logger.info("Spawning enemy: #{new_enemy}\n.#{" Observers notified >> #{observers.map {|o| o.class.name}}" if !observers.empty?}")
 
-    notify_observers('new_enemy', Enemy.new(new_enemy))
+    spawned_enemy = Enemy.new(new_enemy)
+    notify_observers('new_enemy', spawned_enemy)
   end
 
   def pick_spawnable_enemy(spawnable_phases_enemies)
