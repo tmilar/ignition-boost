@@ -104,6 +104,7 @@ class Level
     @enemies = []
     @plazors = []
     @elazors = []
+    @explosions = []
   end
 
   def update
@@ -114,6 +115,17 @@ class Level
     update_player
     update_plazors
     update_elazors
+    update_explosions
+  end
+
+  def update_explosions
+    @explosions.each_with_index { |e,i|
+      if e.disposed?
+        @explosions.delete_at(i)
+        next
+      end
+      e.update
+    }
   end
 
   def update_elazors

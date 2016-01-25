@@ -6,10 +6,9 @@ class Screen
         'score' => lambda { |scores| draw_scores({score: scores}) },
         'high_score' => lambda { |hs| draw_scores({high_score: hs}) },
         'player_hp' => lambda { |player| draw_hp_bar(player) },
-        'enemy_disposed' => lambda { |enemy| draw_explosion(enemy) },
         'nuke' => lambda { |_| init_nuke },
         'game_over' => lambda { |result| init_game_over(result) },
-        'item' => lambda { |item| draw_item_hold(item)}
+        'item' => lambda { |item| draw_item_held(item)}
     }
 
     @viewport = viewport
@@ -17,9 +16,6 @@ class Screen
     init_window
   end
 
-  def draw_explosion(enemy)
-    Logger.info("Enemy EXPLODED !!! #{enemy} KABOOOM.") ## TODO implement...
-  end
 
 
   def init_window

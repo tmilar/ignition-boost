@@ -40,7 +40,12 @@ class Ship
           x: [0.0, 1.0],
           y: [0.0, 1.0]
       },
-      :DSE => ["Fire1",90,150],     # SE for death | "SE_Name",volume,pitch
+      :explosion => {
+          bitmap: "explode",
+          zoom: 1,
+          time: 10,
+          :DSE => ["Fire1",90,150],     # SE for death | "SE_Name",volume,pitch
+      },
   }
 
   def initialize(config = {})
@@ -96,6 +101,15 @@ class Ship
   def update
     sprite_update
     weapon_update
+  end
+
+  def explosion_update
+    return unless @explosion
+    @explosion.update
+    if @explosion.finished?
+      @explosion.dispose
+      self.dispose
+    end
   end
 
   def sprite_update
