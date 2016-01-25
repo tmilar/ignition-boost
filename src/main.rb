@@ -81,7 +81,6 @@ module IB
           :direction => [0, 1],     # Initial direction for bullets [x, -y]
       },
       :DSE => ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
-      :shoot_freq => 2, ## TODO por ahora esto remplazara la @difficulty
       # :movement => :linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
   }
 
