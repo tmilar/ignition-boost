@@ -107,8 +107,8 @@ class Ship
   end
 
   def dispose
-    @sprite.dispose
     notify_observers("#{ship_type}_disposed", self)
+    @sprite.dispose
   end
 
   def ship_type

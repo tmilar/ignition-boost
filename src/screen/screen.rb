@@ -3,9 +3,9 @@ class Screen
 
   def initialize(viewport)
     @reactions = {
-        'score' => lambda { |scores| draw_scores(scores) },
-        'high_score' => lambda { |hs| draw_scores(hs) },
-        'player_hit' => lambda { |hp_data| draw_hp_bar(hp_data) },
+        'score' => lambda { |scores| draw_scores({score: scores}) },
+        'high_score' => lambda { |hs| draw_scores({high_score: hs}) },
+        'player_hp' => lambda { |player| draw_hp_bar(player) },
         'enemy_disposed' => lambda { |enemy| draw_explosion(enemy) },
         'nuke' => lambda { |_| init_nuke },
         'game_over' => lambda { |result| init_game_over(result) },
@@ -17,12 +17,16 @@ class Screen
     init_window
   end
 
+  def draw_explosion(enemy)
+    Logger.info("Enemy EXPLODED !!! #{enemy} KABOOOM.") ## TODO implement...
+  end
+
 
   def init_window
     @window = Window_Base.new(0, 0, Graphics.width, Graphics.height)
     @window.opacity = 0
     draw_scores({score: 0, high_score: 0})
-    draw_hp_bar({rate: 1.0})
+    draw_hp_bar
     init_item_hold
   end
 
@@ -52,24 +56,24 @@ class Screen
   end
 
   def init_game_over(result)
+    Sound.fade(10)
     case result
-      when "win" then Sound.bgm(IB:BGM_WIN)
-      when "loss" then Sound.bgm(IB:BGM_LOSS)
+      when "win"  then Sound.me(IB::ME_WIN)
+      when "loss" then Sound.me(IB::ME_LOSS)
       else raise "Game over result #{result} invalid."
     end
 
     Logger.debug("Initializing game_over! Result: #{result}")
-
     @game_over = Sprite.new
     @game_over.bitmap = Cache.space("game-#{result}")
     @game_over.opacity = 0
     @game_over.z = 500
   end
 
-  def draw_hp_bar(hp_data)
+  def draw_hp_bar(player={})
     x, y = 4, 0
     width = Graphics.width / 4
-    rate = hp_data[:rate] || hp_data[:stats][:hp] / hp_data[:stats][:mhp].to_f || 1.0
+    rate = player.nil_empty? ?  1.0 : player.stats[:hp] / player.stats[:mhp].to_f
     color1 = @window.text_color(1)
     color2 = @window.text_color(2)
 
@@ -105,13 +109,14 @@ class Screen
   def update_game_over
     return unless @game_over
     @game_over.opacity += 3
-    if @game_over.opacity >= 255 #&& Input.trigger?(:C)
+    if @game_over.opacity >= 255 && Input.trigger?(:C)
       SceneManager.goto(Scene_Map)
     end
   end
 
   def notified(msg, data={})
-    @reactions[msg].call(data)
+    Logger.trace("Screen received notification '#{msg}', with data #{data}... #{"But is not considered." unless @reactions.key?(msg)}")
+    @reactions[msg].call(data) if @reactions.key?(msg)
   end
 
   def dispose

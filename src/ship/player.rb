@@ -5,8 +5,6 @@ class Player < Ship
   include KeyboardMovement
   include Subject
 
-  attr_reader :hp
-
   def initialize(config = {})
     Logger.trace("Config before player super... Config -> #{config}, Ancestors are #{self.class.ancestors}")
     super(config)
