@@ -19,4 +19,14 @@ class Enemy < Ship
   def check_shoot
     rand(1000) > (995 - @config[:stats][:shoot_freq])
   end
+
+  def player_collision(player)
+    Logger.trace("collided with #{player}, coll dmg #{player.stats[:collide_damage]}, coll resist #{@stats[:collide_resistance]}")
+    self.hp -= player.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
+  end
+
+  def plazor_hit(plazor)
+    Logger.trace("collided with #{plazor}, coll dmg #{plazor.stats[:damage]}")
+    self.hp -= plazor.stats[:damage]
+  end
 end

@@ -58,7 +58,7 @@ class Ship
     @config[:weapon][:shooter] = self.ship_type
     Logger.trace("About to create new weapon. Config -> #{@config}")
     @weapon = Weapon.new(@config)
-    Logger.trace("Player has created its weapon! #{@weapon} #{"and is accessible! " if self.respond_to?(:weapon)}")
+    Logger.trace("#{ship_type} has created its weapon! #{@weapon} #{"and is accessible! " if self.respond_to?(:weapon)}")
   end
 
 
@@ -84,6 +84,8 @@ class Ship
   def stats_init
     @stats = @config[:stats].deep_clone
     @stats[:mhp] = @stats[:hp]
+    Logger.trace("inited ship #{ship_type} with stats: #{@stats}")
+
   end
 
   def name
@@ -129,7 +131,10 @@ class Ship
 
   def hp=(new_hp)
     @stats[:hp] = new_hp
-    notify_observers("#{ship_type}_hit", self)
+    # enemy hp changed ||| player hp changed
+    Logger.debug("#{ship_type} hp changed, now is #{@stats[:hp]}")
+    # notify 'enemy_hp' or 'player_hp'
+    notify_observers("#{ship_type}_hp", self)
   end
 
 end

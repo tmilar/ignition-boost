@@ -40,21 +40,21 @@ class Player < Ship
     Input.press?(:C)
   end
 
-  def destroyed?
-    false
-    # @hp <= 0
+  # Enemy lazor hitted me
+  def elazor_hit(elazor)
+    Logger.trace("Elazor #{elazor} hitted player... its stats: #{elazor.stats}")
+    self.hp -= elazor.stats[:damage]
   end
 
+  # Enemy ship collided with me
+  def enemy_collision(enemy)
+    Logger.trace("collided with #{enemy}, enemy stats #{enemy.stats}, MY stats #{self.stats}, coll resist #{@stats[:collide_resistance]} , coll resist in my stats #{self.stats[:collide_resistance]}")
+    self.hp -= (enemy.stats[:collide_damage] - (self.stats[:collide_resistance] || 0))
+  end
 
   # ---------------------------------------------------------------------
   # PROPERTIES
   # ---------------------------------------------------------------------
-  def hp=(hp)
-    @stats[:hp] = hp
-    Logger.debug("Player hp changed, now is #{@stats[:hp]}")
-    notify_observers("hp", {hp: @stats[:hp], mhp: @stats[:mhp]})
-  end
-
 
   def item_held=(item)
     @item = item
@@ -67,7 +67,7 @@ class Player < Ship
 
   def high_score=(hs)
     $game_variables[IB::HIGH_SCORE_VAR] = hs
-    notify_observers("high_score", {high_score: self.high_score})
+    notify_observers("high_score", self.high_score)
   end
 
   def score
@@ -77,7 +77,7 @@ class Player < Ship
   def score=(num)
     $game_variables[IB::SCORE_VAR] = num
     self.high_score = self.score if self.score > self.high_score
-    notify_observers("score", {score: self.score})
+    notify_observers("score", self.score)
   end
 
 end
