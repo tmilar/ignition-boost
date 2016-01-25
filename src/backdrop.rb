@@ -17,4 +17,8 @@ class Backdrop
     @backdrop.bitmap.dispose
     @backdrop.dispose
   end
+
+  def disposed?
+    @backdrop.disposed?
+  end
 end
