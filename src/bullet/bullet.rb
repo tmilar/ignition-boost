@@ -3,7 +3,7 @@ class Bullet
   extend Forwardable
   include Subject
 
-  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width
+  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
   def_delegators :@sprite, :position, :position=, :rectangle
   attr_accessor :sprite
 
@@ -36,13 +36,9 @@ class Bullet
     @sprite.disposed?
   end
 
-  def player_hit
-    notify_observers("player_hit", self)
-    self.dispose
-  end
-
-  def enemy_hit
-    notify_observers("enemy_hit", self)
+  def ship_hit(ship)
+    # #{ship_type}_hit = player_hit || enemy_hit
+    notify_observers("#{ship.ship_type}_hit", self)
     self.dispose
   end
 end
