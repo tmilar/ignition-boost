@@ -9,33 +9,32 @@ class Collider
 
 
   # Check elazor with player
-  def self.check_elazor(elazor, player)
-    if collides?(elazor, player)
-      player.elazor_hit(elazor)
-      elazor.player_hit
+  def self.check_lazor(lazor, ship)
+    if collides?(lazor, ship)
+      Logger.trace("Collided #{lazor}, #{lazor.stats} WITH #{ship}, #{ship.stats}")
+      ship.lazor_hit(lazor)
+      lazor.ship_hit(ship)
     end
   end
 
+  # Check enemy with player, and plazors
   def self.check_enemy(enemy, plazors, player)
     if collides?(enemy, player)
       Logger.trace("Collided #{enemy}, #{enemy.stats} WITH #{player}, #{player.stats}")
-      enemy.player_collision(player)
-      player.enemy_collision(enemy)
+      enemy.ship_collision(player)
+      player.ship_collision(enemy)
     end
 
     plazors.each {
       |plazor|
-      if collides?(plazor, enemy)
-        Logger.trace("Collided #{plazor}, #{plazor.stats} WITH #{enemy}, #{enemy.stats}")
-        enemy.plazor_hit(plazor)
-        plazor.enemy_hit
-      end
+      self.check_lazor(plazor, enemy)
     }
   end
 
 
   def self.collides?(obj1, obj2)
     # Logger.trace("Rect1: #{obj1.rectangle}, Rect2: #{obj2.rectangle}, collide? #{obj1.rectangle.collide_rect?(obj2.rectangle)}")
+    return false if obj1.disposed? || obj2.disposed?
     return obj1.rectangle.collide_rect?(obj2.rectangle)
   end
 
