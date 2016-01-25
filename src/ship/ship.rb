@@ -103,15 +103,6 @@ class Ship
     weapon_update
   end
 
-  def explosion_update
-    return unless @explosion
-    @explosion.update
-    if @explosion.finished?
-      @explosion.dispose
-      self.dispose
-    end
-  end
-
   def sprite_update
     @sprite.update
   end
