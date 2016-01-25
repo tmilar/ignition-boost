@@ -95,4 +95,8 @@ class Spawner
     rand_phase[:enemies].sample
   end
 
+  def stop
+    @spawn_timer = Float::INFINITY
+  end
+
 end
