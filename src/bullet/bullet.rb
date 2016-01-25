@@ -38,9 +38,11 @@ class Bullet
 
   def player_hit
     notify_observers("player_hit", self)
+    self.dispose
   end
 
   def enemy_hit
     notify_observers("enemy_hit", self)
+    self.dispose
   end
 end
