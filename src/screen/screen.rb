@@ -56,6 +56,8 @@ class Screen
   end
 
   def init_game_over(result)
+    return if @game_over
+
     Sound.fade(10)
     case result
       when "win"  then Sound.me(IB::ME_WIN)
@@ -111,6 +113,7 @@ class Screen
     @game_over.opacity += 3
     if @game_over.opacity >= 255 && Input.trigger?(:C)
       SceneManager.goto(Scene_Map)
+      @game_over = false
     end
   end
 
