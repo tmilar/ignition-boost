@@ -26,6 +26,10 @@ class Sprite
     new_sprite.zoom_x = config[:zoom_x]
     new_sprite.zoom_y = config[:zoom_y]
     new_sprite.name = config[:name]
+    new_sprite.rectangle = Rectangle.new(new_sprite.x,
+                                         new_sprite.y,
+                                         new_sprite.width,
+                                         new_sprite.height)
 
     Logger.info("Created new sprite: #{new_sprite.bitmap}. ")
     new_sprite
@@ -40,12 +44,17 @@ class Sprite
   end
 
   def position(position=false)
-    self.x = position.x if position
-    self.y = position.y if position
+    # self.rectangle.add_point(position) if position
+    if position
+      self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
+      self.x = position.x
+      self.y = position.y
+    end
     Point.new(self.x, self.y)
   end
 
   def position=(position)
+    self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
     self.x = position.x if position
     self.y = position.y if position
   end
