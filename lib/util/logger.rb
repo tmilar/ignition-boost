@@ -17,7 +17,7 @@ class Logger
   # private-like
   def self.msg(log_msg)
     puts log_msg
-    log.puts("[#{Time.now.strftime("%d/%m/%Y %H:%M:%S")}] #{log_msg}")
+    log.puts("[#{Time.now.strftime("%d/%m/%Y %H:%M:%S:%L")}:#{Main_IB.frames_in_second}] #{log_msg}")
     log.flush
   end
 
