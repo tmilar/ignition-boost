@@ -8,7 +8,6 @@ class Player < Ship
   def initialize(config = {})
     Logger.trace("Config before player super... Config -> #{config}, Ancestors are #{self.class.ancestors}")
     super(config)
-    @config = config
     init_score
   end
 
@@ -36,18 +35,6 @@ class Player < Ship
   # @return [boolean check_shoot ] if true -> ship will shoot
   def check_shoot
     Input.press?(:C)
-  end
-
-  # Enemy lazor hitted me
-  def elazor_hit(elazor)
-    Logger.trace("Elazor #{elazor} hitted player... its stats: #{elazor.stats}")
-    self.hp -= elazor.stats[:damage]
-  end
-
-  # Enemy ship collided with me
-  def enemy_collision(enemy)
-    Logger.trace("collided with #{enemy}, enemy stats #{enemy.stats}, MY stats #{self.stats}, coll resist #{@stats[:collide_resistance]} , coll resist in my stats #{self.stats[:collide_resistance]}")
-    self.hp -= (enemy.stats[:collide_damage] - (self.stats[:collide_resistance] || 0))
   end
 
   # ---------------------------------------------------------------------

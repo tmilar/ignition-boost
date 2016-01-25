@@ -5,8 +5,8 @@ class Ship
   extend Forwardable
   include Subject
 
-  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width
-  def_delegators :@sprite, :position, :position=, :rectangle
+  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
+  def_delegators :@sprite, :position, :position=, :rectangle, :rectangle=
 
   attr_accessor :sprite
   attr_accessor :stats
@@ -48,6 +48,7 @@ class Ship
     #config setup
     Logger.start("ship#'#{config[:name]}'", config, DEFAULTS)
     @config = DEFAULTS.merge(config)
+    Logger.debug("Ship #{self} config is: #{@config}")
     stats_init
     sprite_init
     position_init
@@ -107,7 +108,6 @@ class Ship
   end
 
   def dispose
-    notify_observers("#{ship_type}_disposed", self)
     @sprite.dispose
   end
 
@@ -130,11 +130,32 @@ class Ship
   end
 
   def hp=(new_hp)
+    return if disposed?
     @stats[:hp] = new_hp
-    # enemy hp changed ||| player hp changed
-    Logger.debug("#{ship_type} hp changed, now is #{@stats[:hp]}")
-    # notify 'enemy_hp' or 'player_hp'
-    notify_observers("#{ship_type}_hp", self)
+    Logger.debug("#{ship_type} hp changed, now is #{@stats[:hp]}") # enemy hp changed ||| player hp changed
+    notify_observers("#{ship_type}_hp", self) # notify 'enemy_hp' or 'player_hp'
+    self.destroy if @stats[:hp] <= 0
   end
 
+
+  def ship_collision(ship)
+    Logger.debug("#{self} collided with #{ship}, coll dmg #{ship.stats[:collide_damage]}, coll resist #{@stats[:collide_resistance]}")
+    self.hp -= ship.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
+  end
+
+  def lazor_hit(lazor)
+    Logger.debug("#{self} collided with #{lazor}, coll dmg #{lazor.stats[:damage]}")
+    @sprite.flash(Color.new(255,155,155),20)
+    self.hp -= lazor.stats[:damage]
+  end
+
+  def destroy
+    notify_observers("#{ship_type}_destroyed", { ship: self, explosion: @config[:explosion] })
+    Logger.debug("#{self} is destroyed! Starting explosion in #{self.position}, config: #{@config[:explosion]}")
+    self.dispose
+  end
+
+  def to_s
+    "<#{self.class}> #{@config}, #{self.stats}"
+  end
 end
