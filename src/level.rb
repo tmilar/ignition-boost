@@ -183,6 +183,7 @@ class Level
   end
 
   def init_game_over(result)
+    @spawner.stop
     notify_observers("game_over", result)
   end
 
@@ -198,16 +199,21 @@ class Level
     raise 'Lazor(s) are empty or nil!' if data[:lazors].nil_empty?
     Logger.trace("New lazors were shooted!!! data received: #{data}")
     case data[:data][:shooter]
-      when 'player' then @plazors.push(*data[:lazors])
-      when 'enemy'  then @elazors.push(*data[:lazors])
+      when 'player' then @plazors.push(*data[:lazors]) unless @plazors.nil?
+      when 'enemy'  then @elazors.push(*data[:lazors]) unless @elazors.nil?
     end
 
     # Logger.trace("Level lazors present: Plazors > #{@plazors} | Elazors > #{@elazors}")
   end
 
   def dispose
-    @backdrop.dispose
-    @player.dispose
+    @backdrop.dispose unless @backdrop.disposed?
+    @player.dispose unless @player.disposed?
+    @enemies.each { |obj| obj.dispose unless obj.disposed? }
+    @plazors.each { |obj| obj.dispose unless obj.disposed? }
+    @elazors.each { |obj| obj.dispose  unless obj.disposed? }
+    @enemies.each { |obj| obj.dispose  unless obj.disposed? }
+    @explosions.each { |obj| obj.dispose  unless obj.disposed? }
   end
 
   def screen_observe(screen)
