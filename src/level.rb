@@ -123,7 +123,7 @@ class Level
         next
       end
       el.update
-      Collider.check_elazor(el, @player)
+      Collider.check_lazor(el, @player)
     }
   end
 
@@ -140,12 +140,12 @@ class Level
 
   def update_enemies
     @enemies.each_with_index { |enemy,i|
-      # return true if enemy.disposed?
-      enemy.update
-      Collider.check_enemy(enemy, @plazors, @player)
       if enemy.disposed?
         @enemies.delete_at(i)
+        next
       end
+      enemy.update
+      Collider.check_enemy(enemy, @plazors, @player)
     }
 
     # enemies_names = []
@@ -162,33 +162,24 @@ class Level
     reactions = {
         'new_enemy' => lambda { |enemy| add_new_enemy(enemy) },
         'new_lazors' => lambda { |lazors| add_new_lazors(lazors)},
-        'enemy_hp' => lambda { |enemy| check_enemy_hp(enemy)},
-        'player_hp' => lambda { |player| check_player_hp(player) },
-        'player_disposed' => lambda { |_| init_game_over("loss")},
-        'enemy_disposed' => lambda { |enemy| handle_enemy_disposed(enemy)},
+        'player_destroyed' => lambda { |_| init_game_over("loss")},
+        'enemy_destroyed' => lambda { |enemy| handle_enemy_destroyed(enemy)},
         'player_hit' => lambda { |elazor| elazor.dispose },
         'enemy_hit' => lambda { |lazor| lazor.dispose },
-        'score' => lambda { |_| check_score_win }
-
+        'score' => lambda { |_| check_score_win },
     }
     Logger.trace("Level received notification '#{msg}', with data #{data}... #{"But is not considered." unless reactions.key?(msg)}")
     reactions[msg].call(data) if reactions.key?(msg)
   end
 
+
   def check_score_win
     init_game_over("win") if @player.score >= @config[:target_score]
   end
 
-  def handle_enemy_disposed(enemy)
-    @player.score += enemy.stats[:mhp]
-  end
-
-  def check_player_hp(player)
-    player.dispose if player.stats[:hp] <= 0
-  end
-
-  def check_enemy_hp(enemy)
-    enemy.dispose if enemy.stats[:hp] <= 0
+  def handle_enemy_destroyed(ship_data)
+    @explosions << Explosion.new(ship_data)
+    @player.score += ship_data[:ship].stats[:mhp]
   end
 
   def init_game_over(result)
