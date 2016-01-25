@@ -35,7 +35,8 @@ plugins = {
         "weapon" => {
             order: ["weapon", :rest]
         },
-        "bullet" => {}
+        "bullet" => {},
+        "spawner" => {}
     }
 }
 
