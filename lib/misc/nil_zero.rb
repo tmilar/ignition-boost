@@ -4,7 +4,7 @@ class Object
   end
 
   def nil_empty?
-    self.nil? || self.empty?
+    self.nil? || (self.empty? if self.respond_to?(:empty?))
   end
 end
 
