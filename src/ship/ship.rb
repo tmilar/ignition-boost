@@ -49,6 +49,10 @@ class Ship
       },
   }
 
+  # Delegate accessors to internal hashes
+  attr_readers_delegate :@config, :name, :position_limits, :explosion
+  attr_accessors_delegate :@stats, :power, :speed, :hp, :mhp, :collide_damage, :collide_resistance, :shoot_freq, :nuke_power
+
   #------------------------------------------------------------------------------#
   #  INITIALIZATION METHODS
   #------------------------------------------------------------------------------#
@@ -138,27 +142,17 @@ class Ship
   end
 
   def apply_pup(pup_effect)
-    Logger.debug("About to apply pup #{pup_effect} on #{self}")
-    pup_effect.each { |stat, effect| self.property_set(stat, effect)  }
+    Logger.debug("About to apply effect #{pup_effect} on #{self}...")
+    pup_effect.each { |stat, effect|
+      self.property_set(stat, effect)
+    }
   end
 
   #------------------------------------------------------------------------------#
   #  SHIP PROPERTIES  || GETTERS & SETTERS
   #------------------------------------------------------------------------------#
-  def name
-    @config[:name]
-  end
-
   def ship_type
     self.class.to_s.uncapitalize
-  end
-
-  def hp
-    @stats[:hp]
-  end
-
-  def speed
-    @stats[:speed]
   end
 
   def hp=(new_hp)
@@ -170,7 +164,9 @@ class Ship
   end
 
   def stats=(stats)
-    stats.each { |stat, value|  self.property_set(stat, value)  }
+    stats.each { |stat, value|
+      self.property_set(stat, value)
+    }
   end
 
   def weapon=(new_weapon)
