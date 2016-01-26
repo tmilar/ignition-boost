@@ -23,6 +23,10 @@ class Bullet
     @stats = config[:stats]
   end
 
+  def speed
+    @stats[:speed]
+  end
+
   def update
     update_movement
     @sprite.update

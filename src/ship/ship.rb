@@ -2,11 +2,12 @@
 ## Graphics to see the boundaries of the screen
 ## Sprite to load ship image
 class Ship
-  extend Forwardable
   include Subject
+  extend Forwardable
 
   def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
   def_delegators :@sprite, :position, :position=, :rectangle, :rectangle=
+  def_delegators :@sprite, :dispose, :disposed?, :flash
 
   attr_accessor :sprite
   attr_accessor :stats
@@ -48,6 +49,9 @@ class Ship
       },
   }
 
+  #------------------------------------------------------------------------------#
+  #  INITIALIZATION METHODS
+  #------------------------------------------------------------------------------#
   def initialize(config = {})
     super(config)
     #config setup
@@ -120,18 +124,30 @@ class Ship
     self.class.to_s.uncapitalize
   end
 
-  def level_observe(observer)
-    Logger.warn("Can't observe this ship @weapon because is nil!") if @weapon.nil?
-    @weapon.add_observer(observer) unless @weapon.nil?
-    self.add_observer(observer)
+  def destroy
+    notify_observers("#{ship_type}_destroyed", { ship: self, explosion: @config[:explosion] })
+    Logger.debug("#{self} is destroyed! Starting explosion in #{self.position}, config: #{@config[:explosion]}")
+    self.dispose
   end
 
-  def disposed?
-    @sprite.disposed?
+
+  #------------------------------------------------------------------------------#
+  #  SHIP PROPERTIES  || GETTERS & SETTERS
+  #------------------------------------------------------------------------------#
+  def name
+    @config[:name]
+  end
+
+  def ship_type
+    self.class.to_s.uncapitalize
   end
 
   def hp
     @stats[:hp]
+  end
+
+  def speed
+    @stats[:speed]
   end
 
   def hp=(new_hp)
@@ -162,5 +178,9 @@ class Ship
 
   def to_s
     "<#{self.class}> #{@config}, #{self.stats}"
+  end
+
+  def introduce
+    "<#{self.class}> '#{self.name}'"
   end
 end

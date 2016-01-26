@@ -48,12 +48,12 @@ module Movement
 
   # Method to be included in movible game objects
   def move(direction = :DOWN, calculated_speed = false)
-    MOVEMENTS[direction].call(self, calculated_speed || self.stats[:speed])
+    MOVEMENTS[direction].call(self, calculated_speed || self.speed)
   end
 
   def move_dir(dir_xy = Point.new(1,0), calculated_speed = false)
     # Logger.trace("[#{self}] Trying to move sprite to direction: #{dir_xy}, stats are: #{self.stats}")
-    speed = calculated_speed || self.stats[:speed]
+    speed = calculated_speed || self.speed
     self.move_x(dir_xy.x * speed)
     self.move_y(dir_xy.y * speed)
   end
