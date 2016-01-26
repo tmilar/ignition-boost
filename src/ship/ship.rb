@@ -61,14 +61,14 @@ class Ship
     stats_init
     sprite_init
     position_init
-    weapon_init
+    weapon_init(@config[:weapon])
   end
 
-  def weapon_init
-    @config[:weapon][:shooter] = self.ship_type
-    Logger.trace("About to create new weapon. Config -> #{@config}")
-    @weapon = Weapon.new(@config)
-    Logger.trace("#{ship_type} has created its weapon! #{@weapon} #{"and is accessible! " if self.respond_to?(:weapon)}")
+  def weapon_init(weapon_config)
+    weapon_config[:shooter] = self.ship_type
+    Logger.trace("About to create a new weapon. Config -> #{weapon_config}")
+    @weapon = Weapon.new(weapon_config)
+    Logger.trace("#{self.introduce} has created a weapon! #{@weapon}.")
   end
 
 
@@ -95,13 +95,16 @@ class Ship
     @stats = @config[:stats].deep_clone
     @stats[:mhp] = @stats[:hp]
     Logger.trace("inited ship #{ship_type} with stats: #{@stats}")
-
   end
 
-  def name
-    @config[:name]
+  def level_observe(observer)
+    Logger.warn("Can't observe this ship @weapon because is nil!") if @weapon.nil?
+    @weapon.add_observer(observer) unless @weapon.nil?
+    self.add_observer(observer)
   end
-
+  #------------------------------------------------------------------------------#
+  #  SHIP BEHAVIOR METHODS
+  #------------------------------------------------------------------------------#
   def update
     sprite_update
     weapon_update
@@ -116,12 +119,15 @@ class Ship
     @weapon.shoot(weapon_pos) if self.check_shoot
   end
 
-  def dispose
-    @sprite.dispose
+  def ship_collision(ship)
+    Logger.debug("#{self} collided with #{ship}, coll dmg #{ship.stats[:collide_damage]}, coll resist #{@stats[:collide_resistance]}")
+    self.hp -= ship.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
   end
 
-  def ship_type
-    self.class.to_s.uncapitalize
+  def lazor_hit(lazor)
+    Logger.debug("#{self} collided with #{lazor}, coll dmg #{lazor.stats[:damage]}")
+    self.flash(Color.new(255,155,155),20)
+    self.hp -= lazor.stats[:damage]
   end
 
   def destroy
@@ -130,6 +136,10 @@ class Ship
     self.dispose
   end
 
+  def apply_pup(pup_effect)
+    Logger.debug("About to apply pup #{pup_effect} on #{self}")
+    pup_effect.each { |stat, effect| self.property_set(stat, effect)  }
+  end
 
   #------------------------------------------------------------------------------#
   #  SHIP PROPERTIES  || GETTERS & SETTERS
@@ -158,22 +168,26 @@ class Ship
     self.destroy if @stats[:hp] <= 0
   end
 
-
-  def ship_collision(ship)
-    Logger.debug("#{self} collided with #{ship}, coll dmg #{ship.stats[:collide_damage]}, coll resist #{@stats[:collide_resistance]}")
-    self.hp -= ship.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
+  def stats=(stats)
+    stats.each { |stat, value|  self.property_set(stat, value)  }
   end
 
-  def lazor_hit(lazor)
-    Logger.debug("#{self} collided with #{lazor}, coll dmg #{lazor.stats[:damage]}")
-    @sprite.flash(Color.new(255,155,155),20)
-    self.hp -= lazor.stats[:damage]
+  def weapon=(new_weapon)
+    if new_weapon.key?(:name) && new_weapon[:name] != @weapon[:name]
+      Logger.trace("New weapon! #{new_weapon} ")
+      @weapon = Weapon.new(new_weapon)
+      ### TODO SE for weapon change... and maybe a "reload" sound?
+    else
+      @weapon.level += 1
+      ## TODO - DECIDE - set other *weapon* property pups..?
+    end
   end
 
-  def destroy
-    notify_observers("#{ship_type}_destroyed", { ship: self, explosion: @config[:explosion] })
-    Logger.debug("#{self} is destroyed! Starting explosion in #{self.position}, config: #{@config[:explosion]}")
-    self.dispose
+  def property_set(stat, value)
+    ##### TODO increment/multiply methods!! only setting here...
+    property_setter = "#{stat}="
+    Logger.trace("Calling ':#{property_setter}' > #{value} on #{self}, #{"Which is defined! " if self.respond_to?(property_setter)}")
+    self.method(property_setter).call(value) if self.respond_to?(property_setter)
   end
 
   def to_s

@@ -65,4 +65,10 @@ class Player < Ship
     notify_observers("score", self.score)
   end
 
+  def pup_hit(pup)
+    Logger.debug("#{self} hitted a powerup! #{pup}")
+    self.flash(Color.new(155,255,155),20)
+    notify_observers("powerup_grabbed", pup)
+  end
+
 end
