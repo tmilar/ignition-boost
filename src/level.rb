@@ -9,7 +9,9 @@ class Level
           :speed => 1,
           :hp => 2,
           :collide_damage => 4,
-          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+          :shoot_freq => 0,               # Start shooting frequency for enemy
+          :shoot_increment => 1,          # Shooting frequency increment - cada cierto tiempo se suma esta cantidad
+          :shoot_increment_rate => 100    # Cada cuanto tiempo se aplica el SHOOT_INCREMENT al SHOOT_FREQ
       },
       :weapon => {
           :name => 'elazor',
@@ -31,6 +33,8 @@ class Level
           :hp => 3,
           :collide_damage => 4,
           :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
+          :shoot_increment => 1,
+          :shoot_increment_freq => 100
       },
       :weapon => {
           :name => 'elazor',
@@ -43,13 +47,20 @@ class Level
   }
 
   DEFAULTS = {
-      backdrop: 'backdrop',
-      spawn_speed: 100,
-      name: 'first_level',
+      backdrop: 'backdrop',           # FONDO imagen .jpg
+      name: 'first_level',            # Level name - Solo estetico.
+      spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+      spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
+      spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
+      BGM: ['Battle2', 60, 110],
+      target_score: 50,
       phases: {
           1 => {
               enemies: [DEFAULT_ENEMY1],
-              start: 0          # time when phase can start spawning enemies
+              start: 0, # time when phase can start spawning enemies
+              spawn_cooldown: 150, # phases can use different spawn_cooldowns
+              spawn_decrement_amount: 1,
+              spawn_decrement_freq: 100
           },
           2 => {
               enemies: [DEFAULT_ENEMY2],

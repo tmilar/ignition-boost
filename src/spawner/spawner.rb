@@ -2,19 +2,20 @@
 class Spawner
   include Subject
 
-  def initialize(spawn_speed = 10, phases = {})
-    @config = {
-        spawn_speed: spawn_speed,
-        phases: phases
-    }
-    super(@config)
+  DEFAULTS = {
+      spawn_cooldown: 100,
+      spawn_decrement_amount: 1,
+      spawn_decrement_freq: 100,
+      phases: []
+  }
+  def initialize(config)
+    super(config)
 
-    # @config[:phases].each { |p| p[:spawned] = 0 }
-    Logger.start('spawner', @config)
+    Logger.start('@enemy_spawner', config, DEFAULTS)
+    @config = DEFAULTS.merge(config).deep_clone
 
-    @spawn_speed = @config[:spawn_speed]
+    @spawn_cooldown = @config[:spawn_cooldown]
     @spawn_timer = 0
-    @ticker = 0
 
     @enemy_phases = @config[:phases].values
     @enemy_phases.each { |p| p[:spawned] = 0 }
@@ -26,7 +27,23 @@ class Spawner
 
   def update
     @spawn_timer -= 1
-    spawn_enemy
+    try_spawn
+  end
+
+
+  def try_spawn
+    return if @spawn_timer > 0
+
+    check_phases if @current_phases.any? || @next_phases.any?
+    return if @current_phases.empty?
+
+    # Restart spawn timer to configured speed
+    refresh_cooldown
+    spawn
+  end
+
+  def refresh_cooldown
+    @spawn_timer = 50 + rand(@spawn_cooldown) / 2 ##- @spawn_decrement_amount ## TODO GET DIFFICULTY
   end
 
   def check_phases
@@ -50,43 +67,48 @@ class Spawner
     new_phases = @current_phases - old_phases
 
     if new_phases.any?
-      new_bgm, enemies = false, []
+      enemies = []
       new_phases.each { |np|
-        new_bgm = np[:BGM] if np.key?(:BGM)
+        self.bgm = np[:BGM] if np.key?(:BGM)
+        self.spawn_cooldown = (np[:spawn_cooldown] if np.key?(:spawn_cooldown)) || @config[:spawn_cooldown]
         np[:enemies].each { |e| enemies << e[:name] }
       }
-      Logger.debug("New phase(s) started! #{new_phases}. With new enemy(es): #{enemies}.#{" And Has BGM! #{new_bgm} Playing music..." if new_bgm}")
+      Logger.debug("New phase(s) started! #{new_phases}. With new enemy(es): #{enemies}.")
 
-      Sound.bgm(new_bgm) if new_bgm
     end
 
   end
 
-  def spawn_enemy
-    return if @spawn_timer > 0
+  def spawn_cooldown=(new_spawn_cooldown)
+    @spawn_cooldown = new_spawn_cooldown
+    Logger.debug("Base spawn speed been changed from default #{@config[:spawn_cooldown]} to #{self.spawn_cooldown}.") if @config[:spawn_cooldown] != self.spawn_cooldown
+  end
 
-    check_phases if @current_phases.any? || @next_phases.any?
-    return if @current_phases.empty?
+  def spawn_cooldown
+    @spawn_cooldown
+  end
 
-    # Restart spawn timer to configured speed
-    @spawn_timer = rand(@spawn_speed)
-
-    # Check current available phases enemies
+  # spawn a random spawnable enemy
+  def spawn
+    # LOG current available phases enemies
     Logger.trace("Checking enemies for current phases : #{@current_phases} \n Game time: #{Main_IB.game_time}")
 
+    # LOG current spawnable enemies names
     spawnable_enemies_names = []
     @current_phases.each { |phase|
       spawnable_enemies_names << phase[:enemies].map { |e| e[:name] }
     }
     Logger.trace("spawnable_enemies... #{spawnable_enemies_names}")
 
-    # spawn a random spawnable enemy
+    # Pick random spawnable
     new_enemy = pick_spawnable_enemy(@current_phases)
-    Logger.info("Spawning enemy: #{new_enemy}\n.#{" Observers notified >> #{observers.map {|o| o.class.name}}" if !observers.empty?}")
+    Logger.info("Spawning enemy: #{new_enemy}\n.#{" Observers notified >> #{observers.map { |o| o.class.name }}" if !observers.empty?}")
 
+    # Create spawnee and notify
     spawned_enemy = Enemy.new(new_enemy)
     notify_observers('new_enemy', spawned_enemy)
   end
+
 
   def pick_spawnable_enemy(spawnable_phases_enemies)
     rand_phase = spawnable_phases_enemies.sample
@@ -99,4 +121,9 @@ class Spawner
     @spawn_timer = Float::INFINITY
   end
 
+  def bgm=(new_bgm)
+    @bgm = new_bgm
+    Sound.bgm(@bgm)
+    Logger.debug("Spawner #{self} changed BGM to #{@bgm}... Playing music...")
+  end
 end
