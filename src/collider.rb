@@ -5,7 +5,7 @@ class Collider
 
   # enemies ->  player, plazors
   # elazors -> player, pups (optional)
-  # pups -> player, elazors, (opt) plazors (opt)
+  # pups -> player, elazors, (opt ) plazors (opt TODO) ... pup.collision(lazor, true) if pup.destructible?
 
 
   # Check elazor with player
@@ -14,6 +14,14 @@ class Collider
       Logger.trace("Collided #{lazor}, #{lazor.stats} WITH #{ship}, #{ship.stats}")
       ship.lazor_hit(lazor)
       lazor.ship_hit(ship)
+    end
+  end
+
+  def self.check_pup(pup, ship)
+    if collides?(pup, ship)
+      Logger.trace("Collided #{pup}, #{pup.name} WITH #{ship}, #{ship.stats}")
+      ship.pup_hit(pup)
+      pup.collision(ship)
     end
   end
 
