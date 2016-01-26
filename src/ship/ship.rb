@@ -64,6 +64,7 @@ class Ship
     weapon_init(@config[:weapon])
   end
 
+
   def weapon_init(weapon_config)
     weapon_config[:shooter] = self.ship_type
     Logger.trace("About to create a new weapon. Config -> #{weapon_config}")
@@ -178,16 +179,37 @@ class Ship
       @weapon = Weapon.new(new_weapon)
       ### TODO SE for weapon change... and maybe a "reload" sound?
     else
+      Logger.trace("#{new_weapon} is the same weapon as current.")
       @weapon.level += 1
       ## TODO - DECIDE - set other *weapon* property pups..?
     end
   end
 
   def property_set(stat, value)
-    ##### TODO increment/multiply methods!! only setting here...
-    property_setter = "#{stat}="
-    Logger.trace("Calling ':#{property_setter}' > #{value} on #{self}, #{"Which is defined! " if self.respond_to?(property_setter)}")
-    self.method(property_setter).call(value) if self.respond_to?(property_setter)
+    getter = stat
+    setter = "#{stat}="
+
+    unless self.respond_to?(setter) && self.respond_to?(getter)
+      Logger.error("Trying to set property #{stat}, #{value} on #{self.introduce}, but doesn't respond to #{setter} or #{getter}!")
+      return
+    end
+
+    if value.is_a?(Integer)
+      Logger.trace("Calling ':#{getter}+=' #{value} on #{self}")
+      current = self.send(getter)
+      new_val = current + value
+      self.send(setter, new_val)
+    elsif value.is_a?(Float)
+      Logger.trace("Calling ':#{getter}*=' #{value} on #{self}")
+      current = self.send(getter)
+      new_val = current * value
+      self.send(setter, new_val)
+    elsif value.kind_of?(Hash)
+      Logger.trace("Calling ':#{getter}=' #{value} on #{self}")
+      self.send(setter, value)
+    else
+      Logger.error("Unexpected type of value #{value} inputted for #{stat}, needs to be Float or Integer!")
+    end
   end
 
   def to_s

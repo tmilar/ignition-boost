@@ -37,6 +37,12 @@ class Player < Ship
     Input.press?(:C)
   end
 
+  def pup_hit(pup)
+    Logger.debug("#{self} hitted a powerup! #{pup}")
+    self.flash(Color.new(155,255,155),20)
+    notify_observers("powerup_grabbed", pup)
+  end
+
   # ---------------------------------------------------------------------
   # PROPERTIES
   # ---------------------------------------------------------------------
@@ -64,11 +70,4 @@ class Player < Ship
     self.high_score = self.score if self.score > self.high_score
     notify_observers("score", self.score)
   end
-
-  def pup_hit(pup)
-    Logger.debug("#{self} hitted a powerup! #{pup}")
-    self.flash(Color.new(155,255,155),20)
-    notify_observers("powerup_grabbed", pup)
-  end
-
 end
