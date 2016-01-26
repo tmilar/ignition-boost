@@ -297,6 +297,7 @@ end
 class Main_IB < Scene_Base
 
   @@game_time = 0
+  @@frames_in_second = 0
 
   def start
     $game_system.save_bgm
