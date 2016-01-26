@@ -21,11 +21,10 @@ module IB
       cooldown: 5,            # time to wait before shooting again
       SE: ["Attack2",80,150], # sound when shooting
       # level: 1,             # starting weapon level (optional, default 1)
-
   }
 
   WEAPON2 = {
-      name: "lazor1",         # weapon name (also lazor image '.png' name)
+      name: "lazor2",         # weapon name (also lazor image '.png' name)
       type: "ball",
       stats: {
           damage: 1,              # bullet damage
@@ -46,7 +45,7 @@ module IB
       :name => "player_ship",
       :stats => {
           :power => 1,
-          :speed => 1,
+          :speed => 5,
           :hp => 5,
           :collide_damage => 99,
           :collide_resistance => 0,
@@ -72,6 +71,7 @@ module IB
           :shoot_freq => 6,             ## TODO por ahora esto remplazara la @difficulty
       },
       :weapon => {
+          name: "elazor1",
           :type => "elazor",
           stats: {
               damage: 1,              # bullet damage
@@ -98,6 +98,7 @@ module IB
       :speed => 1,
       :hp => 3,
       :weapon => {
+          name: "elazor2",
           :type => "elazor",
           stats: {
               damage: 1,              # bullet damage
