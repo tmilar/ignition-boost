@@ -21,19 +21,21 @@ class Weapon
       # }
   }
 
+  MAX_LEVEL = 5 ### TODO define phases and levels for weapons...
+
   def initialize(config = {})
     super(config)
 
     Logger.trace("initializin weapon with config: #{config}")
+    @config = DEFAULTS.merge(config).deep_clone
+    Logger.start("weapon#'#{@config[:name]}'", config, DEFAULTS)
 
-    @config = config.deep_clone
-    @config[:weapon][:ship] = config[:name]
-    Logger.start("ship #{@config[:weapon][:ship]}-> weapon#'#{@config[:weapon][:type]}'", @config[:weapon], DEFAULTS)
-    @weapon_config = DEFAULTS.merge(@config[:weapon])
+    Logger.warn("Weapon MUST have a defined name, otherwise bugs will occur! Current config: #{@config}") if @config[:name] == DEFAULTS[:name]
 
     @cooldown = 0
-    @direction = Point.new(@weapon_config[:direction][0], @weapon_config[:direction][1]).normalize_me
-    @stats = @weapon_config[:stats].deep_clone
+    @direction = Point.new(@config[:direction][0], @config[:direction][1]).normalize_me
+    @stats = @config[:stats].deep_clone
+    @level = @config[:level]
   end
 
   def update
@@ -45,21 +47,37 @@ class Weapon
   # > Each with one or more different movements...
   def shoot(position)
     return unless @cooldown <= 0
-    @cooldown = @weapon_config[:cooldown]
+    @cooldown = @config[:cooldown]
     @position = position
 
     lazor = Bullet.new({
-                           name: @weapon_config[:name],
+                           name: @config[:name],
                            position: @position,
                            direction: @direction,
                            stats: @stats
                        })
 
     Logger.trace("New lazor shooted. Pos: #{@position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
-    notify_observers('new_lazors', {data: @weapon_config, lazors: [lazor]})
-    Sound.se(@weapon_config[:SE])
+    notify_observers('new_lazors', {data: @config, lazors: [lazor]})
+    Sound.se(@config[:SE])
   end
 
+  def level
+    @level
+  end
+
+  def max_level
+    MAX_LEVEL
+  end
+
+  def level=(new_lvl)
+    return if new_lvl == @level
+    return Logger.info("Weapon can't level up, it's already at its max (#{max_level})!") if new_lvl > max_level
+
+    Logger.debug("Weapon level up! From #{@level} to #{new_lvl}")
+    @level = new_lvl
+    ### TODO Weapon phases and levels...
+  end
 
   # def refreshing?
   #   false
