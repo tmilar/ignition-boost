@@ -156,13 +156,112 @@ module IB
           },
           3 => {
               enemies: [BOSS1],
-              start: 15,
+              start: 8,
               max_spawn: 1,
               BGM: ["Battle3", 60, 110]
           }
       },
-      BGM: ["Battle2", 60, 110]
+      BGM: ["Battle2", 60, 110],
+      target_score: 50
   }
+
+  ### EXAMPLES ###
+  # PowerUps.
+  # Los powerUp multiplican o suman a un stat. Si el valor es +ENTERO o -ENTERO, sera suma/resta.
+  # Si es DECIMAL (con "punto" - de 0.0 en adelante) es un factor que se MULTIPLICA. Ej. 0.1, 1.5, 2.0, etc..
+  # Por ahora ademas, lo que puede cambiar es>
+  # >>> del JUEGO ->  spawn_cooldown  ; y  stats de naves
+  RESET_PUP = {
+      name: "powerup4",
+      spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
+      stats: {
+          shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
+      },
+  }
+  REPAIR_PUP = {
+      name: "powerup0",     # PowerUp name, also must match image name
+      target: "player",     # Target : "player", o "enemies" . DEFAULT: "player"
+      stats: {              # stats that will change
+                            hp: +100
+      },
+      frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
+  }
+  WEAPON_UP = {
+      name: "powerup1",
+      target: "player",
+      weapon: {
+          level: +1
+      }
+  }
+
+  MY_POWERUP_LEVEL = {
+      backdrop: 'backdrop',           # FONDO imagen .jpg
+      name: 'first_level',            # Level name - Solo estetico.
+      spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+      spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
+      spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
+      BGM: ['Battle2', 60, 110],
+      target_score: 50,
+      phases: {
+          1 => {
+              enemies: [ENEMIGO1],
+              start: 0, # time when phase can start spawning enemies
+              spawn_cooldown: 150, # phases can use different spawn_cooldowns
+              spawn_decrement_amount: 1,
+              spawn_decrement_freq: 100
+          },
+          2 => {
+              enemies: [ENEMIGO2],
+              start: 15         # time when phase can start spawning enemies
+          }
+      },
+      powerups_spawner: {
+          frequency: 2,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          powerups: [RESET_PUP, REPAIR_PUP, WEAPON_UP],
+          destructible: false         # Can pups can be destroyed by bullets?
+      }
+  }
+
+  #### MORE EXAMPLES ###
+  SPEED_UP = {
+      name: "speed_pup",
+      stats: {
+          speed: +1
+      },
+  }
+
+  SLOW_ENEMY_PUP = {
+      name: "slower_enemies_pup",
+      target: "enemies",
+      stats: {
+          speed: -1
+      },
+  }
+
+  # Items are also a kind of powerup but with some key "effect" to distinguish
+  NUKEALL_ITEM = {
+      name: "item_nuke",
+      target: "player",
+      hold: true,
+      effect: "nuke"    # keyword for item type
+  }
+
+  # Weapon change power up. Will change current weapon with other one...
+  WEAPON2_CHANGE_PUP = {
+      name: "powerup2",
+      target: "player",
+      weapon: WEAPON2      # Weapon to change. If weapon is repeated, level will go up +1 instead.
+  }
+
+  WEAPON1_CHANGE_PUP = {
+      target: "player",
+      name: "powerup3",
+      weapon: WEAPON1
+  }
+
+
+
+
 
   #-------------------------------------------------------------------------------
   # **** PUPS  **** //TODO define  & include in Levels

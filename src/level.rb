@@ -62,8 +62,17 @@ class Level
           #     BGM: ["Battle3", 60, 110]
           # }
       },
-      BGM: ['Battle2', 60, 110],
-      target_score: 50
+      powerups_spawner: {
+          frequency: 2,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          destructible: false         # Can pups can be destroyed by bullets?
+          # powerups: [{
+          #     name: "powerup0",     # PowerUp name, also must match image name
+          #     stats: {              # stats that will change
+          #         hp: +100
+          #     },
+          #     frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
+          # }],
+      }
   }
 
   attr_reader :player
@@ -81,17 +90,22 @@ class Level
     super(@config)
     play_bgm
     init_level_graphics
-    init_game_helpers
+    init_spawners
   end
 
   def play_bgm
     Sound.bgm(@config[:BGM])
   end
 
-  def init_game_helpers
-    @spawner = Spawner.new(@config[:spawn_speed], @config[:phases])
-    @spawner.add_observer(self)
-    @collider = Collider.new
+  def init_spawners
+    spawner_config = @config.pick(:spawn_cooldown,
+                                  :spawn_decrement_amount,
+                                  :spawn_decrement_freq,
+                                  :phases)
+
+    @enemy_spawner = Spawner.new(spawner_config)
+    @enemy_spawner.add_observer(self)
+    # @pup_spawner = PowerUpSpawner.new(@config[:item_spawner])
   end
 
   def init_level_graphics
@@ -105,17 +119,36 @@ class Level
     @plazors = []
     @elazors = []
     @explosions = []
+    @pups = [] << PowerUp.new({
+                                  name: "powerup1",
+                                  target: "player",
+                                  weapon: {
+                                      level: +1
+                                  }
+                              })
   end
 
   def update
     @backdrop.update
-    @spawner.update
+    @enemy_spawner.update
 
     update_enemies
     update_player
     update_plazors
     update_elazors
     update_explosions
+    update_pups
+  end
+
+  def update_pups
+    @pups.each_with_index { |pup,i|
+      if pup.disposed?
+        @pups.delete_at(i)
+        next
+      end
+      pup.update
+      Collider.check_pup(pup, @player)
+    }
   end
 
   def update_explosions
@@ -179,9 +212,19 @@ class Level
         'player_hit' => lambda { |elazor| elazor.dispose },
         'enemy_hit' => lambda { |lazor| lazor.dispose },
         'score' => lambda { |_| check_score_win },
+        'powerup_grabbed' => lambda { |pup| apply_powerup(pup)},
     }
     Logger.trace("Level received notification '#{msg}', with data #{data}... #{"But is not considered." unless reactions.key?(msg)}")
     reactions[msg].call(data) if reactions.key?(msg)
+  end
+
+  def apply_powerup(pup)
+    pup_effect = pup.effect
+    target = pup.target
+    case target
+      when "player" then @player.apply_pup(pup_effect)
+      when "enemies" then @enemies.each { |e| e.apply_pup(pup_effect) }
+    end
   end
 
 
@@ -195,7 +238,7 @@ class Level
   end
 
   def init_game_over(result)
-    @spawner.stop
+    @enemy_spawner.stop
     notify_observers("game_over", result)
   end
 
