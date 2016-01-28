@@ -34,23 +34,23 @@ class Weapon
 
     Logger.warn("Weapon MUST have a defined name, otherwise bugs will occur! Current config: #{@config}") if @config[:name] == DEFAULTS[:name]
 
-    @cooldown = 0
+    @next_cooldown = 0
     @direction = Point.new(@config[:direction][0], @config[:direction][1]).normalize_me
     @stats = @config[:stats].deep_clone
     @level = @config[:level]
   end
 
   def update
-    @cooldown -= 1
+    @next_cooldown -= 1
   end
 
   # MUST OVERRIDE
   # > Weapon may shoot one or more lazors...
   # > Each with one or more different movements...
   def shoot(position)
-    return unless cooldown <= 0
-    @cooldown = self.cooldown
-    @position = position
+    return unless @next_cooldown <= 0
+    @next_cooldown = self.cooldown
+
 
     lazor = Bullet.new({
                            name: @config[:name],
