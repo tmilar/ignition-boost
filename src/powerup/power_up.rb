@@ -22,6 +22,7 @@ class PowerUp
 # >>> del JUEGO ->  spawn_cooldown  ; y  stats de naves
   RESET_PUP = {
       name: "powerup4",
+      target: "enemies",
       spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
       stats: {
           shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"

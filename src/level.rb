@@ -73,16 +73,14 @@ class Level
           #     BGM: ["Battle3", 60, 110]
           # }
       },
-      powerups_spawner: {
-          frequency: 2,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
-          destructible: false         # Can pups can be destroyed by bullets?
-          # powerups: [{
-          #     name: "powerup0",     # PowerUp name, also must match image name
-          #     stats: {              # stats that will change
-          #         hp: +100
-          #     },
-          #     frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
-          # }],
+      powerup_spawner: {
+          frequency: 50,              # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          destructible?: false,       # Can pups can be destroyed by bullets?
+          phases: {                   # PowerUp spawner can also be divided in Phases (or use one only)
+              1 => {
+                  powerups: []
+              }
+          }
       }
   }
 
@@ -116,7 +114,8 @@ class Level
 
     @enemy_spawner = Spawner.new(spawner_config)
     @enemy_spawner.add_observer(self)
-    # @pup_spawner = PowerUpSpawner.new(@config[:item_spawner])
+    @pup_spawner = PowerUpSpawner.new(@config[:powerup_spawner])
+    @pup_spawner.add_observer(self)
   end
 
   def init_level_graphics
@@ -149,6 +148,11 @@ class Level
     update_elazors
     update_explosions
     update_pups
+    update_pup_spawner
+  end
+
+  def update_pup_spawner
+    @pup_spawner.update
   end
 
   def update_pups
@@ -218,6 +222,7 @@ class Level
     reactions = {
         'new_enemy' => lambda { |enemy| add_new_enemy(enemy) },
         'new_lazors' => lambda { |lazors| add_new_lazors(lazors)},
+        'new_powerup' => lambda { |pup| add_new_powerup(pup)},
         'player_destroyed' => lambda { |_| init_game_over("loss")},
         'enemy_destroyed' => lambda { |enemy| handle_enemy_destroyed(enemy)},
         'player_hit' => lambda { |elazor| elazor.dispose },
@@ -227,6 +232,12 @@ class Level
     }
     Logger.trace("Level received notification '#{msg}', with data #{data}... #{"But is not considered." unless reactions.key?(msg)}")
     reactions[msg].call(data) if reactions.key?(msg)
+  end
+
+  def add_new_powerup(pup)
+    raise 'New enemy is nil!' if pup.nil?
+    Logger.debug("New enemy #{pup.name} #{pup} entered level #{@config[:name]}.")
+    @pups << pup
   end
 
   def apply_powerup(pup)
@@ -280,6 +291,7 @@ class Level
     @elazors.each { |obj| obj.dispose  unless obj.disposed? }
     @enemies.each { |obj| obj.dispose  unless obj.disposed? }
     @explosions.each { |obj| obj.dispose  unless obj.disposed? }
+    @pups.each { |obj| obj.dispose  unless obj.disposed? }
   end
 
   def screen_observe(screen)

@@ -174,6 +174,7 @@ module IB
   # >>> del JUEGO ->  spawn_cooldown  ; y  stats de naves
   RESET_PUP = {
       name: "powerup4",
+      target: "enemies",
       spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
       stats: {
           shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
@@ -183,7 +184,7 @@ module IB
       name: "powerup0",     # PowerUp name, also must match image name
       target: "player",     # Target : "player", o "enemies" . DEFAULT: "player"
       stats: {              # stats that will change
-                            hp: +100
+          hp: +100
       },
       frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
   }
@@ -216,10 +217,14 @@ module IB
               start: 15         # time when phase can start spawning enemies
           }
       },
-      powerups_spawner: {
-          frequency: 2,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
-          powerups: [RESET_PUP, REPAIR_PUP, WEAPON_UP],
-          destructible: false         # Can pups can be destroyed by bullets?
+      powerup_spawner: {
+          frequency: 15,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                    # Powerup spawner can also have phases!
+              1 => {
+                  powerups: [REPAIR_PUP, WEAPON_UP],
+              }
+          },
+          destructible?: false         # Can pups can be destroyed by bullets?
       }
   }
 
