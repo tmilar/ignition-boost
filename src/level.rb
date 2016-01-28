@@ -49,29 +49,31 @@ class Level
   DEFAULTS = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
       name: 'first_level',            # Level name - Solo estetico.
-      spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
-      spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
-      spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
       BGM: ['Battle2', 60, 110],
       target_score: 50,
-      phases: {
-          1 => {
-              enemies: [DEFAULT_ENEMY1],
-              start: 0, # time when phase can start spawning enemies
-              spawn_cooldown: 150, # phases can use different spawn_cooldowns
-              spawn_decrement_amount: 1,
-              spawn_decrement_freq: 100
+      spawner: {
+          spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
+          spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
+          phases: {
+              1 => {
+                  enemies: [DEFAULT_ENEMY1],
+                  start: 0, # time when phase can start spawning enemies
+                  spawn_cooldown: 150, # phases can use different spawn_cooldowns
+                  spawn_decrement_amount: 1,
+                  spawn_decrement_freq: 100
+              },
+              2 => {
+                  enemies: [DEFAULT_ENEMY2],
+                  start: 35         # time when phase can start spawning enemies
+              }
+              # 3 => {
+              #     enemies: [BOSS1],
+              #     start: 100,
+              #     max_spawn: 1,
+              #     BGM: ["Battle3", 60, 110]
+              # }
           },
-          2 => {
-              enemies: [DEFAULT_ENEMY2],
-              start: 35         # time when phase can start spawning enemies
-          }
-          # 3 => {
-          #     enemies: [BOSS1],
-          #     start: 100,
-          #     max_spawn: 1,
-          #     BGM: ["Battle3", 60, 110]
-          # }
       },
       powerup_spawner: {
           frequency: 50,              # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
@@ -107,10 +109,7 @@ class Level
   end
 
   def init_spawners
-    spawner_config = @config.pick(:spawn_cooldown,
-                                  :spawn_decrement_amount,
-                                  :spawn_decrement_freq,
-                                  :phases)
+    spawner_config = @config[:spawner]
 
     @enemy_spawner = Spawner.new(spawner_config)
     @enemy_spawner.add_observer(self)

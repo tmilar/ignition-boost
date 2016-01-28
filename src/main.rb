@@ -142,24 +142,25 @@ module IB
   LEVEL1 = {
       name: 'first level',
       backdrop: 'backdrop',
-      spawn_speed: 100,
-      phases: {
-          1 => {
-              enemies: [ENEMIGO1],
-              start: 0,             #time phase can start spawning enemies
-              max_spawn: 6,
-          },
-          2 => {
-              enemies: [ENEMIGO2],
-              start: 4,
-              end: 10,
-              BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
-          },
-          3 => {
-              enemies: [BOSS1],
-              start: 8,
-              max_spawn: 1,
-              BGM: ["Battle3", 60, 110]
+      spawner: {
+          spawn_cooldown: 50,
+          phases: {
+              1 => {
+                  enemies: [ENEMIGO1, ENEMIGO2],
+                  start: 0,             #time phase can start spawning enemies
+              },
+              2 => {
+                  enemies: [ENEMIGO2],
+                  start: 4,
+                  end: 10,
+                  BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
+              },
+              3 => {
+                  enemies: [BOSS1],
+                  start: 8,
+                  max_spawn: 1,
+                  BGM: ["Battle3", 60, 110]
+              }
           }
       },
       BGM: ["Battle2", 60, 110],
@@ -199,22 +200,24 @@ module IB
   MY_POWERUP_LEVEL = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
       name: 'first_level',            # Level name - Solo estetico.
-      spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
-      spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
-      spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
       BGM: ['Battle2', 60, 110],
       target_score: 50,
-      phases: {
-          1 => {
-              enemies: [ENEMIGO1],
-              start: 0, # time when phase can start spawning enemies
-              spawn_cooldown: 150, # phases can use different spawn_cooldowns
-              spawn_decrement_amount: 1,
-              spawn_decrement_freq: 100
-          },
-          2 => {
-              enemies: [ENEMIGO2],
-              start: 15         # time when phase can start spawning enemies
+      spawner: {
+          spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
+          spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
+          phases: {
+              1 => {
+                  enemies: [ENEMIGO1, ENEMIGO2],
+                  start: 0, # time when phase can start spawning enemies
+                  spawn_cooldown: 150, # phases can use different spawn_cooldowns
+                  spawn_decrement_amount: 1,
+                  spawn_decrement_freq: 60
+              },
+              2 => {
+                  enemies: [ENEMIGO2],
+                  start: 15         # time when phase can start spawning enemies
+              }
           }
       },
       powerup_spawner: {
