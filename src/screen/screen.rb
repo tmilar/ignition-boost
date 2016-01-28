@@ -23,7 +23,8 @@ class Screen
     @window.opacity = 0
     draw_scores({score: 0, high_score: 0})
     draw_hp_bar
-    init_item_hold
+    init_item_held
+    draw_item_held
   end
 
   def init_nuke
@@ -35,7 +36,7 @@ class Screen
     @nuke.opacity = 0
   end
 
-  def init_item_hold
+  def init_item_held
     Logger.debug("Initializing item_hold! ") ###TODO
 
     @item_held = Sprite.new
@@ -44,11 +45,11 @@ class Screen
     @item_held.z = 100
   end
 
-  def draw_item_hold(data = nil)
+  def draw_item_held(item = nil)
     @item_held.bitmap.dispose if @item_held.bitmap
     @item_held.opacity = 255
-    return @item_held.opacity = 0 if data.nil?
-    @item_held.bitmap = Cache.space(data[:item])
+    return @item_held.opacity = 0 if item.nil?
+    @item_held.bitmap = Cache.space(item[:name])
   end
 
   def init_game_over(result)
