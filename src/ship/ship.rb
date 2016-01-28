@@ -19,8 +19,8 @@ class Ship
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
+          cooldown: 5,            # time to wait before shooting again
       },
-      cooldown: 5,            # time to wait before shooting again
       SE: ["Attack2",80,150], # sound when shooting
       level: 1                # starting weapon level (optional, default 1)
   }
@@ -47,6 +47,7 @@ class Ship
           time: 10,
           :DSE => ["Fire1",90,150],     # SE for death | "SE_Name",volume,pitch
       },
+      :PUSE => ["Item1",80,150]   # "SE_Name",volume,pitch - SE when get powerup
   }
 
   # Delegate accessors to internal hashes
@@ -73,7 +74,7 @@ class Ship
     weapon_config[:shooter] = self.ship_type
     Logger.trace("About to create a new weapon. Config -> #{weapon_config}")
     @weapon = Weapon.new(weapon_config)
-    Logger.trace("#{self.introduce} has created a weapon! #{@weapon}.")
+    Logger.trace("#{self} has created a weapon! #{@weapon}.")
   end
 
 
@@ -149,7 +150,7 @@ class Ship
   end
 
   #------------------------------------------------------------------------------#
-  #  SHIP PROPERTIES  || GETTERS & SETTERS
+  #  SHIP PROPERTIES  || OVERRIDE GETTERS & SETTERS
   #------------------------------------------------------------------------------#
   def ship_type
     self.class.to_s.uncapitalize
@@ -209,10 +210,7 @@ class Ship
   end
 
   def to_s
-    "<#{self.class}> #{@config}, #{self.stats}"
-  end
-
-  def introduce
     "<#{self.class}> '#{self.name}'"
   end
+
 end
