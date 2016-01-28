@@ -9,7 +9,7 @@ class Weapon
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
-          cooldown: 5,            # time to wait before shooting again
+          cooldown: 0,            # time to wait before shooting again
       },
       direction: [0, 1],
       type: "lazor",          # weapon name (also lazor image '.png' name)
