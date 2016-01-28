@@ -29,7 +29,7 @@ class Weapon
     super(config)
 
     Logger.trace("initializin weapon with config: #{config}")
-    @config = DEFAULTS.merge(config).deep_clone
+    @config = DEFAULTS.deep_merge(config).deep_clone
     Logger.start("weapon#'#{@config[:name]}'", config, DEFAULTS)
 
     Logger.warn("Weapon MUST have a defined name, otherwise bugs will occur! Current config: #{@config}") if @config[:name] == DEFAULTS[:name]

@@ -39,7 +39,7 @@ class Spawner
 
   def update_cooldown
     return unless @config.key?(:spawn_decrement_freq) &&
-        @config.key?(:spawn_decrement_freq) &&
+        @config.key?(:spawn_decrement_amount) &&
         !@cooldown_decrement_cooldown.nil? &&
          @cooldown_decrement_cooldown > 0
 
@@ -129,6 +129,8 @@ class Spawner
     @current_phases.each { |phase|
       spawnable_enemies_names << spawns(phase).map { |e| e[:name] }
     }
+    return Logger.warn('No enemies defined for current phases!') if spawnable_enemies_names.empty?
+
     Logger.trace("spawnable_enemies... #{spawnable_enemies_names}")
 
     # Pick random spawnable
@@ -149,8 +151,8 @@ class Spawner
   end
 
 
-  def pick_spawnable(spawnable_phases_enemies)
-    rand_phase = spawnable_phases_enemies.sample
+  def pick_spawnable(spawnable_phases)
+    rand_phase = spawnable_phases.sample
 
     rand_phase[:spawned] += 1
     spawns(rand_phase).sample
