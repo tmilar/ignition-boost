@@ -51,15 +51,14 @@ class Weapon
     return unless @next_cooldown <= 0
     @next_cooldown = self.cooldown
 
-
     lazor = Bullet.new({
                            name: @config[:name],
-                           position: @position,
+                           position: position,
                            direction: @direction,
                            stats: @stats
                        })
+    Logger.trace("New lazor shooted. Pos: #{position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
 
-    Logger.trace("New lazor shooted. Pos: #{@position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
     notify_observers('new_lazors', {data: @config, lazors: [lazor]})
     Sound.se(@config[:SE])
   end
