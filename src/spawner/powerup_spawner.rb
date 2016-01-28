@@ -54,9 +54,10 @@ class PowerUpSpawner < Spawner
     phase[:powerups]
   end
 
-  def emit_spawnee(config)
-    config[:destructible?] ||= @config[:destructible?]
-    spawned_pup = PowerUp.new(config)
+  def emit_spawnee(pup_config)
+    Logger.trace("pup config is #{pup_config}, self is #{@config}")
+    pup_config[:destructible?] ||= @config[:destructible?]
+    spawned_pup = PowerUp.new(pup_config)
     notify_observers('new_powerup', spawned_pup)
   end
 end
