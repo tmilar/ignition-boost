@@ -9,10 +9,10 @@ class Weapon
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
+          cooldown: 5,            # time to wait before shooting again
       },
       direction: [0, 1],
       type: "lazor",          # weapon name (also lazor image '.png' name)
-      cooldown: 5,            # time to wait before shooting again
       SE: ["Attack2",80,150], # sound when shooting
       level: 1               # starting weapon level (optional, default 1)
       # overheat: {         ##TODO overheat/refresh mechanism
