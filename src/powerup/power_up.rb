@@ -5,14 +5,14 @@ class PowerUp
       name: "powerup0",
       target: "player",
       frequency: 1,
-      destructible: false,
+      destructible?: false,
       speed: 1
       # hold: false,
       # effect: ""
   }
 
   # Keys that don't involve the PUP effect
-  CONFIG_KEYS = [:name, :target, :frequency, :destructible] ## :hold, :effect]
+  CONFIG_KEYS = [:name, :target, :frequency, :destructible?] ## :hold, :effect]
 
 ### EXAMPLES ###
 # PowerUps.
@@ -85,7 +85,7 @@ class PowerUp
   def_delegators :@sprite, :dispose, :disposed?
 
   attr_accessor :sprite
-
+  attr_readers_delegate :@config, :speed, :target, :destructible?, :name
   include Subject
   include LinearMovement
 
@@ -118,26 +118,11 @@ class PowerUp
     Point.new(0, 1)
   end
 
-  def speed
-    @config[:speed]
-  end
-
   def collision(obj=nil, destroy=false)
     Logger.debug("Pup #{self} collided with #{obj}. #{"Destroyed!" if destroy})")
     self.dispose
   end
 
-  def target
-    @config[:target]
-  end
-
-  def destructible?
-    @config[:destructible]
-  end
-
-  def name
-    @config[:name]
-  end
 
   def effect
     # return all except the config-exclusive keys
