@@ -40,7 +40,7 @@ class PowerUpSpawner < Spawner
   # @OVERRIDE
   def check_spawn_condition
     spawn = rand(1000) > (1000 - @spawn_freq)
-    Logger.trace("Trying to spawn item at freq #{@spawn_freq}... #{" but FAILED." unless spawn}")
+    Logger.trace("About to spawn item at freq #{@spawn_freq}!") if spawn
     spawn
   end
 
