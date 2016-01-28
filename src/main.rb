@@ -16,9 +16,9 @@ module IB
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
+          cooldown: 5,            # time to wait before shooting again
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
-      cooldown: 5,            # time to wait before shooting again
       SE: ["Attack2",80,150], # sound when shooting
       # level: 1,             # starting weapon level (optional, default 1)
   }
@@ -29,10 +29,10 @@ module IB
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
+          cooldown: 5,
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
       level: 1, # starting weapon level (optional)
-      cooldown: 5,
       SE: ["Heal5",80,160]
   }
 
