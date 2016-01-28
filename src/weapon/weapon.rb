@@ -23,6 +23,8 @@ class Weapon
 
   MAX_LEVEL = 5 ### TODO define phases and levels for weapons...
 
+  attr_accessors_delegate :@stats, :damage, :speed, :cooldown
+
   def initialize(config = {})
     super(config)
 
@@ -46,8 +48,8 @@ class Weapon
   # > Weapon may shoot one or more lazors...
   # > Each with one or more different movements...
   def shoot(position)
-    return unless @cooldown <= 0
-    @cooldown = @config[:cooldown]
+    return unless cooldown <= 0
+    @cooldown = self.cooldown
     @position = position
 
     lazor = Bullet.new({
