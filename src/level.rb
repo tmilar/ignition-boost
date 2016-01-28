@@ -79,9 +79,9 @@ class Level
           frequency: 50,              # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           destructible?: false,       # Can pups can be destroyed by bullets?
           phases: {                   # PowerUp spawner can also be divided in Phases (or use one only)
-              1 => {
-                  powerups: []
-              }
+              # 1 => {
+              #     powerups: []
+              # }
           }
       }
   }
