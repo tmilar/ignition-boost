@@ -182,12 +182,12 @@ class Ship
     end
   end
 
-  def property_set(stat, value)
-    getter = stat
-    setter = "#{stat}="
+  def property_set(prop, value)
+    getter = prop
+    setter = "#{prop}="
 
     unless self.respond_to?(setter) && self.respond_to?(getter)
-      Logger.error("Trying to set property #{stat}, #{value} on #{self.introduce}, but doesn't respond to #{setter} or #{getter}!")
+      Logger.error("Trying to set property #{prop}, #{value} on #{self}, but doesn't respond to #{setter} or #{getter}!")
       return
     end
 
@@ -205,7 +205,7 @@ class Ship
       Logger.trace("Calling ':#{getter}=' #{value} on #{self}")
       self.send(setter, value)
     else
-      Logger.error("Unexpected type of value #{value} inputted for #{stat}, needs to be Float or Integer!")
+      Logger.error("Unexpected type of value #{value} inputted for #{prop}, needs to be Float or Integer!")
     end
   end
 
