@@ -181,6 +181,10 @@ class Rectangle
     Rect.new(@x, @y, @width, @height)
   end
 
+  def self.from_rect(rgss_rect)
+    Rectangle.new(rgss_rect.x, rgss_rect.y, rgss_rect.width, rgss_rect.height)
+  end
+
 # Returns a random point within this rectangle.
 # Returns nil if the width OR the height equals zero.
   def rand_point
