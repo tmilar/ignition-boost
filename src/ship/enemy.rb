@@ -16,7 +16,7 @@ class Enemy < Ship
   end
 
   def weapon_pos
-    Point.new(self.x, self.y + self.height)
+    Point.new(self.x, self.y)
   end
 
   def check_shoot
