@@ -204,13 +204,9 @@ class Level
         next
       end
       enemy.update
-      Collider.check_enemy(enemy, @plazors, @player)
+      Collider.check_enemy_player(enemy, @player)
+      Collider.check_enemy_plazors(enemy, @plazors)
     }
-
-    # enemies_names = []
-    # enemies_names << @enemies.map { |e| e.name }
-    # Logger.trace("Present enemies UPDATED in level.. #{enemies_names}")
-
   end
 
   def update_player

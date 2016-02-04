@@ -1,14 +1,13 @@
-
 class Collider
 
   # check colissions:
 
   # enemies ->  player, plazors
   # elazors -> player, pups (optional)
-  # pups -> player, elazors, (opt ) plazors (opt TODO) ... pup.collision(lazor, true) if pup.destructible?
+  # pups -> player, elazors, (opt : plazors (opt TODO) ... pup.collision(lazor, true) if pup.destructible? )
 
 
-  # Check elazor with player
+  # Check elazor with player ship
   def self.check_lazor(lazor, ship)
     if collides?(lazor, ship)
       Logger.trace("Collided #{lazor}, #{lazor.stats} WITH #{ship}, #{ship.stats}")
@@ -17,6 +16,7 @@ class Collider
     end
   end
 
+  # Check powerup with ship (mainly player)
   def self.check_pup(pup, ship)
     if collides?(pup, ship)
       Logger.trace("Collided #{pup}, #{pup.name} WITH #{ship}, #{ship.stats}")
@@ -25,16 +25,19 @@ class Collider
     end
   end
 
-  # Check enemy with player, and plazors
-  def self.check_enemy(enemy, plazors, player)
+  # Check enemy ship with player ship
+  def self.check_enemy_player(enemy, player)
     if collides?(enemy, player)
       Logger.trace("Collided #{enemy}, #{enemy.stats} WITH #{player}, #{player.stats}")
       enemy.ship_collision(player)
       player.ship_collision(enemy)
     end
+  end
 
+  # Check enemy ship with player lazors
+  def self.check_enemy_plazors(enemy, plazors)
     plazors.each {
-      |plazor|
+        |plazor|
       self.check_lazor(plazor, enemy)
     }
   end
