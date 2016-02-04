@@ -91,7 +91,7 @@ class PowerUp
 
   def initialize(config={})
     super(config)
-    Logger.start('powerup_spawner', config, DEFAULTS)
+    Logger.start('powerup', config, DEFAULTS)
     @config = DEFAULTS.merge(config).deep_clone
 
     init_sprite
@@ -103,10 +103,6 @@ class PowerUp
         y: 0,
         bitmap: @config[:name]
     })
-  end
-
-  def position_init
-    self.position = Point.new( rand(Graphics.width) , 0 )
   end
 
   def update
@@ -128,8 +124,12 @@ class PowerUp
     # return all except the config-exclusive keys
 
     effect = @config.except(CONFIG_KEYS).deep_clone
-    Logger.trace("PUP been asked for effect... which is... #{effect}")
+    Logger.trace("#{self} been asked for effect... which is... #{effect}")
     effect
+  end
+
+  def to_s
+    "<#{self.class}> '#{self.name}'"
   end
 end
 
