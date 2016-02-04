@@ -21,6 +21,7 @@ plugins = {
             exclude: ["print_backtrace"]
         },
     },
+    "config" => {},
     "src" => {
         excluded: ["old"],
         "screen" => {},
