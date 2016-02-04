@@ -56,17 +56,17 @@ class Level
           spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
           spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
           phases: {
-              1 => {
-                  enemies: [DEFAULT_ENEMY1],
-                  start: 0, # time when phase can start spawning enemies
-                  spawn_cooldown: 150, # phases can use different spawn_cooldowns
-                  spawn_decrement_amount: 1,
-                  spawn_decrement_freq: 100
-              },
-              2 => {
-                  enemies: [DEFAULT_ENEMY2],
-                  start: 35         # time when phase can start spawning enemies
-              }
+              # 1 => {
+              #     enemies: [DEFAULT_ENEMY1],
+              #     start: 0, # time when phase can start spawning enemies
+              #     spawn_cooldown: 150, # phases can use different spawn_cooldowns
+              #     spawn_decrement_amount: 1,
+              #     spawn_decrement_freq: 100
+              # },
+              # 2 => {
+              #     enemies: [DEFAULT_ENEMY2],
+              #     start: 15         # time when phase can start spawning enemies
+              # }
               # 3 => {
               #     enemies: [BOSS1],
               #     start: 100,
@@ -94,7 +94,7 @@ class Level
     level_options[:player_ship] = player_ship
     Logger.trace("starter level opts: #{level_options}")
     Logger.start('level', level_options, DEFAULTS)
-    @config = DEFAULTS.merge(level_options).deep_clone
+    @config = DEFAULTS.deep_merge(level_options).deep_clone
 
     Logger.trace("initializing level with config: #{@config}")
 
