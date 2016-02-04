@@ -158,8 +158,8 @@ class Ship
 
   def hp=(new_hp)
     return if disposed?
-    @stats[:hp] = new_hp
-    Logger.debug("#{ship_type} hp changed, now is #{@stats[:hp]}") # enemy hp changed ||| player hp changed
+    @stats[:hp] = [new_hp, @stats[:mhp]].min
+    Logger.debug("#{self} hp changed, now is #{@stats[:hp]}") # enemy hp changed ||| player hp changed
     notify_observers("#{ship_type}_hp", self) # notify 'enemy_hp' or 'player_hp'
     self.destroy if @stats[:hp] <= 0
   end
