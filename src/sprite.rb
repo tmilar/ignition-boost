@@ -2,8 +2,11 @@ class Sprite
 
   attr_accessor :rectangle
   attr_accessor :name
+  attr_accessor :cell
 
   @viewport = {}
+
+  EPSILON = 0.00001
 
   def self.create(args = {})
     defaults = {
@@ -12,7 +15,8 @@ class Sprite
         bitmap: "NO_IMAGE",
         zoom_x: 1,
         zoom_y: 1,
-        name: "DEFAULT_NAME"
+        name: "DEFAULT_NAME",
+        cells: 1
     }
 
     config = defaults.merge(args)
@@ -31,8 +35,24 @@ class Sprite
                                          new_sprite.width,
                                          new_sprite.height)
 
-    # Logger.debug("Created new sprite: #{new_sprite.bitmap}. ")
+    # Logger.debug("Created new sprite: #{self}. ")
+    new_sprite.init_cells(config[:cells]) if config[:cells] > 1
     new_sprite
+  end
+
+  def init_cells(cells_qty)
+    Logger.trace("Starting #{cells_qty} cells on #{self}...")
+    @cell = 1 ## init on middle cell (can be 0, 1, 2)
+    @cells_qty = cells_qty
+    @cel_width = width / @cells_qty
+    self.src_rect.set(@cell * @cel_width, 0, @cel_width, height)
+
+    self.ox = @cel_width / 2
+    self.oy = height
+    self.rectangle = Rectangle.new(self.x,
+                                   self.y,
+                                   @cel_width,
+                                   self.height)
   end
 
   def self.setup_viewport(viewport)
@@ -43,37 +63,54 @@ class Sprite
     @viewport
   end
 
-  def position(position=false)
-    if position
-      self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
-      self.x = position.x
-      self.y = position.y
-    end
+  def position
     Point.new(self.x, self.y)
   end
 
   def position=(position)
+    raise "ERROR New position  for sprite #{self} is nil!" if position.nil?
     self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
-    self.x = position.x if position
-    self.y = position.y if position
+    check_cells(self.x, position.x)
+    self.x = position.x
+    self.y = position.y
+
+  end
+
+  def check_cells(old_x, new_x)
+    return if @cell.nil?
+    @cell = 0 if new_x.to_f - old_x.to_f < -EPSILON
+    @cell = 1 if (new_x.to_f - old_x.to_f).between?(-EPSILON, EPSILON)
+    @cell = 2 if new_x.to_f - old_x.to_f > EPSILON
+  end
+
+  def reset_cell
+    return if @cell.nil?
+    @cell = 1
   end
 
   def width
-    self.bitmap.width
+    @cel_width || self.bitmap.width
   end
 
   def height
     self.bitmap.height
   end
 
-  #### TODO think of sprite cells...
-  # init:
-  # @sprite.cell = 1
-  # @sprite.cw = self.bitmap.width / 3
-  # @sprite.src_rect.set(@sprite.cell * @sprite.cw, 0, @sprite.cw, self.height)
-  #
-  # update:
-  # @sprite.cell = 1 if @sprite.cell > 3
-  # sx = @sprite.cell * @sprite.cw
-  # @sprite.src_rect.set(sx, 0, @sprite.cw, self.height)
+  alias_method :sprite_update, :update
+  def update
+    update_cell
+    sprite_update
+    reset_cell
+  end
+
+  def update_cell
+    return if @cell.nil? || @cel_width.nil? || @cells_qty == 1
+    sx = @cell * @cel_width
+    Logger.trace("Updating player cell #{@cell}, cel width is #{@cel_width}, result sx #{sx}")
+    self.src_rect.set(sx, 0, @cel_width, height)
+  end
+
+  def to_s
+    "<#{self.class}> '#{self.name}'"
+  end
 end
