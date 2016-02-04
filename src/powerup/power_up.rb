@@ -5,6 +5,7 @@ class PowerUp
       name: "powerup0",
       target: "player",
       frequency: 1,
+      speed: 1,                 ## PowerUp move speed
       destructible?: false,
       # hold: false,
       # effect: ""
