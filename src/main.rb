@@ -8,11 +8,9 @@ module IB
   # **** WEAPONS ****
   #-------------------------------------------------------------------------------
 
-    #TODO definir :phases , evolucion de las armas con pups - u otras condiciones
-    #TODO definir :type & :subtype
   WEAPON1 = {
       name: "lazor1",         # weapon name (also lazor image '.png' name)
-      type: "lazor",          # weapon type // por ahora no hace nada //
+      type: "lazor",          # weapon type // IGNORAR esto por ahora, no hace nada //
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
@@ -20,39 +18,39 @@ module IB
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
       SE: ["Attack2",80,150], # sound when shooting
-      # level: 1,             # starting weapon level (optional, default 1)
+      level: 1,               # starting weapon level (optional, default 1)
   }
 
   WEAPON2 = {
       name: "lazor2",         # weapon name (also lazor image '.png' name)
-      type: "ball",
+      type: "ball",           # weapon type // IGNORAR esto por ahora, no hace nada //
       stats: {
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
           cooldown: 5,
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
-      level: 1, # starting weapon level (optional)
+      level: 1,               # starting weapon level (optional)
       SE: ["Heal5",80,160]
   }
 
   #-------------------------------------------------------------------------------
-  # **** SHIPS ****
+  # **** PLAYER SHIPS ****
   #-------------------------------------------------------------------------------
 
   # default config for base PLAYER ship
   NAVE_BASE = {
-      :name => "player_ship",
-      :stats => {
-          :power => 1,
-          :speed => 5,
-          :hp => 5,
-          :collide_damage => 99,
-          :collide_resistance => 0,
-          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
-          :nuke_power => 99            # Damage caused by nuke
+      name: "player_ship",          #
+      stats: {
+          power: 1,
+          speed: 5,
+          hp: 5,
+          collide_damage: 99,
+          collide_resistance: 0,
+          shoot_freq: 0,             ## TODO por ahora esto remplazara la @difficulty
+          nuke_power: 99            # Damage caused by nuke
       },
-      :weapon => WEAPON1
+      weapon: WEAPON1
   }
 
   #-------------------------------------------------------------------------------
@@ -62,110 +60,81 @@ module IB
 
   # basic enemy ship config
   ENEMIGO1 = {
-      :name => "alien1",
-      :stats => {
-          :power => 1,
-          :speed => 1,
-          :hp => 2,
-          :collide_damage => 4,
-          :shoot_freq => 6,             ## TODO por ahora esto remplazara la @difficulty
+      name: "alien1",
+      stats: {
+          power: 1,
+          speed: 1,
+          hp: 2,
+          collide_damage: 4,
+          shoot_freq: 6,             ## TODO por ahora esto remplazara la @difficulty
       },
-      :weapon => {
+      weapon: {
           name: "elazor1",
-          :type => "elazor",
+          type: "elazor",
           stats: {
               damage: 1,              # bullet damage
               speed: 5,               # bullet speed
           },
-          :SE => ["Attack2",80,110],
-          :direction => [0, 1],     # Initial direction for bullets [x, -y]
+          SE: ["Attack2",80,110],
+          direction: [0, 1],     # Initial direction for bullets [x, -y]
       },
-      :DSE => ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
-      # :movement => :linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
+      DSE: ["Fire3",90,150], # "SE_Name",volume,pitch - SE for enemy dying
+      # movement: linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
   }
 
   # basic enemy ship config
   ENEMIGO2 = {
-      :name => "alien2",
-      :stats => {
-          :power => 1,
-          :speed => 1,
-          :hp => 3,
-          :collide_damage => 4,
-          :shoot_freq => 10,             ## TODO por ahora esto remplazara la @difficulty
+      name: "alien2",
+      stats: {
+          power: 1,
+          speed: 1,
+          hp: 3,
+          collide_damage: 4,
+          shoot_freq: 10,             ## TODO por ahora esto remplazara la @difficulty
       },
-      :power => 1,
-      :speed => 1,
-      :hp => 3,
-      :weapon => {
+      power: 1,
+      speed: 1,
+      hp: 3,
+      weapon: {
           name: "elazor2",
-          :type => "elazor",
+          type: "elazor",
           stats: {
               damage: 1,              # bullet damage
               speed: 5,               # bullet speed
           },
-          :SE => ["Attack2",80,110],
-          :direction => [0, 1],     # Initial direction for bullets [x, -y]
+          SE: ["Attack2",80,110],
+          direction: [0, 1],     # Initial direction for bullets [x, -y]
       },
-      :DSE => ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
+      DSE: ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
   }
 
   BOSS1 = {
-      :name => "boss1",
-      :stats => {
-          :power => 1,
-          :speed => 1,
-          :hp => 3,
-          :collide_damage => 9999,
-          :collide_resistance => 9999,
-          :shoot_freq => 15,             ## TODO por ahora esto remplazara la @difficulty
+      name: "boss1",
+      stats: {
+          power: 1,
+          speed: 1,
+          hp: 3,
+          collide_damage: 9999,
+          collide_resistance: 9999,
+          shoot_freq: 15,
       },
-      :weapon => {
-          :type => "elazor",
+      weapon: {
+          type: "elazor",
           stats: {
               damage: 2,              # bullet damage
               speed: 6,               # bullet speed
           },
-          :direction => [0, 1],     # Initial direction for bullets [x, -y]
+          direction: [0, 1],     # Initial direction for bullets [x, -y]
       },
-      :position => {
+      position: {
           max_y: 0.5,
           min_y: 0.3
       }
   }
 
   #-------------------------------------------------------------------------------
-  # **** LEVELS ****
+  # **** PUPS  **** //TODO define  & include in Levels
   #-------------------------------------------------------------------------------
-
-
-  LEVEL1 = {
-      name: 'first level',
-      backdrop: 'backdrop',
-      spawner: {
-          spawn_cooldown: 50,
-          phases: {
-              1 => {
-                  enemies: [ENEMIGO1, ENEMIGO2],
-                  start: 0,             #time phase can start spawning enemies
-              },
-              2 => {
-                  enemies: [ENEMIGO2],
-                  start: 4,
-                  end: 10,
-                  BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
-              },
-              3 => {
-                  enemies: [BOSS1],
-                  start: 8,
-                  max_spawn: 1,
-                  BGM: ["Battle3", 60, 110]
-              }
-          }
-      },
-      BGM: ["Battle2", 60, 110],
-      target_score: 50
-  }
 
   ### EXAMPLES ###
   # PowerUps.
@@ -173,61 +142,20 @@ module IB
   # Si es DECIMAL (con "punto" - de 0.0 en adelante) es un factor que se MULTIPLICA. Ej. 0.1, 1.5, 2.0, etc..
   # Por ahora ademas, lo que puede cambiar es>
   # >>> del JUEGO ->  spawn_cooldown  ; y  stats de naves
-  RESET_PUP = {
-      name: "powerup4",
-      target: "enemies",
-      spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
-      stats: {
-          shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
-      },
-  }
   REPAIR_PUP = {
       name: "powerup0",     # PowerUp name, also must match image name
       target: "player",     # Target : "player", o "enemies" . DEFAULT: "player"
       stats: {              # stats that will change
           hp: +100
       },
-      frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
+      frequency: 20         # [Optional] frequency pup will appear. Default: powerup spawner frequency
   }
+
   WEAPON_UP = {
       name: "powerup1",
       target: "player",
       weapon: {
           level: +1
-      }
-  }
-
-  MY_POWERUP_LEVEL = {
-      backdrop: 'backdrop',           # FONDO imagen .jpg
-      name: 'first_level',            # Level name - Solo estetico.
-      BGM: ['Battle2', 60, 110],
-      target_score: 50,
-      spawner: {
-          spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
-          spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
-          spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
-          phases: {
-              1 => {
-                  enemies: [ENEMIGO1, ENEMIGO2],
-                  start: 0, # time when phase can start spawning enemies
-                  spawn_cooldown: 150, # phases can use different spawn_cooldowns
-                  spawn_decrement_amount: 1,
-                  spawn_decrement_freq: 60
-              },
-              2 => {
-                  enemies: [ENEMIGO2],
-                  start: 15         # time when phase can start spawning enemies
-              }
-          }
-      },
-      powerup_spawner: {
-          frequency: 15,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
-          phases: {                    # Powerup spawner can also have phases!
-              1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP],
-              }
-          },
-          destructible?: false         # Can pups can be destroyed by bullets?
       }
   }
 
@@ -247,7 +175,20 @@ module IB
       },
   }
 
+
+  ### RESET_PUP > baja la frecuencia de aparicion y disparos enemigos... TODO hacerlo funcionar!
+  # TODAVIA NO FUNCA
+  RESET_PUP = {
+      name: "powerup4",
+      target: "enemies",
+      spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
+      stats: {
+          shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
+      },
+  }
+
   # Items are also a kind of powerup but with some key "effect" to distinguish
+  # TODAVIA NO FUNCA
   NUKEALL_ITEM = {
       name: "item_nuke",
       target: "player",
@@ -256,25 +197,98 @@ module IB
   }
 
   # Weapon change power up. Will change current weapon with other one...
+  # TODAVIA NO FUNCA
   WEAPON2_CHANGE_PUP = {
       name: "powerup2",
       target: "player",
       weapon: WEAPON2      # Weapon to change. If weapon is repeated, level will go up +1 instead.
   }
 
+  # Weapon change power up. Will change current weapon with other one...
+  # TODAVIA NO FUNCA
   WEAPON1_CHANGE_PUP = {
       target: "player",
       name: "powerup3",
       weapon: WEAPON1
   }
 
-
-
-
-
   #-------------------------------------------------------------------------------
-  # **** PUPS  **** //TODO define  & include in Levels
+  # **** LEVELS ****
   #-------------------------------------------------------------------------------
+
+
+  LEVEL1 = {
+      name: 'first level',
+      backdrop: 'backdrop',
+      spawner: {
+          spawn_cooldown: 50,
+          phases: {
+              1 => {
+                  enemies: [ENEMIGO1, ENEMIGO2],
+                  start: 0,             #time phase can start spawning enemies
+              },
+              2 => {
+                  enemies: [ENEMIGO2],
+                  start: 5,
+                  end: 10,
+                  BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
+              },
+              3 => {
+                  enemies: [BOSS1],
+                  start: 10,
+                  max_spawn: 1,
+                  BGM: ["Battle3", 60, 110]
+              }
+          },
+          powerup_spawner: {
+              frequency: 25,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+              phases: {                    # Powerup spawner can also have phases!
+                  1 => {
+                      powerups: [REPAIR_PUP, WEAPON_UP],
+                  }
+              },
+              destructible?: false         # Can pups can be destroyed by bullets? (default: false)
+          }
+      },
+      BGM: ["Battle2", 60, 110],
+      target_score: 50
+  }
+
+
+
+  MY_POWERUP_LEVEL = {
+      backdrop: 'backdrop',           # FONDO imagen .jpg
+      name: 'first_level',            # Level name - Solo estetico.
+      BGM: ['Battle2', 60, 110],
+      target_score: 50,
+      spawner: {
+          spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
+          spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
+          phases: {
+              1 => {
+                  enemies: [ENEMIGO1, ENEMIGO2],
+                  start: 5, # time when phase can start spawning enemies
+                  spawn_cooldown: 75, # phases can use different spawn_cooldowns
+                  spawn_decrement_amount: 1,
+                  spawn_decrement_freq: 60
+              },
+              2 => {
+                  enemies: [ENEMIGO2],
+                  start: 15         # time when phase can start spawning enemies
+              }
+          }
+      },
+      powerup_spawner: {
+          frequency: 25,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                    # Powerup spawner can also have phases!
+              1 => {
+                  powerups: [REPAIR_PUP, WEAPON_UP],
+              }
+          },
+          destructible?: false         # Can pups can be destroyed by bullets?
+      }
+  }
 
   #-------------------------------------------------------------------------------
   #  OTHER CONFIG
@@ -282,7 +296,6 @@ module IB
 
   GRAPHICS_ROOT = "Graphics/Invaders/"
 
-  ## TODO use Sound handler hash, for sounds/music definitions?
   BGM = ["Battle2", 50, 110] #musica de fondo: ["BGM_Name",volume,pitch]
   ME_WIN = ["Victory2", 100, 110]
   ME_LOSS = ["Gameover2", 100, 110]
