@@ -1,9 +1,10 @@
 module Movement
-  MOVEMENTS = {
-      :LEFT => lambda { |sprite, speed| sprite.move_x(-1 * speed)},
-      :RIGHT => lambda { |sprite, speed| sprite.move_x(+1 * speed) },
-      :UP => lambda { |sprite, speed| sprite.move_y(-1 * speed) },
-      :DOWN => lambda { |sprite, speed| sprite.move_y(+1 * speed) }
+
+  DIRECTIONS = {
+      :LEFT => Point.new(-1, 0),
+      :RIGHT => Point.new(+1, 0),
+      :UP => Point.new(0, -1),
+      :DOWN => Point.new(0, +1),
   }
 
   attr_accessor :limits
@@ -46,12 +47,10 @@ module Movement
     raise 'Not implemented!'
   end
 
-  # Method to be included in movible game objects
-  def move(direction = :DOWN, calculated_speed = false)
-    MOVEMENTS[direction].call(self, calculated_speed || self.speed)
-  end
-
-  def move_dir(dir_xy = Point.new(1,0), calculated_speed = false)
+  # Method to be included in movible game objects.
+  # direction can be a Symbol (:LEFT, :UP, :DOWN, :RIGHT ) or a Point vector object
+  def move(direction = Point.new(1, 0), calculated_speed = false)
+    dir_xy = parse_direction(direction)
     # Logger.trace("[#{self}] Trying to move sprite to direction: #{dir_xy}, stats are: #{self.stats}")
     speed = calculated_speed || self.speed
     self.move_x(dir_xy.x * speed)
@@ -70,6 +69,14 @@ module Movement
 
   def try_move(new_pos)
     self.position = new_pos if @limits.contains_point(new_pos, true)
+  end
+
+  def parse_direction(dir)
+    case dir
+      when Symbol then DIRECTIONS[dir]
+      when Point  then dir
+      else raise "Invalid direction '#{dir}', type inputted: '#{dir.class}'"
+    end
   end
 
 end
