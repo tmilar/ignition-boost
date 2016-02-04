@@ -106,7 +106,7 @@ class Sprite
   def update_cell
     return if @cell.nil? || @cel_width.nil? || @cells_qty == 1
     sx = @cell * @cel_width
-    Logger.trace("Updating player cell #{@cell}, cel width is #{@cel_width}, result sx #{sx}")
+    # Logger.trace("Updating player cell #{@cell}, cel width is #{@cel_width}, result sx #{sx}")
     self.src_rect.set(sx, 0, @cel_width, height)
   end
 
