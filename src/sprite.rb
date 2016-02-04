@@ -31,7 +31,7 @@ class Sprite
                                          new_sprite.width,
                                          new_sprite.height)
 
-    Logger.info("Created new sprite: #{new_sprite.bitmap}. ")
+    # Logger.debug("Created new sprite: #{new_sprite.bitmap}. ")
     new_sprite
   end
 
@@ -44,7 +44,6 @@ class Sprite
   end
 
   def position(position=false)
-    # self.rectangle.add_point(position) if position
     if position
       self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
       self.x = position.x
