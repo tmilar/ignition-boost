@@ -83,7 +83,8 @@ class Ship
     @sprite = Sprite.create({
                                 bitmap: @config[:name],
                                 x: Graphics.width / 2,
-                                y: 0 ##Graphics.height - height / 4
+                                y: 0,
+                                cells: @config[:cells]
                             })
   end
 

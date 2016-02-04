@@ -2,7 +2,11 @@ class Enemy < Ship
 
   include ZigZagMovement
 
+  DEFAULTS_ENEMY = {
+      cells: 1,
+  }
   def initialize(config = {})
+    config = DEFAULTS_ENEMY.merge(config)
     super(config)
     self.limits.height += self.height
   end

@@ -3,9 +3,13 @@
 class Player < Ship
 
   include KeyboardMovement
-  include Subject
+
+  DEFAULTS_PLAYER = {
+      cells: 3,
+  }
 
   def initialize(config = {})
+    config = DEFAULTS_PLAYER.merge(config)
     Logger.trace("Config before player super... Config -> #{config}, Ancestors are #{self.class.ancestors}")
     super(config)
     init_score
