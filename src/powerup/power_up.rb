@@ -6,12 +6,11 @@ class PowerUp
       target: "player",
       frequency: 1,
       destructible?: false,
-      speed: 1
       # hold: false,
       # effect: ""
   }
 
-  # Keys that don't involve the PUP effect
+  # Keys that don't involve the PUP effect to be excluded when asking for effect stats
   CONFIG_KEYS = [:name, :target, :frequency, :destructible?] ## :hold, :effect]
 
 ### EXAMPLES ###
