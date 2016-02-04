@@ -12,7 +12,7 @@ class PowerUp
   }
 
   # Keys that don't involve the PUP effect to be excluded when asking for effect stats
-  CONFIG_KEYS = [:name, :target, :frequency, :destructible?] ## :hold, :effect]
+  CONFIG_KEYS = [:name, :target, :frequency, :destructible?, :speed] ## :hold, :effect]
 
 ### EXAMPLES ###
 # PowerUps.
