@@ -44,25 +44,30 @@ class Weapon
     @next_cooldown -= 1
   end
 
-  # MUST OVERRIDE
-  # > Weapon may shoot one or more lazors...
-  # > Each with one or more different movements...
   def shoot(position)
     return unless @next_cooldown <= 0
     @next_cooldown = self.cooldown
 
-    lazor = Bullet.new({
-                           name: @config[:name],
-                           position: position,
-                           direction: @direction,
-                           stats: @stats
-                       })
-    Logger.trace("New lazor shooted. Pos: #{position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
+    lazors = emit_lazors({
+                                      name: @config[:name],
+                                      position: position,
+                                      direction: @direction,
+                                      stats: @stats
+                                  })
 
-    notify_observers('new_lazors', {data: @config, lazors: [lazor]})
+    notify_observers('new_lazors', {data: @config, lazors: lazors})
     Sound.se(@config[:SE])
   end
 
+  # MUST OVERRIDE
+  # > Weapon may shoot one or more lazors...
+  # > Each with one or more different movements...
+  def emit_lazors(bullet_config={})
+    lazor = Bullet.new(bullet_config)
+    Logger.trace("New lazor shooted. Pos: #{lazor.position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
+
+    [lazor]
+  end
   def level
     @level
   end
@@ -78,6 +83,10 @@ class Weapon
     Logger.debug("Weapon level up! From #{@level} to #{new_lvl}")
     @level = new_lvl
     ### TODO Weapon phases and levels...
+  end
+
+  def type
+    self.class.to_s.uncapitalize.chomp("Weapon")
   end
 
   # def refreshing?
