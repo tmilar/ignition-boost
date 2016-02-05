@@ -3,7 +3,7 @@ class Bullet
   extend Forwardable
   include Subject
 
-  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
+  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap, :name
   def_delegators :@sprite, :position, :position=, :rectangle
   attr_accessor :sprite
 
@@ -12,6 +12,10 @@ class Bullet
   attr_accessor :direction
   attr_reader :stats
 
+  # :name
+  # :position
+  # :direction
+  # :stats
   def initialize(config ={})
     super(config)
     @sprite = Sprite.create({ name: config[:name],
@@ -21,6 +25,7 @@ class Bullet
 
     @direction = config[:direction]
     @stats = config[:stats]
+    Logger.trace("#{self} launched, conf: #{config}")
   end
 
   def speed
@@ -44,5 +49,9 @@ class Bullet
     # #{ship_type}_hit = player_hit || enemy_hit
     notify_observers("#{ship.ship_type}_hit", self)
     self.dispose
+  end
+
+  def to_s
+    "<#{self.class}> '#{self.name}'"
   end
 end

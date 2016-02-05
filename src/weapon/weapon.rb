@@ -28,7 +28,6 @@ class Weapon
   def initialize(config = {})
     super(config)
 
-    Logger.trace("initializin weapon with config: #{config}")
     @config = DEFAULTS.deep_merge(config).deep_clone
     Logger.start("weapon#'#{@config[:name]}'", config, DEFAULTS)
 
@@ -64,10 +63,11 @@ class Weapon
   # > Each with one or more different movements...
   def emit_lazors(bullet_config={})
     lazor = Bullet.new(bullet_config)
-    Logger.trace("New lazor shooted. Pos: #{lazor.position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
+    Logger.trace("#{self} New lazor shooted. Pos: #{lazor.position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
 
     [lazor]
   end
+
   def level
     @level
   end
@@ -87,6 +87,10 @@ class Weapon
 
   def type
     self.class.to_s.uncapitalize.chomp("Weapon")
+  end
+
+  def to_s
+    "<#{self.class}> '#{@config[:name]}'"
   end
 
   # def refreshing?

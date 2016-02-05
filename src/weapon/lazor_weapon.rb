@@ -8,7 +8,7 @@ class LazorWeapon < Weapon
   def emit_lazors(config={})
     lazors = []
 
-    Logger.trace("preparing lazors for lvl #{@level}, conf #{config}")
+    Logger.trace("#{self} preparing lazors for lvl #{@level}, conf #{config}")
     level = @level - 1 ## Use zero-indexed levels for calculations
     bullet_conf = config.deep_clone
 
@@ -20,9 +20,9 @@ class LazorWeapon < Weapon
 
       offset_x = pos*(SPACE_BETWEEN )
 
-      bullet_conf[:position].x = base_x + offset_x  #+ (offset_x**3)/3.to_f
+      bullet_conf[:position].x = base_x + offset_x
 
-      Logger.trace("Shooting bullet #{i}, x: #{bullet_conf[:position].x}, offsetx #{offset_x}")
+      Logger.trace("#{self} Shooting bullet #{i}, x: #{bullet_conf[:position].x}, offsetx #{offset_x}")
       lazors << Bullet.new(bullet_conf)
     }
 
