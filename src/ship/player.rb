@@ -25,14 +25,6 @@ class Player < Ship
     self.position = Point.new(Graphics.width / 2, Graphics.height - self.height)
   end
 
-  def weapon_init(weapon_config)
-    weapon_config[:shooter] = self.ship_type
-    Logger.trace("About to create a new weapon. Config -> #{weapon_config}")
-    @weapon = LazorWeapon.new(weapon_config)
-    Logger.trace("#{self} has created a weapon! #{@weapon}.")
-  end
-
-
   # Scene update, one per frame
   def update
     super

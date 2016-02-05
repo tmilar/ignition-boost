@@ -73,7 +73,7 @@ class Ship
   def weapon_init(weapon_config)
     weapon_config[:shooter] = self.ship_type
     Logger.trace("About to create a new weapon. Config -> #{weapon_config}")
-    @weapon = Weapon.new(weapon_config)
+    @weapon = Weapon.create(weapon_config)
     Logger.trace("#{self} has created a weapon! #{@weapon}.")
   end
 
@@ -172,9 +172,10 @@ class Ship
   end
 
   def weapon=(new_weapon)
-    if new_weapon.key?(:name) && new_weapon[:name] != @weapon[:name]
-      Logger.trace("New weapon! #{new_weapon} ")
-      @weapon = Weapon.new(new_weapon)
+    if new_weapon.key?(:name) && (@weapon.nil? || (new_weapon[:name] != @weapon.name))
+      Logger.trace("Changed to New weapon! #{new_weapon} ")
+      weapon_init(new_weapon)
+      notify_observers("#{ship_type}_weapon_changed", @weapon)
       ### TODO SE for weapon change... and maybe a "reload" sound?
     else
       Logger.trace("#{new_weapon} is the same weapon as current.")

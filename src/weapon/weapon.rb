@@ -24,6 +24,17 @@ class Weapon
   MAX_LEVEL = 5 ### TODO define phases and levels for weapons...
 
   attr_accessors_delegate :@stats, :damage, :speed, :cooldown
+  attr_readers_delegate :@config, :name
+
+  def self.create(config = {})
+    weapon_type = config[:type]
+    Logger.debug("Creating Weapon type '#{weapon_type}'")
+    case weapon_type
+      when "lazor" then LazorWeapon.new(config)
+      when "ball" then BallWeapon.new(config)
+      else raise "Can't create Undefined weapon type '#{weapon_type}'!"
+    end
+  end
 
   def initialize(config = {})
     super(config)
