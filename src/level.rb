@@ -224,9 +224,14 @@ class Level
         'enemy_hit' => lambda { |lazor| lazor.dispose },
         'score' => lambda { |_| check_score_win },
         'powerup_grabbed' => lambda { |pup| apply_powerup(pup)},
+        'player_weapon_changed' => lambda { |weapon| observe_new_weapon(weapon)}
     }
     Logger.trace("Level received notification '#{msg}', with data #{data}... #{"But is not considered." unless reactions.key?(msg)}")
     reactions[msg].call(data) if reactions.key?(msg)
+  end
+
+  def observe_new_weapon(weapon)
+    weapon.add_observer(self)
   end
 
   def add_new_powerup(pup)
