@@ -141,6 +141,10 @@ class Point
   def to_s
     "(X:#{@x}, Y:#{@y})"
   end
+
+  def clone
+    Point.new(self.x, self.y)
+  end
 end # class Point
 #===============================================================================
 # Sprite
