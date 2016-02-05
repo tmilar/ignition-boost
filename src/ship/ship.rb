@@ -193,22 +193,24 @@ class Ship
       return
     end
 
-    if value.is_a?(Integer)
-      Logger.trace("Calling ':#{getter}+=' #{value} on #{self}")
-      current = self.send(getter)
-      new_val = current + value
-      self.send(setter, new_val)
-    elsif value.is_a?(Float)
-      Logger.trace("Calling ':#{getter}*=' #{value} on #{self}")
-      current = self.send(getter)
-      new_val = current * value
-      self.send(setter, new_val)
-    elsif value.kind_of?(Hash)
-      Logger.trace("Calling ':#{getter}=' #{value} on #{self}")
-      self.send(setter, value)
-    else
-      Logger.error("Unexpected type of value #{value} inputted for #{prop}, needs to be Float or Integer!")
+    valid_types = [Integer, Float, Hash]
+    if valid_types.none? { |type| type === value}
+      Logger.error("Unexpected type of value #{value} inputted for #{prop}, needs to be one of: #{valid_types}!")
+      return
     end
+
+    current = self.send(getter)
+
+    # calculate new value
+    if value.is_a?(Integer)
+      value += current
+    elsif value.is_a?(Float)
+      value *= current
+    end
+
+    # call setter for new value
+    Logger.trace("Calling ':#{setter}' #{value} on #{self} #{"(previous value was: #{current})" if current}")
+    self.send(setter, value)
   end
 
   def to_s
