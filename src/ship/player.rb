@@ -6,10 +6,14 @@ class Player < Ship
 
   DEFAULTS_PLAYER = {
       cells: 3,
+      limits: {
+          x: [0.0, 1.0],
+          y: [0.0, 1.0]
+      }
   }
 
   def initialize(config = {})
-    config = DEFAULTS_PLAYER.merge(config)
+    config = DEFAULTS_PLAYER.deep_merge(config)
     Logger.trace("Config before player super... Config -> #{config}, Ancestors are #{self.class.ancestors}")
     super(config)
     init_score
@@ -22,18 +26,17 @@ class Player < Ship
 
   # @Override Ship init_position
   def position_init
-    self.position = Point.new(Graphics.width / 2, Graphics.height - self.height)
+    self.position = Point.new(Graphics.width / 2 - self.width / 2, Graphics.height - 2*self.height)
   end
 
   # Scene update, one per frame
   def update
     super
-    ## TODO pendiente  updatear el cell sprite de la nave, segun la direccion...
   end
 
 
   def weapon_pos
-    Point.new(self.x, self.y - self.height)
+    Point.new(self.x + self.width/2, self.y - self.height / 2)
   end
 
   # @return [boolean check_shoot ] if true -> ship will shoot

@@ -10,15 +10,20 @@ class Explosion
     Logger.start("explosion", config)
     ship = config[:ship]
     explosion = config[:explosion]
+
+    expl_pos = ship.rectangle.center
     @sprite = Sprite.create({
-        x: ship.x,
-        y: ship.y,
+        x: expl_pos.x,
+        y: expl_pos.y,
         zoom_x: explosion[:zoom],
         zoom_y: explosion[:zoom],
         bitmap: explosion[:bitmap]
     })
+    # @sprite.x -= @sprite.bitmap.width / 2
+    # @sprite.y += @sprite.bitmap.height / 2
     @sprite.ox = @sprite.bitmap.width / 2
     @sprite.oy = @sprite.bitmap.height / 2
+
     @timer = explosion[:time]
     Sound.se(explosion[:DSE])
   end

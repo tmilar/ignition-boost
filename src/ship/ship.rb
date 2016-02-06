@@ -37,10 +37,6 @@ class Ship
           :nuke_power => 99            # Damage caused by nuke
       },
       :weapon => DEFAULT_WEAPON,
-      :position_limits => {         # Percentage limits ship can move, mostly for bosses
-          x: [0.0, 1.0],
-          y: [0.0, 1.0]
-      },
       :explosion => {
           bitmap: "explode",
           zoom: 1,
@@ -51,7 +47,7 @@ class Ship
   }
 
   # Delegate accessors to internal hashes
-  attr_readers_delegate :@config, :name, :position_limits, :explosion
+  attr_readers_delegate :@config, :name, :explosion, :limits
   attr_accessors_delegate :@stats, :power, :speed, :hp, :mhp, :collide_damage, :collide_resistance, :shoot_freq, :nuke_power
 
   #------------------------------------------------------------------------------#
@@ -84,7 +80,8 @@ class Ship
                                 bitmap: @config[:name],
                                 x: Graphics.width / 2,
                                 y: 0,
-                                cells: @config[:cells]
+                                cells: @config[:cells],
+                                limits: @config[:limits]
                             })
   end
 

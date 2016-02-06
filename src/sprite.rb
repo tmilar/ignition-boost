@@ -6,7 +6,8 @@ class Sprite
 
   @viewport = {}
 
-  EPSILON = 0.00001
+  ZERO_EPSILON = 0.00001
+  @@screen_rect = nil ## if screen ever changes, RECALCULATE this const too
 
   def self.create(args = {})
     defaults = {
@@ -26,8 +27,8 @@ class Sprite
     new_sprite.x = config[:x]
     new_sprite.y = config[:y]
     new_sprite.bitmap = Cache.space(config[:bitmap])
-    new_sprite.ox = new_sprite.width / 2
-    new_sprite.oy = new_sprite.height
+    new_sprite.ox = 0
+    new_sprite.oy = 0
     new_sprite.zoom_x = config[:zoom_x]
     new_sprite.zoom_y = config[:zoom_y]
     new_sprite.name = config[:name] || config[:bitmap]
@@ -38,6 +39,14 @@ class Sprite
 
     # Logger.debug("Created new sprite: #{self}. ")
     new_sprite.init_cells(config[:cells]) if config[:cells] > 1
+    new_sprite.init_limits(config[:limits])
+    new_sprite
+  end
+
+  def self.empty(pos=nil)
+    new_sprite = Sprite.new(@viewport)
+    new_sprite.x = pos.x if pos
+    new_sprite.y = pos.y if pos
     new_sprite
   end
 
@@ -48,16 +57,52 @@ class Sprite
     @cel_width = width / @cells_qty
     self.src_rect.set(@cell * @cel_width, 0, @cel_width, height)
 
-    self.ox = @cel_width / 2
-    self.oy = height
+    # self.ox = 0 # @cel_width / 2
+    # self.oy = 0 # height
     self.rectangle = Rectangle.new(self.x,
                                    self.y,
                                    @cel_width,
                                    self.height)
   end
 
-  def self.setup_viewport(viewport)
+
+  #/// sprite limits ///
+  # player: @@screen_rect
+  # enemy: (screen + size).limit
+  # items: screen + size
+  def init_limits(config_limits = nil)
+
+    if config_limits.nil?
+      @limits = @@screen_rect.expand(self.rectangle)
+      Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle}.")
+      # @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
+
+    else
+      @limits = @@screen_rect.limit(config_limits)
+      # @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
+      Logger.debug("#{self} initialized limits #{@limits} by limiting #{@@screen_rect} with #{config_limits}.")
+
+      # @limits = Rectangle.new(Graphics.width * limits[:x][0],
+      #                         Graphics.height * limits[:y][0],
+      #                         Graphics.width * limits[:x][1],
+      #                         Graphics.height * limits[:y][1])
+    end
+
+    # Logger.debug("#{self} initialized limits! -> #{@limits}")
+  end
+
+  def valid_config_limits?(limits)
+    !limits.nil? &&
+        !limits.empty? &&
+        limits.key?(:x) &&
+        limits.key?(:y) &&
+        limits[:x].size.equal?(2) &&
+        limits[:y].size.equal?(2)
+  end
+
+  def self.setup(viewport)
     @viewport = viewport
+    @@screen_rect = Rectangle.new(0,0,Graphics.width, Graphics.height)
   end
 
   def self.viewport
@@ -69,17 +114,31 @@ class Sprite
   end
 
   def position=(position)
-    return Logger.warn("#{self} has been disposed, can't set new position!") if disposed?
     raise "ERROR New position  for sprite #{self} is nil!" if position.nil?
-    self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
+    return Logger.warn("#{self} has been disposed, can't set new position!") if disposed?
+
+    old_rect = self.rectangle
+    new_rect = Rectangle.new(position.x, position.y, self.width, self.height)
+    if out_of_limits?(new_rect)
+      self.rectangle = old_rect
+      return
+    end
+
+    self.rectangle = new_rect
+    old_rect.dispose
+
+    # self.rectangle = new_rect
     check_cells(self.x, position.x)
     self.x = position.x
     self.y = position.y
   end
 
+  def out_of_limits?(new_rect)
+    !new_rect.collides?(@limits)
+  end
+
   def check_out_of_screen
-    screen = Rectangle.new(0,0,Graphics.width, Graphics.height)
-    if self.rectangle && !self.rectangle.collide_rect?(screen)
+    if self.rectangle && !self.rectangle.collide_rect?(@@screen_rect)
       Logger.debug("#{self} went out of screen! Disposing...")
       dispose
     end
@@ -87,10 +146,10 @@ class Sprite
 
   def check_cells(old_x, new_x)
     return if @cell.nil?
-    direction = new_x.to_f - old_x.to_f
-    return @cell = 0 if direction < -EPSILON
-    return @cell = 2 if direction > EPSILON
-    return @cell = 1 if direction.between?(-EPSILON, EPSILON)
+    offset_x = new_x.to_f - old_x.to_f
+    return @cell = 0 if offset_x < -ZERO_EPSILON
+    return @cell = 2 if offset_x > ZERO_EPSILON
+    return @cell = 1 if offset_x.between?(-ZERO_EPSILON, ZERO_EPSILON)
   end
 
   def reset_cell

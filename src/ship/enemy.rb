@@ -4,11 +4,14 @@ class Enemy < Ship
 
   DEFAULTS_ENEMY = {
       cells: 1,
+      # limits: {
+      #     x: [0.0, 1.0],
+      #     y: [0.0, 1.0]
+      # }
   }
   def initialize(config = {})
-    config = DEFAULTS_ENEMY.merge(config)
+    config = DEFAULTS_ENEMY.deep_merge(config)
     super(config)
-    self.limits.height += self.height
   end
 
   def position_init
@@ -16,7 +19,7 @@ class Enemy < Ship
   end
 
   def weapon_pos
-    Point.new(self.x, self.y)
+    Point.new(self.x + self.width/2, self.y + self.height)
   end
 
   def check_shoot
