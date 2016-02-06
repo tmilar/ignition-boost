@@ -2,7 +2,7 @@ class Sprite
 
   attr_accessor :rectangle
   attr_accessor :name
-  attr_accessor :cell
+  attr_reader :cell
 
   @viewport = {}
 
@@ -15,11 +15,12 @@ class Sprite
         bitmap: "NO_IMAGE",
         zoom_x: 1,
         zoom_y: 1,
-        name: "DEFAULT_NAME",
+        name: nil,
         cells: 1
     }
 
     config = defaults.merge(args)
+    # Logger.start("sprite", args, defaults)
 
     new_sprite = Sprite.new(@viewport)
     new_sprite.x = config[:x]
@@ -29,7 +30,7 @@ class Sprite
     new_sprite.oy = new_sprite.height
     new_sprite.zoom_x = config[:zoom_x]
     new_sprite.zoom_y = config[:zoom_y]
-    new_sprite.name = config[:name]
+    new_sprite.name = config[:name] || config[:bitmap]
     new_sprite.rectangle = Rectangle.new(new_sprite.x,
                                          new_sprite.y,
                                          new_sprite.width,
@@ -86,9 +87,10 @@ class Sprite
 
   def check_cells(old_x, new_x)
     return if @cell.nil?
-    @cell = 0 if new_x.to_f - old_x.to_f < -EPSILON
-    @cell = 1 if (new_x.to_f - old_x.to_f).between?(-EPSILON, EPSILON)
-    @cell = 2 if new_x.to_f - old_x.to_f > EPSILON
+    direction = new_x.to_f - old_x.to_f
+    return @cell = 0 if direction < -EPSILON
+    return @cell = 2 if direction > EPSILON
+    return @cell = 1 if direction.between?(-EPSILON, EPSILON)
   end
 
   def reset_cell
