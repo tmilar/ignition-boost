@@ -20,8 +20,8 @@ class Bullet
     super(config)
     @sprite = Sprite.create({ name: config[:name],
                               bitmap: config[:name]})
+    @sprite.ox = self.width / 2
     self.position = config[:position]
-    self.limits.height += self.height
 
     @direction = config[:direction]
     @stats = config[:stats]
