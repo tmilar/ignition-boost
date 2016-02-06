@@ -53,8 +53,8 @@ end # module Nap
 # ■ class Rectangle
 #===============================================================================
 class Rectangle
-  attr_accessor :x
-  attr_accessor :y
+  attr_reader :x
+  attr_reader :y
   attr_accessor :width
   attr_accessor :height
 
@@ -64,8 +64,12 @@ class Rectangle
 
   def initialize(x=0, y=0, width=0, height=0)
     @x, @y, @width, @height = x, y, width, height
+    @show_borders = IB::DEBUG.key?(:borders) && IB::DEBUG[:borders]
+    if @show_borders
+      draw_borders
+      update_borders
+    end
   end
-
 #===============================================================================
 # Basic methods
 #=============================================================================== 
@@ -94,11 +98,11 @@ class Rectangle
   end
 
   def bottomright
-    Point.new(@right, @bottom)
+    Point.new(right, bottom)
   end
 
   def bottomleft
-    Point.new(@x, @bottom)
+    Point.new(@x, bottom)
   end
 
   def center
@@ -144,6 +148,10 @@ class Rectangle
   def collide_rect?(other_rect)
     !intersects(other_rect).empty?
   end
+
+  def collides?(other_rect)
+    collide_rect?(other_rect)
+  end
 #-----------------------------------------------------------------------------
 # returns the intersection area as a rectangle. If there is no intersection
 # then an empty rectangle will be returned.
@@ -160,7 +168,36 @@ class Rectangle
   end
 #===============================================================================
 # Misc
-#===============================================================================  
+#===============================================================================
+  def x=
+    @x = x
+    if @show_borders
+    @borders.each { |b| b.x = x }
+    update_borders
+    end
+
+  end
+
+  def y=
+    @y = y
+    if @show_borders
+    @borders.each { |b| b.y = y }
+    update_borders
+    end
+  end
+
+  def center=(center)
+    current = self.center
+    new_center = current + center
+    @x = new_center.x
+    @y = new_center.y
+  end
+
+  def dispose
+    clear_borders
+    # @borders.each { |b| b.dispose }
+  end
+
   def add_point(point)
     @x += point.x
     @y += point.y
@@ -270,5 +307,53 @@ class Rectangle
 
   def to_s
     "(X:#{@x}, Y:#{@y}, W:#{@width}, H:#{@height})"
+  end
+
+  #===============================================================================
+  # Debugging : borders
+  #===============================================================================
+  def update_borders
+    @borders.each { |b| b.update }
+  end
+
+  def clear_borders
+    return unless @borders
+    @borders.delete_if { |b|
+      b.bitmap.clear
+      b.bitmap.dispose
+      b.dispose
+      true
+    }
+  end
+
+  def draw_borders
+    clear_borders
+    @top_line = draw_line(topleft, topright, "top")  unless @top_line
+    @bot_line = draw_line(bottomleft, bottomright, "bot") unless @bot_line
+    @right_line = draw_line(topright, bottomright, "right") unless @right_line
+    @left_line = draw_line(topleft, bottomleft, "left") unless @left_line
+    @borders = [@top_line, @bot_line, @right_line, @left_line]
+  end
+
+  def draw_line(orig, dest, side)
+    min_width = 1
+    size = Point.new([(dest.x-orig.x),min_width].max, [(dest.y-orig.y),min_width].max)
+    # colored_rect = Rectangle.new(orig.x, orig.y, size.x, size.y).to_rect
+    # Logger.trace("#{self} drawing #{side} line, from #{orig} to #{dest}. Abs size: #{size}")
+    line = Sprite.empty(orig)#(Sprite.viewport)
+
+    # line.x = orig.x
+    # line.y = orig.y
+    line.z = 99999
+    # line = Bitmap.new(size.x, size.y)
+    # line.fill_rect(orig.x, orig.y, size.x, size.y, Color.new(255, 100, 0))
+
+    line.bitmap = Bitmap.new(size.x, size.y)
+    # line.bitmap.fill_rect(orig.x, orig.y, size.x, size.y, Color.new(255, 100, 0))
+    line.bitmap.fill_rect(line.bitmap.rect, Color.new(200, 50, 50))
+
+
+    line
+
   end
 end # class Rectangle
