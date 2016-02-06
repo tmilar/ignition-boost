@@ -70,6 +70,37 @@ class Rectangle
       update_borders
     end
   end
+
+  # A center-expanded (in all directions) rectangle, using other_rect size
+  def expand(other_rect)
+    raise "Can't expand, without a valid Rectangle!" unless other_rect.is_a?(Rectangle)
+    Rectangle.new(@x - other_rect.width, @y - other_rect.height, @width + 2*other_rect.width, @height + 2*other_rect.height)
+  end
+
+  # param [config] : hash  { :x => [rel_min_x, rel_max_x], :y => [rel_min_y, rel_max_y] }
+  # return new limited rectangle
+  def limit(config)
+    unless !config.nil? &&
+        !config.empty? &&
+        (config.key?(:x) ||  config.key?(:y))
+      raise "invalid rectangle hash config : #{config}"
+    end
+
+    default_min = 0.0
+    default_max = 1.0
+
+    offset_left = config.key?(:x) ? (config[:x][0] || default_min) : default_min
+    offset_right = config.key?(:x) ? (config[:x][1] || default_max)  : default_max
+    offset_top = config.key?(:y) ? (config[:y][0] || default_min)  : default_min
+    offset_bot = config.key?(:y) ? (config[:y][1] || default_max)  : default_max
+
+    Rectangle.new(left * (1 - offset_left),   #x
+                  top * (1 - offset_top),     #y
+                  right * offset_right,       #width
+                  bottom *   offset_bot          #height
+    )
+  end
+
 #===============================================================================
 # Basic methods
 #=============================================================================== 
