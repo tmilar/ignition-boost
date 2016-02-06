@@ -1,54 +1,9 @@
 class Level
   include Subject
 
-  # basic enemy ship config
-  DEFAULT_ENEMY1 = {
-      :name => 'alien1',
-      :stats => {
-          :power => 1,
-          :speed => 1,
-          :hp => 2,
-          :collide_damage => 4,
-          :shoot_freq => 0,               # Start shooting frequency for enemy
-          :shoot_increment => 1,          # Shooting frequency increment - cada cierto tiempo se suma esta cantidad
-          :shoot_increment_rate => 100    # Cada cuanto tiempo se aplica el SHOOT_INCREMENT al SHOOT_FREQ
-      },
-      :weapon => {
-          :name => 'elazor',
-          :type => 'elazor',
-          :damage => 1,
-          :speed => 5,
-          :SE => ['Attack2', 80, 110]
-      },
-      :DSE => ['Fire3', 90, 150], # "SE_Name",volume,pitch - SE for enemy dying
-      # :movement => :linear_movement #### TODO! DEFINIR BIEN los MOVEMENT STYLES
-  }
-
-  # basic enemy ship config
-  DEFAULT_ENEMY2 = {
-      :name => 'alien2',
-      :stats => {
-          :power => 1,
-          :speed => 1,
-          :hp => 3,
-          :collide_damage => 4,
-          :shoot_freq => 0,             ## TODO por ahora esto remplazara la @difficulty
-          :shoot_increment => 1,
-          :shoot_increment_freq => 100
-      },
-      :weapon => {
-          :name => 'elazor',
-          :type => 'elazor',
-          :damage => 2,
-          :speed => 5,
-          :SE => ['Attack2', 80, 110]
-      },
-      :DSE => ['Fire2', 90, 150], # "SE_Name",volume,pitch - SE for enemy dying
-  }
-
   DEFAULTS = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
-      name: 'first_level',            # Level name - Solo estetico.
+      name: 'DEFAULT_LEVEL_NAME',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
       target_score: 50,
       spawner: {
@@ -76,13 +31,13 @@ class Level
           },
       },
       powerup_spawner: {
-          frequency: 50,              # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
-          destructible?: false,       # Can pups can be destroyed by bullets?
-          phases: {                   # PowerUp spawner can also be divided in Phases (or use one only)
+          # frequency: 0,              # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          # destructible?: false,       # Can pups can be destroyed by bullets?
+          # phases: {                   # PowerUp spawner can also be divided in Phases (or use one only)
               # 1 => {
               #     powerups: []
               # }
-          }
+          # }
       }
   }
 
@@ -109,10 +64,9 @@ class Level
   end
 
   def init_spawners
-    spawner_config = @config[:spawner]
-
-    @enemy_spawner = Spawner.new(spawner_config)
+    @enemy_spawner = Spawner.new(@config[:spawner])
     @enemy_spawner.add_observer(self)
+
     @pup_spawner = PowerUpSpawner.new(@config[:powerup_spawner])
     @pup_spawner.add_observer(self)
   end
@@ -128,13 +82,7 @@ class Level
     @plazors = []
     @elazors = []
     @explosions = []
-    @pups = [] << PowerUp.new({
-                                  name: "powerup1",
-                                  target: "player",
-                                  weapon: {
-                                      level: +1
-                                  }
-                              })
+    @pups = []
   end
 
   def update
