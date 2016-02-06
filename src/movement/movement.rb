@@ -11,30 +11,8 @@ module Movement
 
   def initialize(config = {})
     super(config)
-    init_limits(config[:position_limits])
-  end
 
-  def init_limits(defined_limits = nil)
-
-    if valid_config_limits?(defined_limits)
-      @limits = Rectangle.new(Graphics.width * limits[:x][0],
-                              Graphics.height * limits[:y][0],
-                              Graphics.width * limits[:x][1],
-                              Graphics.height * limits[:y][1])
-    else
-      @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
-    end
-
-    Logger.debug("initialized limits! -> #{@limits}")
-  end
-
-  def valid_config_limits?(limits)
-    !limits.nil? &&
-        !limits.empty? &&
-        limits.key?(:x) &&
-        limits.key?(:y) &&
-        limits[:x].size.equal?(2) &&
-        limits[:y].size.equal?(2)
+    # @logged_dir = false
   end
 
   def update
