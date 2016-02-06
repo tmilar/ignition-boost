@@ -70,13 +70,13 @@ class PowerUp
   WEAPON2_CHANGE_PUP = {
       name: "powerup2",
       target: "player",
-      weapon: IB::WEAPON2      # Weapon to change. If weapon is repeated, level will go up +1 instead.
+      weapon: IB::BALL_WEAPON # Weapon to change. If weapon is repeated, level will go up +1 instead.
   }
 
   WEAPON1_CHANGE_PUP = {
       target: "player",
       name: "powerup3",
-      weapon: IB::WEAPON1
+      weapon: IB::LAZOR_WEAPON
   }
 
   extend Forwardable
@@ -101,7 +101,8 @@ class PowerUp
     @sprite = Sprite.create({
         x: rand(Graphics.width),
         y: 0,
-        bitmap: @config[:name]
+        bitmap: @config[:name],
+        name: @config[:name]
     })
   end
 
