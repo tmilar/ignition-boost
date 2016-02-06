@@ -8,7 +8,7 @@ module IB
   # **** WEAPONS ****
   #-------------------------------------------------------------------------------
 
-  WEAPON1 = {
+  LAZOR_WEAPON = {
       name: "lazor1",         # weapon name (also lazor image '.png' name)
       type: "lazor",          # weapon type // IGNORAR esto por ahora, no hace nada //
       stats: {
@@ -21,7 +21,7 @@ module IB
       level: 1,               # starting weapon level (optional, default 1)
   }
 
-  WEAPON2 = {
+  BALL_WEAPON = {
       name: "lazor2",         # weapon name (also lazor image '.png' name)
       type: "ball",           # weapon type // IGNORAR esto por ahora, no hace nada //
       stats: {
@@ -44,13 +44,13 @@ module IB
       stats: {
           power: 1,
           speed: 5,
-          hp: 5,
+          hp: 30,
           collide_damage: 99,
           collide_resistance: 0,
           shoot_freq: 0,             ## TODO por ahora esto remplazara la @difficulty
           nuke_power: 99            # Damage caused by nuke
       },
-      weapon: WEAPON1
+      weapon: LAZOR_WEAPON
   }
 
   #-------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ module IB
       },
       weapon: {
           name: "elazor1",
-          type: "elazor",
+          type: "lazor",
           stats: {
               damage: 1,              # bullet damage
               speed: 5,               # bullet speed
@@ -97,7 +97,7 @@ module IB
       hp: 3,
       weapon: {
           name: "elazor2",
-          type: "elazor",
+          type: "lazor",
           stats: {
               damage: 1,              # bullet damage
               speed: 5,               # bullet speed
@@ -111,15 +111,15 @@ module IB
   BOSS1 = {
       name: "boss1",
       stats: {
-          power: 1,
+          power: 4,
           speed: 1,
-          hp: 3,
+          hp: 20,
           collide_damage: 9999,
           collide_resistance: 9999,
           shoot_freq: 15,
       },
       weapon: {
-          type: "elazor",
+          type: "lazor",
           stats: {
               damage: 2,              # bullet damage
               speed: 6,               # bullet speed
@@ -140,13 +140,13 @@ module IB
   # PowerUps.
   # Los powerUp multiplican o suman a un stat. Si el valor es +ENTERO o -ENTERO, sera suma/resta.
   # Si es DECIMAL (con "punto" - de 0.0 en adelante) es un factor que se MULTIPLICA. Ej. 0.1, 1.5, 2.0, etc..
-  # Por ahora ademas, lo que puede cambiar es>
+  # Por ahora, ademas, lo que puede cambiar es>
   # >>> del JUEGO ->  spawn_cooldown  ; y  stats de naves
   REPAIR_PUP = {
       name: "powerup0",     # PowerUp name, also must match image name
       target: "player",     # Target : "player", o "enemies" . DEFAULT: "player"
       stats: {              # stats that will change
-                            hp: +100
+          hp: +100          # increase hp
       },
       frequency: 20         # [Optional] frequency pup will appear. Default: powerup spawner frequency
   }
@@ -165,6 +165,13 @@ module IB
       stats: {
           speed: +1
       },
+  }
+
+  HP_DOWN = {
+      name: "hp_down_pup",
+      stats: {
+          hp: -1
+      }
   }
 
   SLOW_ENEMY_PUP = {
@@ -197,19 +204,17 @@ module IB
   }
 
   # Weapon change power up. Will change current weapon with other one...
-  # TODAVIA NO FUNCA
-  WEAPON2_CHANGE_PUP = {
-      name: "powerup2",
+  BALL_WEAPON_CHANGE_PUP = {
+      name: "powerup4",
       target: "player",
-      weapon: WEAPON2      # Weapon to change. If weapon is repeated, level will go up +1 instead.
+      weapon: BALL_WEAPON # Weapon to change. If weapon is repeated, level will go up +1 instead.
   }
 
   # Weapon change power up. Will change current weapon with other one...
-  # TODAVIA NO FUNCA
-  WEAPON1_CHANGE_PUP = {
+  LAZOR_WEAPON_CHANGE_PUP = {
       target: "player",
-      name: "powerup3",
-      weapon: WEAPON1
+      name: "powerup2",
+      weapon: LAZOR_WEAPON
   }
 
   #-------------------------------------------------------------------------------
@@ -235,23 +240,23 @@ module IB
               },
               3 => {
                   enemies: [BOSS1],
-                  start: 10,
+                  start: 20,
                   max_spawn: 1,
                   BGM: ["Battle3", 60, 110]
               }
-          },
-          powerup_spawner: {
-              frequency: 25,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
-              phases: {                    # Powerup spawner can also have phases!
-                                           1 => {
-                                               powerups: [REPAIR_PUP, WEAPON_UP],
-                                           }
-              },
-              destructible?: false         # Can pups can be destroyed by bullets? (default: false)
           }
       },
+      powerup_spawner: {
+          frequency: 20,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                                       # Powerup spawner can also have phases!
+              1 => {                                      # phase 1 (can define others, with propertis such as "start", "end", "max_spawn" & "BGM")
+                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP],
+              }
+          },
+          # destructible?: false                            # Can pups can be destroyed by bullets? (default: false)
+      },
       BGM: ["Battle2", 60, 110],
-      target_score: 50
+      target_score: 100
   }
 
 
@@ -260,7 +265,7 @@ module IB
       backdrop: 'backdrop',           # FONDO imagen .jpg
       name: 'first_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
-      target_score: 50,
+      target_score: 100,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
@@ -268,27 +273,53 @@ module IB
           phases: {
               1 => {
                   enemies: [ENEMIGO1, ENEMIGO2],
-                  start: 5, # time when phase can start spawning enemies
+                  start: 15, # time when phase can start spawning enemies
                   spawn_cooldown: 75, # phases can use different spawn_cooldowns
                   spawn_decrement_amount: 1,
                   spawn_decrement_freq: 60
               },
               2 => {
                   enemies: [ENEMIGO2],
-                  start: 15         # time when phase can start spawning enemies
+                  start: 20         # time when phase can start spawning enemies
               }
           }
       },
       powerup_spawner: {
-          frequency: 25,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          frequency: 45,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                    # Powerup spawner can also have phases!
-                                       1 => {
-                                           powerups: [REPAIR_PUP, WEAPON_UP],
-                                       }
+              1 => {                     # phase 1
+                 powerups: [SPEED_UP, WEAPON_UP, REPAIR_PUP],
+              }
           },
           destructible?: false         # Can pups can be destroyed by bullets?
       }
   }
+
+  TEST_LEVEL = {
+      backdrop: 'backdrop',           # FONDO imagen .jpg
+      name: 'test_level',            # Level name - Solo estetico.
+      BGM: ['Battle2', 60, 110],
+      target_score: 100,
+      spawner: {
+          spawn_cooldown: 500,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          phases: {
+              1 => {
+                  enemies: [ENEMIGO1, ENEMIGO2],
+                  max_spawn: 5,
+                  start: 0, # time when phase can start spawning enemies
+              },
+          }
+      },
+      powerup_spawner: {
+          # frequency: 10,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          # phases: {                    # Powerup spawner can also have phases!
+          #                              1 => {                     # phase 1
+          #                                                         powerups: [SPEED_UP, WEAPON_UP, HP_DOWN, REPAIR_PUP],
+          #                              }
+          # },
+      }
+  }
+
 
   #-------------------------------------------------------------------------------
   #  OTHER CONFIG
@@ -307,11 +338,15 @@ module IB
 
   SOUND_TIMER = 5       # Prevent enemy lazor sound spam by increasing this
 
+  DEBUG = {
+      # borders: true  ## draw rectangle borders
+  }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
-  CURRENT_LEVEL = LEVEL1
+
+  CURRENT_LEVEL = LEVEL1 #MY_POWERUP_LEVEL
   PLAYER_SHIP = NAVE_BASE
 
 end
