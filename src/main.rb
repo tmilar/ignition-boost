@@ -21,7 +21,7 @@ class Main_IB < Scene_Base
 
   def configure
     Cache.relative_path(IB::GRAPHICS_ROOT)
-    Sprite.setup_viewport(@viewport1)
+    Sprite.setup(@viewport1)
   end
 
   def init_variables
