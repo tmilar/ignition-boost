@@ -18,14 +18,14 @@ class PowerUpSpawner < Spawner
   }
 
   DEFAULTS = {
-      frequency: 5,
+      frequency: 0,
       spawn_cooldown: 100,
       spawn_decrement_amount: -0,     # DEFAULT 0, cantidad en que se reduce el cooldown base
       spawn_decrement_freq: 100,      # DEFAULT 100, tiempo que tarda en reducirse el cd
       phases: {
-          1 => {
-              powerups: [REPAIR_PUP, WEAPON_UP],
-          }
+          # 1 => {
+          #     powerups: [REPAIR_PUP, WEAPON_UP],
+          # }
       },
       destructible?: false         # Can pups can be destroyed by bullets?
   }

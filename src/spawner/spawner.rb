@@ -6,7 +6,7 @@ class Spawner
       spawn_cooldown: 100,
       spawn_decrement_amount: 1,      # DEFAULT 1, cantidad en que se reduce el cooldown base
       spawn_decrement_freq: 100,      # DEFAULT 100, tiempo que tarda en reducirse el cd
-      phases: []
+      phases: {}
   }
   def initialize(config)
     super(config)
@@ -89,7 +89,7 @@ class Spawner
           (phase[:end] && Main_IB.game_time >= phase[:end] )
     }
 
-    Logger.trace("checking phases.... \nCurrent phases: #{@current_phases}. \nNext phases: #{@next_phases}. \nFinished: #{@finished_phases}. SpawnTimer: #{@spawn_timer},\nGame time: #{Main_IB.game_time})")
+    # Logger.trace("checking phases.... \nCurrent phases: #{@current_phases}. \nNext phases: #{@next_phases}. \nFinished: #{@finished_phases}. SpawnTimer: #{@spawn_timer},\nGame time: #{Main_IB.game_time})")
 
     new_phases = @current_phases - old_phases
 
