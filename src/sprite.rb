@@ -68,12 +68,20 @@ class Sprite
   end
 
   def position=(position)
+    return Logger.warn("#{self} has been disposed, can't set new position!") if disposed?
     raise "ERROR New position  for sprite #{self} is nil!" if position.nil?
     self.rectangle = Rectangle.new(position.x, position.y, self.width, self.height)
     check_cells(self.x, position.x)
     self.x = position.x
     self.y = position.y
+  end
 
+  def check_out_of_screen
+    screen = Rectangle.new(0,0,Graphics.width, Graphics.height)
+    if self.rectangle && !self.rectangle.collide_rect?(screen)
+      Logger.debug("#{self} went out of screen! Disposing...")
+      dispose
+    end
   end
 
   def check_cells(old_x, new_x)
@@ -98,9 +106,11 @@ class Sprite
 
   alias_method :sprite_update, :update
   def update
+    return Logger.warn("#{self} has been disposed, can't set new position!") if disposed?
     update_cell
     sprite_update
     reset_cell
+    check_out_of_screen
   end
 
   def update_cell

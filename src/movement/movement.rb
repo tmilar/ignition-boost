@@ -50,6 +50,7 @@ module Movement
   # Method to be included in movible game objects.
   # direction can be a Symbol (:LEFT, :UP, :DOWN, :RIGHT ) or a Point vector object
   def move(direction = Point.new(1, 0), calculated_speed = false)
+    return Logger.debug("#{self} can't move, is disposed!") if disposed?
     dir_xy = parse_direction(direction)
     # Logger.trace("[#{self}] Trying to move sprite to direction: #{dir_xy}, stats are: #{self.stats}")
     speed = calculated_speed || self.speed
