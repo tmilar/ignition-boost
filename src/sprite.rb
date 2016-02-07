@@ -37,7 +37,6 @@ class Sprite
                                          new_sprite.width,
                                          new_sprite.height)
 
-    # Logger.debug("Created new sprite: #{self}. ")
     new_sprite.init_cells(config[:cells]) if config[:cells] > 1
     new_sprite.init_limits(config[:limits])
     new_sprite
@@ -57,8 +56,6 @@ class Sprite
     @cel_width = width / @cells_qty
     self.src_rect.set(@cell * @cel_width, 0, @cel_width, height)
 
-    # self.ox = 0 # @cel_width / 2
-    # self.oy = 0 # height
     self.rectangle = Rectangle.new(self.x,
                                    self.y,
                                    @cel_width,
@@ -73,22 +70,14 @@ class Sprite
   def init_limits(config_limits = nil)
 
     if config_limits.nil?
-      @limits = @@screen_rect.expand(self.rectangle)
-      Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle}.")
-      # @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
-
+      excess_limits = 20
+      @limits = @@screen_rect.expand(self.rectangle).expand!(excess_limits)
+      Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle} & excess: #{excess_limits}")
     else
       @limits = @@screen_rect.limit(config_limits)
-      # @limits = Rectangle.new(0, 0, Graphics.width, Graphics.height)
       Logger.debug("#{self} initialized limits #{@limits} by limiting #{@@screen_rect} with #{config_limits}.")
-
-      # @limits = Rectangle.new(Graphics.width * limits[:x][0],
-      #                         Graphics.height * limits[:y][0],
-      #                         Graphics.width * limits[:x][1],
-      #                         Graphics.height * limits[:y][1])
     end
 
-    # Logger.debug("#{self} initialized limits! -> #{@limits}")
   end
 
   def valid_config_limits?(limits)
@@ -127,14 +116,13 @@ class Sprite
     self.rectangle = new_rect
     old_rect.dispose
 
-    # self.rectangle = new_rect
     check_cells(self.x, position.x)
     self.x = position.x
     self.y = position.y
   end
 
   def out_of_limits?(new_rect)
-    !new_rect.collides?(@limits)
+    !new_rect.included_in?(@limits)
   end
 
   def check_out_of_screen
