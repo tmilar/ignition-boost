@@ -15,7 +15,7 @@ class Enemy < Ship
   end
 
   def position_init
-    self.position = Point.new( rand(Graphics.width) , 0 )
+    self.position = Point.new( rand(Graphics.width) , 0 - self.height + 1 )
   end
 
   def weapon_pos

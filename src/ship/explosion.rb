@@ -21,8 +21,7 @@ class Explosion
     })
     # @sprite.x -= @sprite.bitmap.width / 2
     # @sprite.y += @sprite.bitmap.height / 2
-    @sprite.ox = @sprite.bitmap.width / 2
-    @sprite.oy = @sprite.bitmap.height / 2
+    @sprite.position -= Point.new(@sprite.bitmap.width / 2, @sprite.bitmap.height / 2)
 
     @timer = explosion[:time]
     Sound.se(explosion[:DSE])

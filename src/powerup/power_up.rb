@@ -99,11 +99,10 @@ class PowerUp
 
   def init_sprite
     @sprite = Sprite.create({
-        x: rand(Graphics.width),
-        y: 0,
         bitmap: @config[:name],
         name: @config[:name]
     })
+    @sprite.position = Point.new( rand(Graphics.width) , - self.height + 1 )
   end
 
   def update
