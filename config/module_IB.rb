@@ -9,7 +9,7 @@ module IB
   #-------------------------------------------------------------------------------
 
   LAZOR_WEAPON = {
-      name: "lazor1",         # weapon name (also lazor image '.png' name)
+      name: "lazor",         # weapon name (also lazor image '.png' name)
       type: "lazor",          # weapon type // IGNORAR esto por ahora, no hace nada //
       stats: {
           damage: 1,              # bullet damage
@@ -22,12 +22,12 @@ module IB
   }
 
   BALL_WEAPON = {
-      name: "lazor2",         # weapon name (also lazor image '.png' name)
+      name: "lazor_ball",         # weapon name (also lazor image '.png' name)
       type: "ball",           # weapon type // IGNORAR esto por ahora, no hace nada //
       stats: {
           damage: 1,              # bullet damage
-          speed: 5,               # bullet speed
-          cooldown: 5,
+          speed: 7,               # bullet speed
+          cooldown: 7,
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
       level: 1,               # starting weapon level (optional)
@@ -205,7 +205,7 @@ module IB
 
   # Weapon change power up. Will change current weapon with other one...
   BALL_WEAPON_CHANGE_PUP = {
-      name: "powerup4",
+      name: "powerup2",
       target: "player",
       weapon: BALL_WEAPON # Weapon to change. If weapon is repeated, level will go up +1 instead.
   }
@@ -213,7 +213,7 @@ module IB
   # Weapon change power up. Will change current weapon with other one...
   LAZOR_WEAPON_CHANGE_PUP = {
       target: "player",
-      name: "powerup2",
+      name: "powerup4",
       weapon: LAZOR_WEAPON
   }
 
@@ -295,13 +295,13 @@ module IB
       }
   }
 
-  TEST_LEVEL = {
+  TEST_MECHANICS_LEVEL = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
       name: 'test_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
       target_score: 100,
       spawner: {
-          spawn_cooldown: 500,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          spawn_cooldown: 1000,            # Default 100 (mismo que Galv SPAWN_SPEED)
           phases: {
               1 => {
                   enemies: [ENEMIGO1, ENEMIGO2],
@@ -320,6 +320,55 @@ module IB
       }
   }
 
+  TEST_STRESS_LEVEL = {
+      name: 'STRESS level',
+      backdrop: 'backdrop',
+      spawner: {
+          spawn_cooldown: 1,
+          phases: {
+              1 => {
+                  enemies: [ENEMIGO1, ENEMIGO2],
+                  start: 0,             #time phase can start spawning enemies
+              },
+              2 => {
+                  enemies: [ENEMIGO2],
+                  start: 0,
+                  end: 10,
+                  BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
+              },
+              3 => {
+                  enemies: [BOSS1],
+                  start: 4,
+                  max_spawn: 5,
+                  BGM: ["Battle3", 60, 110]
+              }
+          }
+      },
+      powerup_spawner: {
+          frequency: 100,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                                       # Powerup spawner can also have phases!
+              1 => {                                      # phase 1 (can define others, with propertis such as "start", "end", "max_spawn" & "BGM")
+                powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP], #blabla
+              }
+          },
+      },
+      BGM: ["Battle2", 60, 110],
+      target_score: 100
+  }
+
+  TEST_STRESS_SHIP = {
+      name: "player_ship",
+      stats: {
+          power: 1,
+          speed: 5,
+          hp: 1000,
+          collide_damage: 99,
+          collide_resistance: 0,
+          shoot_freq: 0,             ## TODO por ahora esto remplazara la @difficulty
+          nuke_power: 99            # Damage caused by nuke
+      },
+      weapon: LAZOR_WEAPON
+  }
 
   #-------------------------------------------------------------------------------
   #  OTHER CONFIG
@@ -340,13 +389,14 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
+      logger_level: 5  # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
 
-  CURRENT_LEVEL = LEVEL1 #MY_POWERUP_LEVEL
-  PLAYER_SHIP = NAVE_BASE
+  CURRENT_LEVEL = LEVEL1 #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #LEVEL1 #MY_POWERUP_LEVEL
+  PLAYER_SHIP = NAVE_BASE #NAVE_BASE #TEST_STRESS_SHIP
 
 end
