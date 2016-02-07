@@ -77,6 +77,26 @@ class Rectangle
     Rectangle.new(@x - other_rect.width, @y - other_rect.height, @width + 2*other_rect.width, @height + 2*other_rect.height)
   end
 
+
+  # Center-expand (in all directions) this rectangle, using other_rect size or a constant value
+  def expand!(expansion)
+    case expansion
+      when Rectangle
+        self.x -= expansion.width
+        self.y -=  expansion.height
+        self.width +=  2*expansion.width
+        self.height +=  2*expansion.height
+      when Fixnum, Float
+        self.x -= expansion
+        self.y -=  expansion
+        self.width +=  2*expansion
+        self.height +=  2*expansion
+      else raise "Can't expand, without a valid Rectangle or constant Fixnum!"
+    end
+    self # Return self expanded rectangle
+  end
+
+
   # param [config] : hash  { :x => [rel_min_x, rel_max_x], :y => [rel_min_y, rel_max_y] }
   # return new limited rectangle
   def limit(config)
@@ -97,7 +117,7 @@ class Rectangle
     Rectangle.new(left * (1 - offset_left),   #x
                   top * (1 - offset_top),     #y
                   right * offset_right,       #width
-                  bottom *   offset_bot          #height
+                  bottom *   offset_bot       #height
     )
   end
 
@@ -165,17 +185,17 @@ class Rectangle
   end
 #===============================================================================
 # Collision methods
-#===============================================================================  
-#-----------------------------------------------------------------------------
-# returns true if the specified point is within this rectangle.
-#-----------------------------------------------------------------------------
+#===============================================================================
+  #-----------------------------------------------------------------------------
+  # returns true if the specified point is within this rectangle.
+  #-----------------------------------------------------------------------------
   def contains_point(point, include_border=false)
     point.x.between?(@x, self.right) && point.y.between?(y, self.bottom) unless include_border
     (point.x >= @x) && (point.x <= self.right) && (point.y >= @y) && (point.y <= self.bottom)
   end
-#-----------------------------------------------------------------------------
-# returns true of the specified rectangle collides with this rectangle.
-#-----------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+  # returns true of the specified rectangle collides with this rectangle.
+  #-----------------------------------------------------------------------------
   def collide_rect?(other_rect)
     !intersects(other_rect).empty?
   end
@@ -183,10 +203,10 @@ class Rectangle
   def collides?(other_rect)
     collide_rect?(other_rect)
   end
-#-----------------------------------------------------------------------------
-# returns the intersection area as a rectangle. If there is no intersection
-# then an empty rectangle will be returned.
-#-----------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+  # returns the intersection area as a rectangle. If there is no intersection
+  # then an empty rectangle will be returned.
+  #-----------------------------------------------------------------------------
   def intersects(other_rect)
     new_x = [@x, other_rect.x].max
     new_y = [@y, other_rect.y].max
@@ -253,8 +273,8 @@ class Rectangle
     Rectangle.new(rgss_rect.x, rgss_rect.y, rgss_rect.width, rgss_rect.height)
   end
 
-# Returns a random point within this rectangle.
-# Returns nil if the width OR the height equals zero.
+  # Returns a random point within this rectangle.
+  # Returns nil if the width OR the height equals zero.
   def rand_point
     return nil if @width == 0 || @height == 0
     Point.new(1 + @x + rand(@x + @width), 1 + @y + rand(@y + @height))
@@ -340,9 +360,9 @@ class Rectangle
     "(X:#{@x}, Y:#{@y}, W:#{@width}, H:#{@height})"
   end
 
-  #===============================================================================
-  # Debugging : borders
-  #===============================================================================
+#===============================================================================
+# Debugging : borders
+#===============================================================================
   def update_borders
     @borders.each { |b| b.update }
   end
@@ -369,7 +389,7 @@ class Rectangle
   def draw_line(orig, dest, side)
     min_width = 1
     size = Point.new([(dest.x-orig.x),min_width].max, [(dest.y-orig.y),min_width].max)
-    # colored_rect = Rectangle.new(orig.x, orig.y, size.x, size.y).to_rect
+
     # Logger.trace("#{self} drawing #{side} line, from #{orig} to #{dest}. Abs size: #{size}")
     line = Sprite.empty(orig)#(Sprite.viewport)
 
