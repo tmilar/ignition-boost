@@ -1,6 +1,7 @@
 $imported = {} if $imported.nil?
 $imported["Babu_Logger"] = true
 class Logger
+  NONE = 0
   ERROR = 1
   WARNING = 2
   INFO = 3
@@ -14,10 +15,15 @@ class Logger
     @@log ||= File.open('game.log', 'w')
   end
 
+  def self.config(level)
+    @@level = level
+  end
+
   # private-like
   def self.msg(log_msg)
     puts log_msg
-    log.puts("[#{Time.now.strftime("%d/%m/%Y %H:%M:%S:%L")}:#{Main_IB.frames_in_second}] #{log_msg}")
+    frame = Main_IB.frames_in_second
+    log.puts("[#{Time.now.strftime("%d/%m/%Y %H:%M:%S:%L")}#{":#{frame}" if frame}] #{log_msg}")
     log.flush
   end
 
