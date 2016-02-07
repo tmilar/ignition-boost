@@ -217,47 +217,52 @@ class Rectangle
     return Rectangle.empty if new_width <= 0 || new_height <= 0
     return Rectangle.new(new_x, new_y, new_width, new_height)
   end
+  #-----------------------------------------------------------------------------
+  # returns true if the this rectangle is fully included within other
+  #   specified rectangle.
+  #-----------------------------------------------------------------------------
+  def included_in?(other_rect)
+    self == self.intersects(other_rect)
+  end
 #===============================================================================
 # Misc
 #===============================================================================
-  def x=
+  def x=(x)
     @x = x
     if @show_borders
-    @borders.each { |b| b.x = x }
-    update_borders
+      @borders.each { |b| b.x = x }
+      update_borders
     end
-
   end
 
-  def y=
+  def y=(y)
     @y = y
     if @show_borders
-    @borders.each { |b| b.y = y }
-    update_borders
+      @borders.each { |b| b.y = y }
+      update_borders
     end
   end
 
   def center=(center)
     current = self.center
     new_center = current + center
-    @x = new_center.x
-    @y = new_center.y
+    self.x = new_center.x
+    self.y = new_center.y
   end
 
   def dispose
     clear_borders
-    # @borders.each { |b| b.dispose }
   end
 
   def add_point(point)
-    @x += point.x
-    @y += point.y
+    self.x += point.x
+    self.x += point.y
     self
   end
 
   def sub_point(point)
-    @x -= point.x
-    @y -= point.y
+    self.x += point.x
+    self.x += point.y
     self
   end
 
@@ -347,9 +352,9 @@ class Rectangle
   end
 
   def []= key, value
-    @x = [0]
+    self.x = [0]
     return if value.length == 1
-    @y = [1]
+    self.y = [1]
     return if value.length == 2
     @width = [2]
     return if value.length == 3
