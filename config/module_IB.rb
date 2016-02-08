@@ -389,7 +389,7 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
-      logger_level: 5  # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      logger_level: 1  # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
