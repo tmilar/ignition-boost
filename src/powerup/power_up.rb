@@ -20,64 +20,64 @@ class PowerUp
 # Si es DECIMAL (con "punto" - de 0.0 en adelante) es un factor que se MULTIPLICA. Ej. 0.1, 1.5, 2.0, etc..
 # Por ahora ademas, lo que puede cambiar es>
 # >>> del JUEGO ->  spawn_cooldown  ; y  stats de naves
-  RESET_PUP = {
-      name: "powerup4",
-      target: "enemies",
-      spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
-      stats: {
-          shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
-      },
-  }
-  REPAIR_PUP = {
-      name: "powerup0",     # PowerUp name, also must match image name
-      target: "player",     # Target : "player", o "enemies" . DEFAULT: "player"
-      stats: {              # stats that will change
-          hp: +100
-      },
-      frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
-  }
-  WEAPON_UP = {
-      name: "powerup1",
-      target: "player",
-      weapon: {
-          level: +1
-      }
-  }
-  SPEED_UP = {
-      name: "speed_pup",
-      stats: {
-          speed: +1
-      },
-  }
-
-  SLOW_ENEMY_PUP = {
-      name: "slower_enemies_pup",
-      target: "enemies",
-      stats: {
-          speed: -1
-      },
-  }
-
-# Items are also a kind of powerup but with some key "effect" to distinguish
-  NUKEALL_ITEM = {
-      name: "item_nuke",
-      target: "player",
-      hold: true,
-      effect: "nuke"    # keyword for item type
-  }
+#   RESET_PUP = {
+#       name: "powerup4",
+#       target: "enemies",
+#       spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
+#       stats: {
+#           shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
+#       },
+#   }
+#   REPAIR_PUP = {
+#       name: "powerup0",     # PowerUp name, also must match image name
+#       target: "player",     # Target : "player", o "enemies" . DEFAULT: "player"
+#       stats: {              # stats that will change
+#           hp: +100
+#       },
+#       frequency: 20         # [Optional] frequency pup will appear. Default: upper spawner frequency
+#   }
+#   WEAPON_UP = {
+#       name: "powerup1",
+#       target: "player",
+#       weapon: {
+#           level: +1
+#       }
+#   }
+#   SPEED_UP = {
+#       name: "speed_pup",
+#       stats: {
+#           speed: +1
+#       },
+#   }
+#
+#   SLOW_ENEMY_PUP = {
+#       name: "slower_enemies_pup",
+#       target: "enemies",
+#       stats: {
+#           speed: -1
+#       },
+#   }
+#
+# # Items are also a kind of powerup but with some key "effect" to distinguish
+#   NUKEALL_ITEM = {
+#       name: "item_nuke",
+#       target: "player",
+#       hold: true,
+#       effect: "nuke"    # keyword for item type
+#   }
 
   # Weapon change power up. Will change current weapon with other one...
-  WEAPON2_CHANGE_PUP = {
-      name: "powerup2",
-      target: "player",
-      weapon: IB::WEAPON2      # Weapon to change. If weapon is repeated, level will go up +1 instead.
-  }
-
-  WEAPON1_CHANGE_PUP = {
-      target: "player",
-      name: "powerup3",
-      weapon: IB::WEAPON1
-  }
+  # WEAPON2_CHANGE_PUP = {
+  #     name: "powerup2",
+  #     target: "player",
+  #     weapon: IB::WEAPON2      # Weapon to change. If weapon is repeated, level will go up +1 instead.
+  # }
+  #
+  # WEAPON1_CHANGE_PUP = {
+  #     target: "player",
+  #     name: "powerup3",
+  #     weapon: IB::WEAPON1
+  # }
 
   extend Forwardable
   def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
