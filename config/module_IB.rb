@@ -39,7 +39,7 @@ module IB
   #-------------------------------------------------------------------------------
 
   # default config for base PLAYER ship
-  NAVE_BASE = {
+  NAVE_BASE1 = {
       name: "player_ship",          #
       stats: {
           power: 1,
@@ -222,7 +222,7 @@ module IB
   #-------------------------------------------------------------------------------
 
 
-  LEVEL1 = {
+  NIVEL0 = {
       name: 'first level',
       backdrop: 'backdrop',
       spawner: {
@@ -389,14 +389,14 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
-      logger_level: 1  # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      logger_level: 5  # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
 
-  CURRENT_LEVEL = LEVEL1 #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #LEVEL1 #MY_POWERUP_LEVEL
-  PLAYER_SHIP = NAVE_BASE #NAVE_BASE #TEST_STRESS_SHIP
+  CURRENT_LEVEL = NIVEL0 #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
+  PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
 end
