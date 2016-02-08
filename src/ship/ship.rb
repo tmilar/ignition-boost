@@ -170,6 +170,7 @@ class Ship
 
   def weapon=(new_weapon)
     if new_weapon.key?(:name) && (@weapon.nil? || (new_weapon[:name] != @weapon.name))
+      new_weapon[:level] = @weapon.level # keep current weapon level
       Logger.trace("Changed to New weapon! #{new_weapon} ")
       weapon_init(new_weapon)
       notify_observers("#{ship_type}_weapon_changed", @weapon)
