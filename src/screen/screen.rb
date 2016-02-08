@@ -3,8 +3,8 @@ class Screen
 
   def initialize(viewport)
     @reactions = {
-        'score' => lambda { |scores| draw_scores({score: scores}) },
-        'high_score' => lambda { |hs| draw_scores({high_score: hs}) },
+        'score' => lambda { |score| draw_score(score) },
+        'high_score' => lambda { |hs| draw_high_score(hs) },
         'player_hp' => lambda { |player| draw_hp_bar(player) },
         'nuke' => lambda { |_| init_nuke },
         'game_over' => lambda { |result| init_game_over(result) },
@@ -21,7 +21,8 @@ class Screen
   def init_window
     @window = Window_Base.new(0, 0, Graphics.width, Graphics.height)
     @window.opacity = 0
-    draw_scores({score: 0, high_score: 0})
+    draw_score(0)
+    draw_high_score(0)
     draw_hp_bar
     init_item_held
     draw_item_held
@@ -31,7 +32,7 @@ class Screen
     Logger.debug("Initializing nuke! ")
     @nuke = Sprite.new
     @nuke.bitmap = Bitmap.new(Graphics.width,Graphics.height)
-    @nuke.bitmap.fill_rect(@flash.bitmap.rect,Color.new(255,255,255))
+    @nuke.bitmap.fill_rect(@nuke.bitmap.rect,Color.new(255,255,255))
     @nuke.z = 2000
     @nuke.opacity = 0
   end
@@ -80,19 +81,32 @@ class Screen
     @window.draw_gauge(x, y, width, rate, color1, color2)
   end
 
-  def draw_scores(scores)
-    contents = @window.contents
-    contents.clear
-    window_draw_score("Score: ", scores[:score], 4, 0, contents.width - 8) if scores.key?(:score)
-    window_draw_score("MaxScore: ", scores[:high_score], -(Graphics.width / 2) + 70, 0, contents.width - 8) if scores.key?(:high_score)
+  def draw_score(score)
+    return unless score
+    align = 2
+    score_text = "Score: #{score}"
+    width = @window.text_size(score_text).width + 8
+    height = @window.line_height
+    x = Graphics.width - width - 35
+    y = 0
+
+    rect = Rect.new(x, y, width, height)
+    @window.contents.clear_rect(rect)
+    @window.draw_text(rect, score_text, align)
   end
 
-  def window_draw_score(score_text, score_value, x, y, width)
-    align = 2
-    cx = @window.text_size(score_value).width
-    lh = @window.line_height
-    @window.draw_text(x, y, width - cx - 2, lh, score_text  , align)
-    @window.draw_text(x, y, width         , lh, score_value , align)
+  def draw_high_score(highscore)
+    return unless highscore
+    align = 0
+    score_text = "MaxScore: #{highscore}"
+    width = @window.text_size(score_text).width + 8
+    height = @window.line_height
+    x = Graphics.width / 2 - (width / 2)
+    y = 0
+
+    rect = Rect.new(x, y, width, height)
+    @window.contents.clear_rect(rect)
+    @window.draw_text(rect, score_text, align)
   end
 
   def update
