@@ -21,9 +21,12 @@ plugins = {
             exclude: ["print_backtrace"]
         },
     },
-    "config" => {},
+    "config" => {
+        order: ["module_IB", :rest],
+        exclude: ["original_levels", "original_levels_clean", "original_levels_new", "ib_config_original"]
+    },
     "src" => {
-        excluded: ["old"],
+        exclude: ["old"],
         "screen" => {},
         "movement" => {
             order: ["movement", "keyboard_movement", "zig_zag_movement", :rest]
