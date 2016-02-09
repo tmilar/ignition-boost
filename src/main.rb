@@ -2,6 +2,7 @@ class Main_IB < Scene_Base
 
   @@game_time = 0
   @@frames_in_second = 0
+  @@elapsed_time_frames = 0
 
   def start
     $game_system.save_bgm
@@ -31,6 +32,7 @@ class Main_IB < Scene_Base
     @@old_second = -1
     @@current_second = @@start_time.sec
     @@frames_in_second = 0
+    @@elapsed_time_frames = 0
   end
 
   def init_screen
@@ -59,6 +61,7 @@ class Main_IB < Scene_Base
     @current_second = Time.now.sec
     @@frames_in_second = 0 if @old_second != @current_second
     @@frames_in_second += 1
+    @@elapsed_time_frames += 1
     @old_second = @current_second
   end
 
@@ -99,6 +102,9 @@ class Main_IB < Scene_Base
     ((Date.now - @@start_time)*1000.0).to_i
   end
 
+  def self.elapsed_time_frames
+    @@elapsed_time_frames
+  end
 
   def self.frames_in_second
     @@frames_in_second
