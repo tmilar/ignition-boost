@@ -105,9 +105,10 @@ class Spawner
 
   ## Should OVERRIDE
   def calculate_cooldown
-    50 + rand(@spawn_cooldown) / 2 + spawn_decrement ##spawn_decrement(Main_IB.elapsed_time_frames)
+    50 + rand(@spawn_cooldown) / 2 + spawn_decrement
   end
 
+  ## Decrement depends on spawner elapsed_time, which can be modified for getting future or past difficulty
   def spawn_decrement
     - (@elapsed_time_spawner / @cooldown_decrement_freq) * @cooldown_decrement_amount
   end
