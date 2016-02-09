@@ -14,41 +14,37 @@ class Spawner
     Logger.start('@enemy_spawner', config, DEFAULTS)
     @config = DEFAULTS.merge(config).deep_clone
 
-    @spawn_timer = 0
+    cooldown_init
+    phases_init
+    check_phases
+  end
 
+  def phases_init
     @phases = @config[:phases].values
     @phases.each { |p| p[:spawned] = 0 }
 
     @current_phases = []
     @next_phases = []
-    check_phases
   end
 
-  def init_cooldown
+  def cooldown_init
+    @spawn_timer = 0
     @spawn_cooldown = @config[:spawn_cooldown]
-    @cooldown_decrement_cooldown = @config[:spawn_decrement_freq]
+    @cooldown_decrement_freq = @config[:spawn_decrement_freq]
     @cooldown_decrement_amount = @config[:spawn_decrement_amount]
-    @cooldown_decrement_timer = @cooldown_decrement_cooldown
   end
 
   def update
     @spawn_timer -= 1
-    update_cooldown
+    @elapsed_time_spawner += 1
+
     try_spawn
   end
 
-  def update_cooldown
-    return unless @config.key?(:spawn_decrement_freq) &&
-        @config.key?(:spawn_decrement_amount) &&
-        !@cooldown_decrement_cooldown.nil? &&
-         @cooldown_decrement_cooldown > 0
-
-    @cooldown_decrement_timer -= 1
-    if @cooldown_decrement_timer < 0
-      @spawn_cooldown -= @cooldown_decrement_amount
-    end
+  ## On RESET or NUKE, modify elapsed_time by [factor] to go back or forward in difficulty time.
+  def modify_difficulty(factor)
+    @elapsed_time_spawner *= factor
   end
-
 
 
   def try_spawn
@@ -64,15 +60,6 @@ class Spawner
     spawn
   end
 
-  ## Should OVERRIDE
-  def check_spawn_condition
-    true
-  end
-
-  def calculate_cooldown
-    50 + rand(@spawn_cooldown) / 2 ##- @spawn_decrement_amount ## TODO GET DIFFICULTY
-  end
-
   def check_phases
     old_phases = @current_phases
 
@@ -82,7 +69,7 @@ class Spawner
       Main_IB.game_time >= (phase[:start] || 0)
     }
 
-
+    # Separate finished_phases from current_phases
     @finished_phases, @current_phases = @current_phases.partition {
         |phase|
       (phase[:max_spawn] && phase[:spawned] >= phase[:max_spawn]) ||
@@ -99,9 +86,9 @@ class Spawner
         self.bgm = np[:BGM] if np.key?(:BGM)
         self.spawn_cooldown = (np[:spawn_cooldown] if np.key?(:spawn_cooldown)) || @config[:spawn_cooldown]
         spawns(np).each { |e| enemies << e[:name] }
-        @cooldown_decrement_cooldown = np[:spawn_decrement_freq] if np.key?(:spawn_decrement_freq)
+        @cooldown_decrement_freq = np[:spawn_decrement_freq] if np.key?(:spawn_decrement_freq)
         @cooldown_decrement_amount = np[:spawn_decrement_amount] if np.key?(:spawn_decrement_amount)
-        @cooldown_decrement_timer = @cooldown_decrement_cooldown if np.key?(:spawn_decrement_freq)
+        @cooldown_decrement_timer = @cooldown_decrement_freq if np.key?(:spawn_decrement_freq)
         @frequency = np[:frequency] if np.key?(:frequency)
       }
       Logger.debug("New phase(s) started! #{new_phases}. With new spanw(s): #{enemies}.")
@@ -109,6 +96,23 @@ class Spawner
     end
 
   end
+
+
+  ## Should OVERRIDE
+  def check_spawn_condition
+    true
+  end
+
+  ## Should OVERRIDE
+  def calculate_cooldown
+    50 + rand(@spawn_cooldown) / 2 + spawn_decrement ##spawn_decrement(Main_IB.elapsed_time_frames)
+  end
+
+  def spawn_decrement
+    - (@elapsed_time_spawner / @cooldown_decrement_freq) * @cooldown_decrement_amount
+  end
+
+
 
   def spawn_cooldown=(new_spawn_cooldown)
     @spawn_cooldown = new_spawn_cooldown
@@ -151,6 +155,7 @@ class Spawner
   end
 
 
+  # Pick a random spanwable from a random Current phase
   def pick_spawnable(spawnable_phases)
     rand_phase = spawnable_phases.sample
 
