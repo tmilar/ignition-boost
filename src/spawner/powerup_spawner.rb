@@ -34,25 +34,48 @@ class PowerUpSpawner < Spawner
     Logger.start('@pup_spawner', config, DEFAULTS)
     @config = DEFAULTS.merge(config).deep_clone
     super(@config)
-    @spawn_freq = @config[:frequency]
   end
 
-  # @OVERRIDE
-  def check_spawn_condition
-    spawn = rand(1000) > (1000 - @spawn_freq)
-    Logger.trace("About to spawn item at freq #{@spawn_freq}!") if spawn
-    spawn
+  def cooldown_init
+    # @spawn_freq = @config[:spawn_cooldown]
+    difficulty_factor = @config[:spawn_cooldown]
+    @base_cd = Math::log(0.995-difficulty_factor.fdiv(1000), 0.01).to_i
   end
 
-  # @OVERRIDE
+  # # @OVERRIDE
+  # def check_spawn_condition
+  #   spawn = rand(1000) > (1000 - @spawn_freq)
+  #   Logger.trace("About to spawn item at freq #{@spawn_freq}!") if spawn
+  #   spawn
+  # end
+  #
+  # # @OVERRIDE
+  # def calculate_cooldown
+  #   -1  ## DON'T use THIS cooldown
+  # end
+
   def calculate_cooldown
-    -1  ## DON'T use THIS cooldown
+    rand(@base_cd)
   end
 
   # OVERRIDE spawns
   def spawns(phase)
     phase[:powerups]
   end
+
+  # Pick a random spanwable from a random Current phase
+  def pick_spawnable(_)
+    return if check_timed_phases
+
+    phases(Phase::OpenedPhaseState).sample.pick_spawnee
+  end
+
+  def check_timed_phases
+    ## TODO move up to Spawner::spawn method? so it will ignore spawn_timer?
+    ready_timed_phase = phases(Phase::ReadyTimedPhase).sample
+    ready_timed_phase.spawn if ready_timed_phase
+  end
+
 
   def emit_spawnee(pup_config)
     Logger.trace("pup config is #{pup_config}, self is #{@config}")
