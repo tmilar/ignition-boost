@@ -27,6 +27,7 @@ class Main_IB < Scene_Base
   end
 
   def init_variables
+    Ship.count = 0
     @@game_time = 0
     @@start_time = Time.now
     @@old_second = -1

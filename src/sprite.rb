@@ -3,6 +3,7 @@ class Sprite
   attr_accessor :rectangle
   attr_accessor :name
   attr_reader :cell
+  attr_accessor :gameobj_id
 
   @viewport = {}
 
@@ -26,7 +27,8 @@ class Sprite
     new_sprite = Sprite.new(@viewport)
     new_sprite.x = config[:x]
     new_sprite.y = config[:y]
-    new_sprite.bitmap = Cache.space(config[:bitmap])
+    new_sprite.bitmap = Cache.space(config[:bitmap].split(':')[0])
+    new_sprite.gameobj_id = config[:bitmap].split(':')[1].to_i
     new_sprite.ox = 0
     new_sprite.oy = 0
     new_sprite.zoom_x = config[:zoom_x]

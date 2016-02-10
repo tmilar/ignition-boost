@@ -55,6 +55,8 @@ class Ship
   #------------------------------------------------------------------------------#
   def initialize(config = {})
     super(config)
+    self.class.count += 1
+    config[:name] += ":#{self.class.count}"
     #config setup
     Logger.start("ship#'#{config[:name]}'", config, DEFAULTS)
     @config = DEFAULTS.merge(config)
@@ -63,6 +65,10 @@ class Ship
     sprite_init
     position_init
     weapon_init(@config[:weapon])
+  end
+
+  def gameobj_id
+    @config[:name].split(':')[1].to_i
   end
 
 
@@ -213,6 +219,14 @@ class Ship
 
   def to_s
     "<#{self.class}> '#{self.name}'"
+  end
+
+  def self.count
+    @@count
+  end
+
+  def self.count=(val)
+    @@count = val
   end
 
 end
