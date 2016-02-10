@@ -116,8 +116,8 @@ class Ship
   #  SHIP BEHAVIOR METHODS
   #------------------------------------------------------------------------------#
   def update
-    sprite_update
     weapon_update
+    sprite_update
   end
 
   def sprite_update
@@ -125,6 +125,7 @@ class Ship
   end
 
   def weapon_update
+    return if disposed?
     @weapon.update
     @weapon.shoot(weapon_pos) if self.check_shoot
   end

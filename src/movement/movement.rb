@@ -16,6 +16,7 @@ module Movement
   end
 
   def update
+    return Logger.debug("Returning from #{self.class} Movement, #{self} is disposed") if self.disposed?
     super
     update_movement
   end

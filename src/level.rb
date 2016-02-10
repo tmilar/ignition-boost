@@ -237,7 +237,6 @@ class Level
     @enemies.each { |obj| obj.dispose unless obj.disposed? }
     @plazors.each { |obj| obj.dispose unless obj.disposed? }
     @elazors.each { |obj| obj.dispose  unless obj.disposed? }
-    @enemies.each { |obj| obj.dispose  unless obj.disposed? }
     @explosions.each { |obj| obj.dispose  unless obj.disposed? }
     @pups.each { |obj| obj.dispose  unless obj.disposed? }
   end

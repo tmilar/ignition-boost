@@ -8,6 +8,7 @@ module ZigZagMovement
   end
 
   def update_movement
+    return Logger.debug("Returning from #{self.class} Movement, #{self} is disposed") if self.disposed?
     move(@dir_x, @ticker * 0.06)
     move(:DOWN)
 
