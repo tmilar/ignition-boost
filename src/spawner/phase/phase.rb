@@ -103,7 +103,9 @@ class Phase
       end: Float::INFINITY,
       max_spawn: Float::INFINITY,
       # cooldown: [100, 1, 100],  # spawn cooldown | decrement amount | decrement frequency
-      BGM: []
+      # timer: 60
+      BGM: [],
+      number: 0
   }
 
   # Delegate accessors to internal hashes
@@ -145,4 +147,11 @@ class Phase
     Logger.debug("Spawner #{self} changed BGM to #{new_bgm}... Playing music...")
   end
 
+  def type
+    @type ##@config.key?(:enemies) ? "enemies" : "powerups"
+  end
+
+  def to_s
+    "<Phase:#{type}##{number}> state: #{state}"
+  end
 end
