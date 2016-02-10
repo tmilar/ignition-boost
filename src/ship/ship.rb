@@ -59,7 +59,7 @@ class Ship
     config[:name] += ":#{self.class.count}"
     #config setup
     Logger.start("ship#'#{config[:name]}'", config, DEFAULTS)
-    @config = DEFAULTS.merge(config)
+    @config = DEFAULTS.deep_merge(config)
     Logger.debug("Ship #{self} config is: #{@config}")
     stats_init
     sprite_init
