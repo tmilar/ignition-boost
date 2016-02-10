@@ -13,7 +13,7 @@ class Spawner
 
     Logger.start('@enemy_spawner', config, DEFAULTS)
     @config = DEFAULTS.merge(config).deep_clone
-
+    @elapsed_time_spawner = 0
     cooldown_init
     phases_init
     check_phases

@@ -74,10 +74,10 @@ class Sprite
     if config_limits.nil?
       excess_limits = 20
       @limits = @@screen_rect.expand(self.rectangle).expand!(excess_limits)
-      Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle} & excess: #{excess_limits}")
+      # Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle} & excess: #{excess_limits}")
     else
       @limits = @@screen_rect.limit(config_limits)
-      Logger.debug("#{self} initialized limits #{@limits} by limiting #{@@screen_rect} with #{config_limits}.")
+      # Logger.debug("#{self} initialized limits #{@limits} by limiting #{@@screen_rect} with #{config_limits}.")
     end
 
   end
@@ -157,7 +157,7 @@ class Sprite
 
   alias_method :sprite_update, :update
   def update
-    return Logger.warn("#{self} has been disposed, can't set new position!") if disposed?
+    return Logger.warn("#{self} has been disposed, can't be updated!") if disposed?
     update_cell
     sprite_update
     reset_cell
