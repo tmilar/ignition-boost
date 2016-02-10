@@ -20,7 +20,8 @@ class Phase
       Logger.trace("Initialized state Next phase #{@phase}")
     end
     def update(elapsed_time)
-      @phase.new_state(NewPhaseState) if @phase.start >= elapsed_time
+      # Logger.trace("Updating NewPhaseState #{@phase}, start: #{@phase.start}, elapsed_time: #{elapsed_time}")
+      @phase.new_state(NewPhaseState) if elapsed_time >= @phase.start
     end
   end
 
@@ -29,22 +30,46 @@ class Phase
       @phase = phase
       @phase.play_bgm
       Logger.debug("New phase started! #{@phase}. With new spanw(s): #{@phase.spawns}.")
-      @phase.new_state(OpenedPhaseState)
-      @phase.update
     end
     def update(_)
-      raise "NotImplementedError, :new phase #{@phase} can't be updated! Should be Opened..."
+      @phase.new_state(OpenedPhaseState)
     end
   end
 
   class OpenedPhaseState
     def initialize(phase)
       @phase = phase
-      Logger.trace("Initialized state Opened phase #{@phase}")
+      @timer = phase.timer
+      Logger.trace("Initialized state Opened phase #{@phase}#{"with timer #{@timer}" if @timer}")
     end
-    def update(elapsed_time)
-      if @phase.end >= elapsed_time || @phase.spawn_count >= @phase.max_spawn
+    def update(elapsed_time = 0)
+      # Logger.trace("updating opened phsae #{@phase}... with elapsed_time #{elapsed_time}")
+      if elapsed_time >= @phase.end  || @phase.spawn_count >= @phase.max_spawn
         @phase.new_state(FinishedPhaseState)
+        return
+      end
+
+      return unless @timer
+      @timer -= 1
+      @phase.new_state(ReadyPhaseState) if @timer <= 0
+    end
+  end
+
+  ## State only used by 'timed' Phase
+  class ReadyPhaseState
+    def initialize(phase)
+      @phase = phase
+      @old_spawn_count = phase.spawn_count
+      Logger.trace("Timed Phase is Ready to spawn #{@phase}")
+    end
+    def update(_)
+      Logger.trace("Timed Phase Ready #{@phase} updated - should have spawned by now...")
+      check_spawned
+    end
+    def check_spawned
+      if @phase.spawn_count > @old_spawn_count
+        Logger.trace("Timed phase #{@phase} did spawn! Restarting timer (changing back to OpenedState)")
+        @phase.new_state(OpenedPhaseState)
       end
     end
   end
@@ -55,7 +80,7 @@ class Phase
       Logger.trace("Initialized state Finished phase #{@phase}")
     end
     def update(_)
-      raise "NotImplementedError, :finished phase #{@phase} can't be updated! Is over..."
+      # raise "NotImplementedError, :finished phase #{@phase} can't be updated! Is over..."
     end
   end
 
@@ -109,8 +134,9 @@ class Phase
   }
 
   # Delegate accessors to internal hashes
-  attr_readers_delegate :@config, :start, :end, :max_spawn, :cooldown, :spawns, :spawn_count
-
+  attr_readers_delegate :@config, :start, :end, :max_spawn, :cooldown, :spawns, :timer, :number
+  attr_accessors_delegate :@config, :spawn_count
+  attr_reader :state
 
   def initialize(config) ## TODO Remove ## , spawning_strategy={})
     super(config)
@@ -130,7 +156,7 @@ class Phase
   ## pick one spawn...
   ## return spawnee *config* to spawner...
   def pick_spawnee
-    self.spawned += 1
+    self.spawn_count += 1
     self.spawns.sample
   end
 
