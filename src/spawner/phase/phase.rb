@@ -92,36 +92,9 @@ class Phase
 
   # NEXT -> NEW -> OPENED -> FINISHED
 
-  ####////////////////////////////////////////////////////////
-  ## Spawning Strategies - TODO DELETE THIS... decided by spawner now.
-  ####////////////////////////////////////////////////////////
+  # Timed Ready
+  # NEXT -> NEW -> ( OPENED <-> READY ) -> FINISHED
 
-  # class CooldownStrat
-  #   def initialize(config)
-  #     @spawn_timer = 0
-  #     @spawn_cooldown = config[:spawn_cooldown]
-  #     @cooldown_decrement_freq = config[:spawn_decrement_freq]
-  #     @cooldown_decrement_amount = config[:spawn_decrement_amount]
-  #   end
-  #   def try_spawn(elapsed_time_spawner)
-  #     @elapsed_time_spawner = elapsed_time_spawner
-  #     @spawn_timer -= 1
-  #     if @spawn_timer == 0
-  #       @phase.do_spawn
-  #
-  #       #  TODO DONE - all opened phases using this CooldownStrategy should share the same cd clock....
-  #       @spawn_timer = calculate_cooldown
-  #     end
-  #   end
-  #   def calculate_cooldown
-  #     50 + rand(@spawn_cooldown) / 2 + spawn_decrement
-  #   end
-  #
-  #   ## Decrement depends on spawner elapsed_time, which can be modified for getting future or past difficulty
-  #   def spawn_decrement
-  #     - (@elapsed_time_spawner / @cooldown_decrement_freq) * @cooldown_decrement_amount
-  #   end
-  # end
 
   DEFAULTS = {
       spawns: [],
@@ -146,6 +119,7 @@ class Phase
     @config = DEFAULTS.deep_merge(config).deep_clone
     @type = @config.key?(:enemies) ? "enemies" : "powerups"
     @config[:spawns] = @config.delete(:enemies) || @config.delete(:powerups)
+    new_state(NextPhaseState)
   end
 
   def update(elapsed_time_spawner)
