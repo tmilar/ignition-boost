@@ -18,7 +18,7 @@ class Enemy < Ship
 
   def init_shooting_cooldown
     difficulty_factor = @config[:stats][:shoot_freq]
-    @base_cd = Math::log(0.995-difficulty_factor.fdiv(1000), 0.01).to_i ### TODO add difficulty calculation
+    @base_cd = Math::log(0.1, 0.995-difficulty_factor.fdiv(1000)).to_i ### TODO add difficulty calculation
     @shooting_timer = @base_cd
   end
 
