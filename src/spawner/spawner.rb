@@ -14,7 +14,7 @@ class Spawner
 
     Logger.start('@enemy_spawner', config, DEFAULTS)
     @config = DEFAULTS.merge(config).deep_clone
-
+    @elapsed_time_spawner = 0
     cooldown_init
     phases_init
     # check_phases
@@ -22,16 +22,17 @@ class Spawner
 
   def phases_init
     @phases = []
-    @config[:phases].values.each {
-        |phase_config|
+    @config[:phases].each {
+        |id, phase_config|
+      phase_config[:number] = id
       config = DEFAULTS.except(:phases).merge(phase_config)
       @phases << Phase.new(config) ### TODO REMOVE PhaseFactory.create(config)
       # @phases << Phase.new(phase_config, DEFAULTS)
     }
   end
 
-  def phases(state)
-    @phases.select { |p| p.state == state }
+  def phases(state_class)
+    @phases.select { |p| p.state.is_a?( state_class )}
   end
 
   def cooldown_init
@@ -219,4 +220,8 @@ class Spawner
   #   Sound.bgm(@bgm)
   #   Logger.debug("Spawner #{self} changed BGM to #{@bgm}... Playing music...")
   # end
+
+  def to_s
+    "<Enemies Spawner>"
+  end
 end

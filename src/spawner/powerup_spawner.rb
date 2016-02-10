@@ -74,8 +74,8 @@ class PowerUpSpawner < Spawner
 
   def check_timed_phases
     ## TODO move up to Spawner::spawn method? so it will ignore spawn_timer?
-    ready_timed_phase = phases(Phase::ReadyTimedPhase).sample
-    ready_timed_phase.spawn if ready_timed_phase
+    ready_timed_phase = phases(Phase::ReadyPhaseState).sample
+    ready_timed_phase.pick_spawnee if ready_timed_phase
   end
 
 
@@ -84,5 +84,10 @@ class PowerUpSpawner < Spawner
     pup_config[:destructible?] ||= @config[:destructible?]
     spawned_pup = PowerUp.new(pup_config)
     notify_observers('new_powerup', spawned_pup)
+  end
+
+
+  def to_s
+    "<Powerup Spawner>"
   end
 end
