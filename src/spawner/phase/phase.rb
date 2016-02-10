@@ -1,16 +1,6 @@
 class Phase
   include Subject
 
-  ### TODO Remove
-  # class PhaseFactory
-  #   ## cada phase tiene su estrategia para contar el tiempo de cooldown - segun su config
-  #   def self.create(config)
-  #     return Phase.new(config, TimedStrat) if config.key?(:timer)
-  #     return Phase.new(config, CooldownStrat) if config.key?(:cooldown) || config.key?(:spawn_cooldown)
-  #     raise "Attempted to create invalid type of Phase! Check phase or spawner config, current is #{config}."
-  #   end
-  # end
-
   ####////////////////////////////////////////////////////////
   ## Phase States
   ####////////////////////////////////////////////////////////
@@ -125,6 +115,7 @@ class Phase
   end
 
   def update(elapsed_time_spawner)
+    # Logger.trace("updating #{self}...")
     @state.update(elapsed_time_spawner)
   end
 
@@ -138,6 +129,7 @@ class Phase
 
   def new_state(state)
     @state = state.new(self)
+    # Logger.trace("Phase transitioned to new state! #{self} ")
   end
 
   def play_bgm
