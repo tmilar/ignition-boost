@@ -10,7 +10,7 @@ class Phase
       Logger.trace("Initialized state Next phase #{@phase}")
     end
     def update(elapsed_time)
-      # Logger.trace("Updating NewPhaseState #{@phase}, start: #{@phase.start}, elapsed_time: #{elapsed_time}")
+      # Logger.trace("Updating NewPhaseState #{@phase}, start: #{@phase.start} (#{@phase.start / 60} seconds), elapsed_time: #{elapsed_time}")
       @phase.new_state(NewPhaseState) if elapsed_time >= @phase.start
     end
   end
@@ -107,6 +107,7 @@ class Phase
     Logger.start('phase', config, DEFAULTS)
 
     @config = DEFAULTS.deep_merge(config).deep_clone
+    @config[:start] *= 60 # convert start time from "frames" to "seconds"
     @type = @config.key?(:enemies) ? "enemies" : "powerups"
     @config[:spawns] = @config.delete(:enemies) || @config.delete(:powerups)
     new_state(NextPhaseState)
