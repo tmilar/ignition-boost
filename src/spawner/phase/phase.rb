@@ -29,8 +29,8 @@ class Phase
   class OpenedPhaseState
     def initialize(phase)
       @phase = phase
-      @timer = phase.timer
-      Logger.trace("Initialized state Opened phase #{@phase}#{"with timer #{@timer}" if @timer}")
+      @timer = (phase.timer + phase.spawn_count) * 60 if phase.timer
+      Logger.trace("Initialized state Opened phase #{@phase}#{"with timer #{phase.timer + phase.spawn_count}" if @timer}")
     end
     def update(elapsed_time = 0)
       # Logger.trace("updating opened phsae #{@phase}... with elapsed_time #{elapsed_time}")
@@ -87,12 +87,10 @@ class Phase
 
 
   DEFAULTS = {
-      spawns: [],
       spawn_count: 0,
       start: 0,
       end: Float::INFINITY,
       max_spawn: Float::INFINITY,
-      # cooldown: [100, 1, 100],  # spawn cooldown | decrement amount | decrement frequency
       # timer: 60
       BGM: [],
       number: 0
@@ -101,9 +99,9 @@ class Phase
   # Delegate accessors to internal hashes
   attr_readers_delegate :@config, :start, :end, :max_spawn, :cooldown, :spawns, :timer, :number
   attr_accessors_delegate :@config, :spawn_count
-  attr_reader :state
+  attr_reader :state, :type
 
-  def initialize(config) ## TODO Remove ## , spawning_strategy={})
+  def initialize(config)
     super(config)
     @config = {}
     Logger.start('phase', config, DEFAULTS)
@@ -137,10 +135,6 @@ class Phase
     return if new_bgm.nil_empty?
     Sound.bgm(new_bgm)
     Logger.debug("Spawner #{self} changed BGM to #{new_bgm}... Playing music...")
-  end
-
-  def type
-    @type ##@config.key?(:enemies) ? "enemies" : "powerups"
   end
 
   def to_s

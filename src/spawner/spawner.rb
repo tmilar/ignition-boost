@@ -26,8 +26,7 @@ class Spawner
         |id, phase_config|
       phase_config[:number] = id
       config = DEFAULTS.except(:phases).merge(phase_config)
-      @phases << Phase.new(config) ### TODO REMOVE PhaseFactory.create(config)
-      # @phases << Phase.new(phase_config, DEFAULTS)
+      @phases << Phase.new(config)
     }
   end
 
@@ -62,44 +61,19 @@ class Spawner
 
 
   def try_spawn
-    if @spawn_timer > 0 #|| !check_spawn_condition
-      return
-    end
+    return if  @spawn_timer > 0 || phases(Phase::OpenedPhaseState).empty?
 
-    # check_phases if @opened_phases.any? || @next_phases.any?
-    return if phases(Phase::OpenedPhaseState).empty?
+    Logger.trace("Spawn timer is #{@spawn_timer}, opened phases #{phases(Phase::OpenedPhaseState)}, calculating cd...")
 
     # Restart spawn timer to configured speed
     @spawn_timer = calculate_cooldown
+    Logger.trace("#{self} New spawn cooldown timer is #{@spawn_timer}")
     spawn
   end
 
   ### TODO remove... las phases se updatean y actualizan su estado solas...
   # def check_phases
-  #   old_phases = @opened_phases
-  #
-  #   # Find phases that are started, separate from 'next_phases'
-  #   # @opened_phases, @next_phases = @phases.partition {
-  #   #     |phase|
-  #   #   Main_IB.game_time >= (phase[:start] || 0)
-  #   # }
-  #
-  #   opened_phases = phases(:opened)
-  #   next_phases = phases(:next)
-  #   finished_phases = phases(:finished)
-  #
-  #
-  #   # Separate finished_phases from @opened_phases
-  #   # @finished_phases, @opened_phases = @opened_phases.partition {
-  #   #     |phase|
-  #   #   (phase[:max_spawn] && phase[:spawned] >= phase[:max_spawn]) ||
-  #   #       (phase[:end] && Main_IB.game_time >= phase[:end] )
-  #   # }
-  #
-  #   # Logger.trace("checking phases.... \nCurrent phases: #{@@opened_phases}. \nNext phases: #{@next_phases}. \nFinished: #{@finished_phases}. SpawnTimer: #{@spawn_timer},\nGame time: #{Main_IB.game_time})")
-  #
-  #
-  #   new_phases = @opened_phases - old_phases
+  #   new_phases = phases(Phase::NewPhaseState)
   #
   #   if new_phases.any?
   #     enemies = []
@@ -121,14 +95,6 @@ class Spawner
   #   end
   # end
 
-
-  ## Should OVERRIDE
-
-  # TODO remove, movido a SpawnStrategy...
-  # def check_spawn_condition
-  #   true
-  # end
-
   ## Should OVERRIDE
   def calculate_cooldown
     50 + rand(@spawn_cooldown) / 2 + spawn_decrement
@@ -138,16 +104,6 @@ class Spawner
   def spawn_decrement
     - (@elapsed_time_spawner / @cooldown_decrement_freq) * @cooldown_decrement_amount
   end
-
-
-
-  # def spawn_cooldown=(new_spawn_cooldown)
-  #   @spawn_cooldown = new_spawn_cooldown
-  # end
-  #
-  # def spawn_cooldown
-  #   @spawn_cooldown
-  # end
 
   # spawn a random spawnable enemy
   def spawn
@@ -171,55 +127,21 @@ class Spawner
 
     # Create spawnee and notify
     emit_spawnee(new_enemy)
-    # # LOG current available phases enemies
-    # Logger.trace("Checking enemies for current phases : #{@opened_phases} \n Game time: #{Main_IB.game_time}")
-    #
-    # # LOG current spawnable enemies names
-    # spawnable_enemies_names = []
-    # @opened_phases.each { |phase|
-    #   spawnable_enemies_names << spawns(phase).map { |e| e[:name] }
-    # }
-    # return Logger.warn('No enemies defined for current phases!') if spawnable_enemies_names.empty?
-    #
-    # Logger.trace("spawnable_enemies... #{spawnable_enemies_names}")
-    #
-    # # Pick random spawnable
-    # new_enemy = pick_spawnable(@opened_phases)
-    # Logger.info("Spawning enemy: #{new_enemy}\n.#{" Observers notified >> #{observers.map { |o| o.class.name }}" unless observers.empty?}")
-    #
-    # # Create spawnee and notify
-    # emit_spawnee(new_enemy)
-
   end
-
-  # def spawns(phase)
-  #   phase[:enemies]
-  # end
 
   def emit_spawnee(config)
     spawned_enemy = Enemy.new(config)
     notify_observers('new_enemy', spawned_enemy)
   end
 
-
   # Pick a random spanwable from a random Current phase
   def pick_spawnable(spawnable_phases)
-    rand_phase = spawnable_phases.sample
-
-    # rand_phase[:spawned] += 1
-    # spawns(rand_phase).sample
-    rand_phase.pick_spawnee
+    spawnable_phases.sample.pick_spawnee
   end
 
   def stop
     @spawn_timer = Float::INFINITY
   end
-
-  # def bgm=(new_bgm)
-  #   @bgm = new_bgm
-  #   Sound.bgm(@bgm)
-  #   Logger.debug("Spawner #{self} changed BGM to #{@bgm}... Playing music...")
-  # end
 
   def to_s
     "<Enemies Spawner>"
