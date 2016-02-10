@@ -41,6 +41,7 @@ plugins = {
         },
         "bullet" => {},
         "spawner" => {
+            "phase" => {},
             order: ["spawner", :rest]
         },
         "powerup"=> {
