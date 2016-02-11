@@ -108,6 +108,7 @@ class Phase
 
     @config = DEFAULTS.deep_merge(config).deep_clone
     @config[:start] *= 60 # convert start time from "frames" to "seconds"
+    @config[:end] *= 60 # convert start time from "frames" to "seconds"
     @type = @config.key?(:enemies) ? "enemies" : "powerups"
     @config[:spawns] = @config.delete(:enemies) || @config.delete(:powerups)
     new_state(NextPhaseState)
