@@ -143,7 +143,11 @@ class Spawner
     @spawn_timer = Float::INFINITY
   end
 
+  def type
+    "enemies"
+  end
+
   def to_s
-    "<Enemies Spawner>"
+    "<#{type} Spawner>"
   end
 end
