@@ -78,10 +78,6 @@ class Spawner
   #   if new_phases.any?
   #     enemies = []
   #     new_phases.each { |np|
-  #       # TODO remove... esto lo hace sola la phase al ser nueva...
-  #       # self.bgm = np[:BGM] if np.key?(:BGM)
-  #       # self.spawn_cooldown = (np[:spawn_cooldown] if np.key?(:spawn_cooldown)) || @config[:spawn_cooldown]
-  #       # spawns(np).each { |e| enemies << e[:name] }
   #
   #       ## TODO remove - cada phase tiene una copia del default del cooldown...
   #       # @cooldown_decrement_freq = np[:spawn_decrement_freq] if np.key?(:spawn_decrement_freq)
