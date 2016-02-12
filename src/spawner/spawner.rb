@@ -2,7 +2,7 @@
 class Spawner
   include Subject
 
-  DEFAULTS = {
+  DEFAULTS_ENEMIES_SPAWNER = {
       # cooldown: [100, 1, 100],        # spawn cooldown | increment amount | increment frequency
       spawn_cooldown: 100,
       spawn_decrement_amount: 1,      # DEFAULT 1, cantidad en que se reduce el cooldown base
@@ -12,8 +12,8 @@ class Spawner
   def initialize(config)
     super(config)
 
-    Logger.start('@enemy_spawner', config, DEFAULTS)
-    @config = DEFAULTS.merge(config).deep_clone
+    Logger.start("@#{self.class.to_s.uncapitalize}", config, DEFAULTS_ENEMIES_SPAWNER)
+    @config = DEFAULTS_ENEMIES_SPAWNER.merge(config).deep_clone
     @elapsed_time_spawner = 0
     cooldown_init
     phases_init
@@ -25,7 +25,7 @@ class Spawner
     @config[:phases].each {
         |id, phase_config|
       phase_config[:number] = id
-      config = DEFAULTS.except(:phases).merge(phase_config)
+      config = DEFAULTS_ENEMIES_SPAWNER.except(:phases).merge(phase_config)
       @phases << Phase.new(config)
     }
   end

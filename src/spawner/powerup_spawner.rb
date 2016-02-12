@@ -17,7 +17,7 @@ class PowerUpSpawner < Spawner
       }
   }
 
-  DEFAULTS = {
+  DEFAULTS_POWERUP_SPAWNER = {
       frequency: 0,
       spawn_cooldown: 100,
       spawn_decrement_amount: -0,     # DEFAULT 0, cantidad en que se reduce el cooldown base
@@ -31,8 +31,8 @@ class PowerUpSpawner < Spawner
   }
 
   def initialize(config={})
-    Logger.start('@pup_spawner', config, DEFAULTS)
-    @config = DEFAULTS.merge(config).deep_clone
+    Logger.start("@#{self.class.to_s.uncapitalize}", config, DEFAULTS_POWERUP_SPAWNER)
+    @config = DEFAULTS_POWERUP_SPAWNER.merge(config).deep_clone
     super(@config)
   end
 
@@ -86,8 +86,7 @@ class PowerUpSpawner < Spawner
     notify_observers('new_powerup', spawned_pup)
   end
 
-
-  def to_s
-    "<Powerup Spawner>"
+  def type
+    "powerups"
   end
 end
