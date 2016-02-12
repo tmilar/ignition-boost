@@ -183,8 +183,8 @@ class Level
   end
 
   def add_new_powerup(pup)
-    raise 'New enemy is nil!' if pup.nil?
-    Logger.debug("New enemy #{pup.name} #{pup} entered level #{@config[:name]}.")
+    raise 'New powerup is nil!' if pup.nil?
+    Logger.debug("New powerup #{pup.name} #{pup} entered level #{@config[:name]}.")
     @pups << pup
   end
 
