@@ -61,14 +61,27 @@ class Spawner
 
 
   def try_spawn
-    return if  @spawn_timer > 0 || phases(Phase::OpenedPhaseState).empty?
+    check_ready_phases
+    check_opened_phases
+  end
 
-    Logger.trace("Spawn timer is #{@spawn_timer}, opened phases #{phases(Phase::OpenedPhaseState)}, calculating cd...")
+  def check_opened_phases
+    opened_phases = phases(Phase::OpenedPhaseState)
+    return if  @spawn_timer > 0 || opened_phases.empty?
+
+    Logger.trace("Spawn timer is #{@spawn_timer}, opened phases #{opened_phases}. Calculating cd...")
 
     # Restart spawn timer to configured speed
     @spawn_timer = calculate_cooldown
     Logger.trace("#{self} New spawn cooldown timer is #{@spawn_timer}")
-    spawn
+    spawn(opened_phases)
+  end
+
+  def check_ready_phases
+    phases(Phase::ReadyPhaseState).each { |rp|
+      Logger.trace("Spawning from ready phase #{rp}...")
+      spawn([rp])
+    }
   end
 
   ### TODO remove... las phases se updatean y actualizan su estado solas...
@@ -101,30 +114,30 @@ class Spawner
     - (@elapsed_time_spawner / @cooldown_decrement_freq) * @cooldown_decrement_amount
   end
 
-  # spawn a random spawnable enemy
-  def spawn
+  # param [available_phases] array,  pick a random phase and emit spawnee
+  def spawn(available_phases)
 
-    # LOG current available phases enemies
-    opened_phases = phases(Phase::OpenedPhaseState)
-    Logger.trace("Checking enemies for current phases : #{opened_phases} \n Game time: #{Main_IB.game_time}")
+    # LOG current available phases
+    Logger.trace("Checking #{type} for current phases : #{available_phases} \n Game time: #{Main_IB.game_time}")
 
-    # LOG current spawnable enemies names
-    spawnable_enemies_names = []
-    opened_phases.each { |phase|
-      spawnable_enemies_names << phase.spawns.map { |e| e[:name] }
+    # LOG current spawnable #{type} names
+    spawnable_names = []
+    available_phases.each { |phase|
+      spawnable_names << phase.spawns.map { |e| e[:name] }
     }
-    return Logger.warn('No enemies defined for current phases!') if spawnable_enemies_names.empty?
+    return Logger.warn("No #{type} defined for current available phases!") if spawnable_names.empty?
 
-    Logger.trace("spawnable_enemies... #{spawnable_enemies_names}")
+    Logger.trace("spawnable_#{type}... #{spawnable_names}")
 
     # Pick random spawnable
-    new_enemy = pick_spawnable(opened_phases)
-    Logger.info("Spawning enemy: #{new_enemy}\n.#{" Observers notified >> #{observers.map { |o| o.class.name }}" unless observers.empty?}")
+    new_spawn = pick_spawnable(available_phases)
+    Logger.info("Spawning: #{new_spawn}.#{" Observers notified >> #{observers.map { |o| o.class.name }}." unless observers.empty?}..")
 
     # Create spawnee and notify
-    emit_spawnee(new_enemy)
+    emit_spawnee(new_spawn)
   end
 
+  ## OVERRIDE this
   def emit_spawnee(config)
     spawned_enemy = Enemy.new(config)
     notify_observers('new_enemy', spawned_enemy)
