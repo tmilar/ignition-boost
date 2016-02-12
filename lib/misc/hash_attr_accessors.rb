@@ -25,8 +25,8 @@ class Class
   def _log_and_class_eval(type, accessor, prop, log=true)
     case type
       when 'getter' then method = "def #{prop}; #{accessor}[:#{prop}];end"
-      when 'setter' then method = "def #{prop}=(val);Logger.trace(\"#{self} #{prop} changed from \#{#{accessor}[:#{prop}]} to \#{val}!\"); #{accessor}[:#{prop}]=val;end"
-      else raise "Error, trying to define an invalid type! #{type}"
+      when 'setter' then method = "def #{prop}=(val);Logger.trace(\"\#{self} :#{prop} changed from \#{#{accessor}[:#{prop}]} to \#{val}!\") if #{accessor}[:#{prop}]!=val;Logger.trace(\"\#{self} :#{prop} didn't change, '#{prop}' value is already \#{val}!\") if #{accessor}[:#{prop}]==val; #{accessor}[:#{prop}]=val;end"
+      else raise "Error, trying to define an invalid method type! #{type}"
     end
     Logger.trace("<#{self}> Defining #{type}: #{method}") if log
     self.class_eval(method)
