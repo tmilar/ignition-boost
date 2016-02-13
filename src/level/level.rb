@@ -201,12 +201,15 @@ class Level
 
   def apply_powerup(pup)
     pup_effect = pup.effect
-    target = pup.target
-    case target
-      when "player" then @player.apply_pup(pup_effect)
-      when "enemies" then @enemies.each { |e| e.apply_pup(pup_effect) }
-      when "level" then self.apply_pup(pup_effect)
-    end
+
+    pup.targets.each { |target|
+      case target
+        when "player" then @player.apply_pup(pup_effect)
+        when "enemies" then @enemies.each { |e| e.apply_pup(pup_effect) }
+        when "level" then self.apply_pup(pup_effect)
+      end
+    }
+
   end
 
   def check_score_win
