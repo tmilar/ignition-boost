@@ -217,6 +217,15 @@ class Ship
     Logger.trace("Calling ':#{setter}' #{value} on #{self} #{"(previous value was: #{current})" if current}")
     self.send(setter, value)
   end
+  def difficulty
+    @elapsed_time
+  end
+
+  ## On RESET or NUKE, modify elapsed_time by [factor] to go back or forward in difficulty time.
+  def difficulty=(elapsed_time)
+    Logger.debug("#{self} difficulty has been reduced by #{100*elapsed_time/@elapsed_time}%! (shooting_freq been modified)")
+    @elapsed_time = elapsed_time
+  end
 
   def to_s
     "<#{self.class}> '#{self.name}'"

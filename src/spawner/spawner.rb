@@ -55,10 +55,14 @@ class Spawner
     @phases.each { |p| p.update(@elapsed_time)}
   end
 
+  def difficulty
+    @elapsed_time
+  end
+
   ## On RESET or NUKE, modify elapsed_time by [factor] to go back or forward in difficulty time.
-  def modify_difficulty(factor)
-    @elapsed_time_spawner *= factor
-    Logger.debug("Spawner difficulty has been reduced by #{1 - factor}%! (elapsed_time been modified)")
+  def difficulty=(elapsed_time)
+    Logger.debug("Spawner difficulty has been reduced by #{100*elapsed_time/@elapsed_time}%! (elapsed_time been modified)")
+    @elapsed_time = elapsed_time
   end
 
 
