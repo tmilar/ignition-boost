@@ -139,6 +139,7 @@ class Spawner
 
   ## OVERRIDE this
   def emit_spawnee(config)
+    config[:elapsed_time] = @elapsed_time_spawner
     spawned_enemy = Enemy.new(config)
     notify_observers('new_enemy', spawned_enemy)
   end

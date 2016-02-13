@@ -4,6 +4,10 @@ class Enemy < Ship
 
   DEFAULTS_ENEMY = {
       cells: 1,
+      stats: {
+          shoot_decrement_amount: 1,
+          shoot_decrement_freq: 100
+      }
       # limits: {
       #     x: [0.0, 1.0],
       #     y: [0.0, 1.0]
@@ -12,14 +16,25 @@ class Enemy < Ship
   def initialize(config = {})
     config = DEFAULTS_ENEMY.deep_merge(config)
     super(config)
-
     init_shooting_cooldown
   end
 
   def init_shooting_cooldown
-    difficulty_factor = @config[:stats][:shoot_freq]
-    @base_cd = Math::log(0.1, 0.995-difficulty_factor.fdiv(1000)).to_i ### TODO add difficulty calculation
-    @shooting_timer = @base_cd
+    @elapsed_time = @config[:elapsed_time]
+    @cooldown_decrement_freq = @config[:stats][:shoot_decrement_freq]
+    @cooldown_decrement_amount = @config[:stats][:shoot_decrement_amount]
+    @shooting_timer = calculate_shooting_cooldown
+  end
+
+  def calculate_shooting_cooldown
+    difficulty_factor = @config[:stats][:shoot_freq] - cooldown_decrement
+    base_cd = Math::log(0.1, 0.995-difficulty_factor.fdiv(1000)).to_i
+    rand(base_cd)
+  end
+
+  ## Decrement depends on configured elapsed_time, which can be modified for getting more or less difficulty
+  def cooldown_decrement
+    - (@elapsed_time / @cooldown_decrement_freq) * @cooldown_decrement_amount
   end
 
   def position_init
@@ -30,10 +45,15 @@ class Enemy < Ship
     Point.new(self.x + self.width/2, self.y + self.height)
   end
 
+  def update
+    @elapsed_time += 1
+    super
+  end
+
   def check_shoot
     @shooting_timer -= 1
     if @shooting_timer <= 0
-      @shooting_timer = rand(@base_cd)
+      @shooting_timer = calculate_shooting_cooldown
       return true
     end
     false
