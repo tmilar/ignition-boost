@@ -9,15 +9,17 @@ class Spawner
       spawn_decrement_freq: 100,      # DEFAULT 100, tiempo que tarda en reducirse el cd
       phases: {}
   }
+
+  attr_accessor :elapsed_time
+
   def initialize(config)
     super(config)
 
     Logger.start("@#{self.class.to_s.uncapitalize}", config, DEFAULTS_ENEMIES_SPAWNER)
     @config = DEFAULTS_ENEMIES_SPAWNER.merge(config).deep_clone
-    @elapsed_time_spawner = 0
+    @elapsed_time = 0
     cooldown_init
     phases_init
-    # check_phases
   end
 
   def phases_init
@@ -43,14 +45,14 @@ class Spawner
 
   def update
     @spawn_timer -= 1
-    @elapsed_time_spawner += 1
+    @elapsed_time += 1
 
     update_phases
     try_spawn
   end
 
   def update_phases
-    @phases.each { |p| p.update(@elapsed_time_spawner)}
+    @phases.each { |p| p.update(@elapsed_time)}
   end
 
   ## On RESET or NUKE, modify elapsed_time by [factor] to go back or forward in difficulty time.
@@ -111,7 +113,7 @@ class Spawner
 
   ## Decrement depends on spawner elapsed_time, which can be modified for getting future or past difficulty
   def spawn_decrement
-    - (@elapsed_time_spawner / @cooldown_decrement_freq) * @cooldown_decrement_amount
+    - (@elapsed_time / @cooldown_decrement_freq) * @cooldown_decrement_amount
   end
 
   # param [available_phases] array,  pick a random phase and emit spawnee
@@ -139,7 +141,7 @@ class Spawner
 
   ## OVERRIDE this
   def emit_spawnee(config)
-    config[:elapsed_time] = @elapsed_time_spawner
+    config[:elapsed_time] = @elapsed_time
     spawned_enemy = Enemy.new(config)
     notify_observers('new_enemy', spawned_enemy)
   end
