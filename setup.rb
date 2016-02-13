@@ -26,11 +26,15 @@ plugins = {
         exclude: ["original_levels", "original_levels_clean", "original_levels_new", "ib_config_original"]
     },
     "src" => {
-        exclude: ["old"],
-        "screen" => {},
-        "movement" => {
-            order: ["movement", "keyboard_movement", "zig_zag_movement", :rest]
+        "modules" => {
+            "movement" => {
+                order: ["movement", "keyboard_movement", "zig_zag_movement", :rest]
+            },
+            "powerup" => {}
         },
+        exclude: ["old"],
+        "level" => {},
+        "screen" => {},
         "ship" => {
             order: ["ship", :rest]
         },

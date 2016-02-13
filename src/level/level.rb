@@ -1,5 +1,6 @@
 class Level
   include Subject
+  include Powerupeable
 
   DEFAULTS = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
@@ -194,9 +195,9 @@ class Level
     case target
       when "player" then @player.apply_pup(pup_effect)
       when "enemies" then @enemies.each { |e| e.apply_pup(pup_effect) }
+      when "level" then self.apply_pup(pup_effect)
     end
   end
-
 
   def check_score_win
     init_game_over("win") if @player.score >= @config[:target_score]
