@@ -162,6 +162,16 @@ class Level
     @player.update unless @player.disposed?
   end
 
+
+  def difficulty
+    @enemy_spawner.difficulty
+  end
+
+  def difficulty=(difficulty)
+    @enemy_spawner.difficulty = difficulty
+    @enemies.each {|e| e.difficulty = difficulty }
+  end
+
   def notified(msg, data={})
     reactions = {
         'new_enemy' => lambda { |enemy| add_new_enemy(enemy) },
