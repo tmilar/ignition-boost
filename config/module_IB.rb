@@ -88,13 +88,10 @@ module IB
       stats: {
           power: 1,
           speed: 1,
-          hp: 3,
+          hp: 6,
           collide_damage: 4,
           shoot_freq: 10,             ## TODO por ahora esto remplazara la @difficulty
       },
-      power: 1,
-      speed: 1,
-      hp: 3,
       weapon: {
           name: "elazor2",
           type: "lazor",
@@ -111,12 +108,12 @@ module IB
   BOSS1 = {
       name: "boss1",
       stats: {
-          power: 4,
+          power: 5,
           speed: 1,
-          hp: 20,
+          hp: 100,
           collide_damage: 9999,
           collide_resistance: 9999,
-          shoot_freq: 15,
+          shoot_freq: 20,
       },
       weapon: {
           type: "lazor",
@@ -126,10 +123,10 @@ module IB
           },
           direction: [0, 1],     # Initial direction for bullets [x, -y]
       },
-      position: {
-          max_y: 0.5,
-          min_y: 0.3
-      }
+      # limits: {
+      #     x: [0.0, 1.0],
+      #     y: [0.0, 0.6]
+      # }
   }
 
   #-------------------------------------------------------------------------------
@@ -183,15 +180,11 @@ module IB
   }
 
 
-  ### RESET_PUP > baja la frecuencia de aparicion y disparos enemigos... TODO hacerlo funcionar!
-  # TODAVIA NO FUNCA
+  ### RESET_PUP > baja la frecuencia de aparicion y disparos enemigos...
   RESET_PUP = {
-      name: "powerup4",
-      target: "enemies",
-      spawn_cooldown: 0.5, # Factor to multiply current spawner "spawn_cooldown"
-      stats: {
-          shoot_freq: 0.5     # Factor to multiply current level ALL enemies "shoot_freq"
-      },
+      name: "powerup999",
+      target: "level",
+      difficulty: 0.5
   }
 
   # Items are also a kind of powerup but with some key "effect" to distinguish
@@ -227,6 +220,8 @@ module IB
       backdrop: 'backdrop',
       spawner: {
           spawn_cooldown: 50,
+          spawn_decrement_freq: 100,
+          spawn_decrement_amount: 1,
           phases: {
               1 => {
                   enemies: [ENEMIGO1, ENEMIGO2],
@@ -247,16 +242,21 @@ module IB
           }
       },
       powerup_spawner: {
-          frequency: 20,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          frequency: 10,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                                       # Powerup spawner can also have phases!
               1 => {                                      # phase 1 (can define others, with propertis such as "start", "end", "max_spawn" & "BGM")
                   powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP],
-              }
+              },
+              2 => {
+                  powerups: [RESET_PUP],
+                  timer: 10,                # set a constant timer in seconds for phase, ignoring spawner 'frequency'
+                  timer_increment: 1        # optional (default 0): set an increment for the next timer each time it downs to 0
+              },
           },
           # destructible?: false                            # Can pups can be destroyed by bullets? (default: false)
       },
       BGM: ["Battle2", 60, 110],
-      target_score: 100
+      target_score: 200
   }
 
 
@@ -274,9 +274,6 @@ module IB
               1 => {
                   enemies: [ENEMIGO1, ENEMIGO2],
                   start: 15, # time when phase can start spawning enemies
-                  spawn_cooldown: 75, # phases can use different spawn_cooldowns
-                  spawn_decrement_amount: 1,
-                  spawn_decrement_freq: 60
               },
               2 => {
                   enemies: [ENEMIGO2],
@@ -389,7 +386,7 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
-      logger_level: 5  # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      logger_level: 3 # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
