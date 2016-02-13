@@ -28,7 +28,10 @@ class Enemy < Ship
 
   def calculate_shooting_cooldown
     difficulty_factor = @config[:stats][:shoot_freq] - cooldown_decrement
-    base_cd = Math::log(0.1, 0.995-difficulty_factor.fdiv(1000)).to_i
+    return Float::INFINITY if difficulty_factor <= 0
+
+    base_cd = Math::log(0.1, 0.995-([difficulty_factor, 995].min).fdiv(1000)).to_i
+
     rand(base_cd)
   end
 

@@ -37,14 +37,14 @@ class PowerUpSpawner < Spawner
   end
 
   def cooldown_init
-    difficulty_factor = @config[:frequency]
-    @base_cd = Math::log(0.1, 1.0-difficulty_factor.fdiv(1000)).to_i
-    @spawn_timer = @base_cd
+    @spawn_timer = calculate_cooldown
   end
 
   def calculate_cooldown
-    return Float::INFINITY if @config[:frequency] == 0
-    rand(@base_cd)
+    difficulty_factor = @config[:frequency]
+    return Float::INFINITY if difficulty_factor == 0 # if freq is 0, don't spawn
+    base_cd = Math::log(0.1, 1.0-[difficulty_factor, 1000].min.fdiv(1000)).to_i
+    rand(base_cd)
   end
 
   # OVERRIDE spawns
