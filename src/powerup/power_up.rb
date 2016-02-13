@@ -118,6 +118,9 @@ class PowerUp
     self.dispose
   end
 
+  def targets
+    [@config[:targets] || @config[:target]].flatten
+  end
 
   def effect
     # return all except the config-exclusive keys
