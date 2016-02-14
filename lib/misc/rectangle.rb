@@ -102,12 +102,6 @@ class Rectangle
   # param [config] : hash  { :x => [rel_min_x, rel_max_x], :y => [rel_min_y, rel_max_y] }
   # return new limited rectangle
   def limit(config)
-    unless !config.nil? &&
-        !config.empty? &&
-        (config.key?(:x) ||  config.key?(:y))
-      raise "invalid rectangle hash config : #{config}"
-    end
-
     default_min = 0.0
     default_max = 1.0
 
@@ -116,11 +110,19 @@ class Rectangle
     offset_top = config.key?(:y) ? (config[:y][0] || default_min)  : default_min
     offset_bot = config.key?(:y) ? (config[:y][1] || default_max)  : default_max
 
-    Rectangle.new(left * (1 - offset_left),   #x
-                  top * (1 - offset_top),     #y
-                  right * offset_right,       #width
-                  bottom *   offset_bot       #height
+    Logger.trace("Offsets... #{"left #{offset_left}, top #{offset_top}, right #{offset_right}, bot #{offset_bot}"}")
+
+    Rectangle.new(self.x +  offset_left * self.width,
+                  self.y +  offset_top  * self.height,
+                  self.width  * ( + offset_right - offset_left ),
+                  self.height * ( + offset_bot   - offset_top  )
     )
+  end
+
+  def self.valid_limits?(limits)
+    !limits.nil? &&
+        !limits.empty? &&
+        (limits.key?(:x) ||  limits.key?(:y))
   end
 
 #===============================================================================

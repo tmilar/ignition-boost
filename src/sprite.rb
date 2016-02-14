@@ -73,20 +73,21 @@ class Sprite
   # items: screen + size
   def init_limits(config_limits = nil)
 
-    if config_limits.nil?
-      excess_limits = 20
-      @limits = @@screen_rect.expand(self.rectangle).expand!(excess_limits)
-      # Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle} & excess: #{excess_limits}")
-    else
+
+    if Rectangle.valid_limits?(config_limits)
       @limits = @@screen_rect.limit(config_limits)
-      # Logger.debug("#{self} initialized limits #{@limits} by limiting #{@@screen_rect} with #{config_limits}.")
+      Logger.debug("#{self} initialized limits #{@limits} by limiting #{@@screen_rect} with #{config_limits}.")
+      return
     end
+
+    excess_limits = 20
+    @limits = @@screen_rect.expand(self.rectangle).expand!(excess_limits)
+    Logger.debug("#{self} initialized limits #{@limits} by expanding #{@@screen_rect} with #{self.rectangle} & excess: #{excess_limits}")
 
   end
 
   def valid_config_limits?(limits)
     !limits.nil? &&
-        !limits.empty? &&
         limits.key?(:x) &&
         limits.key?(:y) &&
         limits[:x].size.equal?(2) &&
@@ -114,6 +115,7 @@ class Sprite
     new_rect = Rectangle.new(position.x, position.y, self.width, self.height)
     if out_of_limits?(new_rect)
       self.rectangle = old_rect
+      # Logger.info("rect out of limits , old: #{old_rect}, new: #{new_rect}")
       return
     end
 
