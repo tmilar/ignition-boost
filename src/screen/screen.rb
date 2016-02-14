@@ -24,33 +24,23 @@ class Screen
     draw_score(0)
     draw_high_score(0)
     draw_hp_bar
-    init_item_held
-    draw_item_held
   end
 
-  def init_nuke
-    Logger.debug("Initializing nuke! ")
+  def init_nuke(activated_item)
+    Logger.debug("Initializing nuke! #{activated_item}")
     @nuke = Sprite.new
     @nuke.bitmap = Bitmap.new(Graphics.width,Graphics.height)
     @nuke.bitmap.fill_rect(@nuke.bitmap.rect,Color.new(255,255,255))
     @nuke.z = 2000
-    @nuke.opacity = 0
+    @nuke.opacity = 225
+    # Sound.se(activated_item.se) if activated_item.se
   end
 
-  def init_item_held
-    Logger.debug("Initializing item_hold! ") ###TODO
-
-    @item_held = Sprite.new
-    @item_held.x = Graphics.width / 4 + 40
-    @item_held.y = 15
-    @item_held.z = 100
-  end
-
-  def draw_item_held(item = nil)
-    @item_held.bitmap.dispose if @item_held.bitmap
-    @item_held.opacity = 255
-    return @item_held.opacity = 0 if item.nil?
-    @item_held.bitmap = Cache.space(item[:name])
+  def activated_item(item)
+    case item.name
+      when "nuke" then init_nuke(item)
+      else raise "#{self} invalid item #{item} activation"
+    end
   end
 
   def init_game_over(result)
@@ -116,7 +106,8 @@ class Screen
   end
 
   def update_nuke
-    return unless @nuke
+    return if @nuke.nil? || @nuke.opacity <= 0
+    @nuke.opacity -= 3
   end
 
   def update_game_over
@@ -135,7 +126,7 @@ class Screen
 
   def dispose
     Logger.debug("Disposing screen objects...")
-    @item_held.bitmap.dispose if @item_held.bitmap
+    @item_held.bitmap.dispose if @item_held && @item_held.bitmap
     @window.dispose
   end
 end
