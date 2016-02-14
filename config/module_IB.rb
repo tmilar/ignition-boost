@@ -44,7 +44,7 @@ module IB
       stats: {
           power: 1,
           speed: 5,
-          hp: 30,
+          hp: 40,
           collide_damage: 99,
           collide_resistance: 0,
           shoot_freq: 0,             ## TODO por ahora esto remplazara la @difficulty
@@ -105,28 +105,53 @@ module IB
       DSE: ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
   }
 
+  ENEMIGO3 = {
+      name: "alien3",
+      stats: {
+          power: 1,
+          speed: 0.6,
+          hp: 10,
+          collide_damage: 6,
+          shoot_freq: 15,
+      },
+      weapon: {
+          name: "elazor",
+          type: "lazor",
+          stats: {
+              damage: 3,              # bullet damage
+              speed: 3,               # bullet speed
+          },
+          level: 2,
+          SE: ["Attack2",80,110],
+          direction: [0, 1],     # Initial direction for bullets [x, -y]
+      },
+      DSE: ["Fire2",90,150], # "SE_Name",volume,pitch - SE for enemy dying
+  }
+
   BOSS1 = {
       name: "boss1",
       stats: {
           power: 5,
-          speed: 1,
-          hp: 100,
+          speed: 0.5,
+          hp: 200,
           collide_damage: 9999,
           collide_resistance: 9999,
-          shoot_freq: 20,
+          shoot_freq: 18,
       },
       weapon: {
-          type: "lazor",
+          name: "lazor_ball",
+          type: "ball",
           stats: {
-              damage: 2,              # bullet damage
-              speed: 6,               # bullet speed
+              damage: 3,              # bullet damage
+              speed: 0.8,               # bullet speed
           },
+          level: 5,
           direction: [0, 1],     # Initial direction for bullets [x, -y]
       },
-      # limits: {
-      #     x: [0.0, 1.0],
-      #     y: [0.0, 0.6]
-      # }
+      limits: {
+          x: [0.0, 1.0],
+          y: [-1.0, 1.1]
+      }
   }
 
   #-------------------------------------------------------------------------------
@@ -228,7 +253,7 @@ module IB
                   start: 0,             #time phase can start spawning enemies
               },
               2 => {
-                  enemies: [ENEMIGO2],
+                  enemies: [ENEMIGO3],
                   start: 5,
                   end: 10,
                   BGM: ["Battle1", 60, 110] #BGM to be played when this phase starts
@@ -242,7 +267,7 @@ module IB
           }
       },
       powerup_spawner: {
-          frequency: 10,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          frequency: 5,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                                       # Powerup spawner can also have phases!
               1 => {                                      # phase 1 (can define others, with propertis such as "start", "end", "max_spawn" & "BGM")
                   powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP],
@@ -298,11 +323,11 @@ module IB
       BGM: ['Battle2', 60, 110],
       target_score: 100,
       spawner: {
-          spawn_cooldown: 1000,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           phases: {
               1 => {
-                  enemies: [ENEMIGO1, ENEMIGO2],
-                  max_spawn: 5,
+                  enemies: [BOSS1],
+                  max_spawn: 1,
                   start: 0, # time when phase can start spawning enemies
               },
           }
@@ -361,7 +386,7 @@ module IB
           hp: 1000,
           collide_damage: 99,
           collide_resistance: 0,
-          shoot_freq: 0,             ## TODO por ahora esto remplazara la @difficulty
+          shoot_freq: 0,
           nuke_power: 99            # Damage caused by nuke
       },
       weapon: LAZOR_WEAPON
@@ -386,14 +411,14 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
-      logger_level: 3 # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      logger_level: 5 # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
 
-  CURRENT_LEVEL = NIVEL0 #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
+  CURRENT_LEVEL = NIVEL0 ## TEST_MECHANICS_LEVEL #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
   PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
 end
