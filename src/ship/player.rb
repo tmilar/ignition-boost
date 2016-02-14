@@ -32,9 +32,9 @@ class Player < Ship
     }
   end
 
-  # Scene update, one per frame
   def update
     super
+    check_item
   end
 
 
@@ -45,6 +45,18 @@ class Player < Ship
   # @return [boolean check_shoot ] if true -> ship will shoot
   def check_shoot
     Input.press?(:C)
+  end
+
+  def check_item
+    return unless Input.press?(:A) && @item
+    Sound.se(@item.se)
+    notify_observers("item_activate", @item)
+    dispose_item
+  end
+
+  def dispose_item
+    @item.dispose
+    @item = nil
   end
 
   def pup_hit(pup)
@@ -58,9 +70,13 @@ class Player < Ship
   # PROPERTIES
   # ---------------------------------------------------------------------
 
-  def item_held=(item)
-    @item = item
-    notify_observers("item", {item: item})
+  def item=(item_config)
+    @item = Item.new(item_config)
+    Logger.trace("#{self} got new item from config: #{item_config}")
+  end
+
+  def item
+    @item
   end
 
   def high_score
