@@ -35,6 +35,7 @@ class Sprite
     new_sprite.float_y = init_pos.y ##config[:y]
     new_sprite.x = new_sprite.float_x
     new_sprite.y = new_sprite.float_y
+    new_sprite.z = config[:z] if config.key?(:z)
     new_sprite.ox = 0
     new_sprite.oy = 0
     new_sprite.zoom_x = config[:zoom_x]
