@@ -6,14 +6,13 @@ class BallWeapon < Weapon
     lazors = []
 
     # Logger.trace("#{self} preparing lazors for lvl #{@level}, conf #{config}")
-    level = @level - 1 ## Use zero-indexed levels for calculations
     bullet_conf = config.deep_clone
 
     base_dirx = bullet_conf[:direction].x
 
-    (0.. level).each { |i|
+    @level.times { |i|
 
-      pos = i - ( level/2.to_f )
+      pos = i - (@level - 1).fdiv(2)
 
       offset_dirx = pos * ANGLE_BETWEEN_BALLS
 
