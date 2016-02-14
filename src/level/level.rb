@@ -182,7 +182,8 @@ class Level
         'player_hit' => lambda { |elazor| elazor.dispose },
         'enemy_hit' => lambda { |lazor| lazor.dispose },
         'score' => lambda { |_| check_score_win },
-        'powerup_grabbed' => lambda { |pup| apply_powerup(pup)},
+        'powerup_grabbed' => lambda { |pup| apply_effect(pup)},
+        'item_activate' => lambda { |item| apply_effect(item)},
         'player_weapon_changed' => lambda { |weapon| observe_new_weapon(weapon)}
     }
     Logger.trace("Level received notification '#{msg}', with data #{data}... #{"But is not considered." unless reactions.key?(msg)}")
@@ -199,14 +200,16 @@ class Level
     @pups << pup
   end
 
-  def apply_powerup(pup)
+  def apply_effect(pup)
     pup_effect = pup.effect
+    targets = (pup.target ? [pup.target] : pup.targets).flatten
 
-    pup.targets.each { |target|
+    targets.each { |target|
       case target
         when "player" then @player.apply_pup(pup_effect)
         when "enemies" then @enemies.each { |e| e.apply_pup(pup_effect) }
         when "level" then self.apply_pup(pup_effect)
+        else raise "Invalid target '#{target}' for effect #{pup_effect} "
       end
     }
 
