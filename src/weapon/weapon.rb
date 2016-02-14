@@ -2,7 +2,6 @@ class Weapon
 
   include Subject
 
-  attr_reader :stats
 
   DEFAULTS = {
       name: "DEFAULT_GUN_NAME",
@@ -14,17 +13,18 @@ class Weapon
       direction: [0, 1],
       type: "lazor",          # weapon name (also lazor image '.png' name)
       SE: ["Attack2",80,150], # sound when shooting
-      level: 1               # starting weapon level (optional, default 1)
+      level: 1,               # starting weapon level (optional, default 1)
+      max_level: 5
       # overheat: {         ##TODO overheat/refresh mechanism
       #     bullets: 6,
       #     cooldown: 3
       # }
   }
 
-  MAX_LEVEL = 5 ### TODO define phases and levels for weapons...
-
   attr_accessors_delegate :@stats, :damage, :speed, :cooldown
-  attr_readers_delegate :@config, :name
+  attr_readers_delegate :@config, :name, :max_level
+  attr_reader :stats
+  attr_accessor :level
 
   def self.create(config = {})
     weapon_type = config[:type]
@@ -48,6 +48,7 @@ class Weapon
     @direction = Point.new(@config[:direction][0], @config[:direction][1]).normalize_me
     @stats = @config[:stats].deep_clone
     @level = @config[:level]
+    @max_level = @config[:max_level]
   end
 
   def update
@@ -79,21 +80,12 @@ class Weapon
     [lazor]
   end
 
-  def level
-    @level
-  end
-
-  def max_level
-    MAX_LEVEL
-  end
-
   def level=(new_lvl)
-    return if new_lvl == @level
+    return if new_lvl == level
     return Logger.info("Weapon can't level up, it's already at its max (#{max_level})!") if new_lvl > max_level
 
-    Logger.debug("Weapon level up! From #{@level} to #{new_lvl}")
+    Logger.debug("Weapon level up! From #{level} to #{new_lvl}")
     @level = new_lvl
-    ### TODO Weapon phases and levels...
   end
 
   def type
