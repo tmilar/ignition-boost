@@ -6,9 +6,9 @@ class Screen
         'score' => lambda { |score| draw_score(score) },
         'high_score' => lambda { |hs| draw_high_score(hs) },
         'player_hp' => lambda { |player| draw_hp_bar(player) },
-        'nuke' => lambda { |_| init_nuke },
+        'item_activate' => lambda { |item| activated_item(item) },
+        # 'nuke' => lambda { |nuke_pup| init_nuke(nuke_pup) },
         'game_over' => lambda { |result| init_game_over(result) },
-        'item' => lambda { |item| draw_item_held(item)}
     }
 
     @viewport = viewport
@@ -36,6 +36,7 @@ class Screen
     # Sound.se(activated_item.se) if activated_item.se
   end
 
+  # Process an activated {item}. TODO screen should already receive the right processed notifiaction?
   def activated_item(item)
     case item.name
       when "nuke" then init_nuke(item)
