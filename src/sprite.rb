@@ -18,31 +18,38 @@ class Sprite
         zoom_x: 1,
         zoom_y: 1,
         name: nil,
-        cells: 1
+        cells: 1,
+        init_pos: nil ## lambda { |sprite| Point.new(sprite.x, sprite.y) }
     }
 
     config = defaults.merge(args)
     # Logger.start("sprite", args, defaults)
-
     new_sprite = Sprite.new(@viewport)
-    new_sprite.float_x = config[:x]
-    new_sprite.float_y = config[:y]
-    new_sprite.x = new_sprite.float_x
-    new_sprite.y = new_sprite.float_y
     new_sprite.bitmap = Cache.space(config[:bitmap].split(':')[0])
     new_sprite.gameobj_id = config[:bitmap].split(':')[1].to_i
+    new_sprite.init_cells(config[:cells]) if config[:cells] > 1
+
+    init_pos = config[:init_pos] ? config[:init_pos].call(new_sprite) : Point.new(config[:x], config[:y])
+
+    new_sprite.float_x = init_pos.x ##config[:x]
+    new_sprite.float_y = init_pos.y ##config[:y]
+    new_sprite.x = new_sprite.float_x
+    new_sprite.y = new_sprite.float_y
     new_sprite.ox = 0
     new_sprite.oy = 0
     new_sprite.zoom_x = config[:zoom_x]
     new_sprite.zoom_y = config[:zoom_y]
     new_sprite.name = config[:name] || config[:bitmap]
-    new_sprite.rectangle = Rectangle.new(new_sprite.x,
-                                         new_sprite.y,
+
+    new_sprite.rectangle = Rectangle.new(new_sprite.x, ##init_pos.x,
+                                         new_sprite.y, ## init_pos.y,
                                          new_sprite.width,
                                          new_sprite.height)
-
-    new_sprite.init_cells(config[:cells]) if config[:cells] > 1
     new_sprite.init_limits(config[:limits])
+
+    new_sprite.position = init_pos
+    new_sprite.check_out_of_screen
+
     new_sprite
   end
 
@@ -59,11 +66,6 @@ class Sprite
     @cells_qty = cells_qty
     @cel_width = width / @cells_qty
     self.src_rect.set(@cell * @cel_width, 0, @cel_width, height)
-
-    self.rectangle = Rectangle.new(self.x,
-                                   self.y,
-                                   @cel_width,
-                                   self.height)
   end
 
 
@@ -109,7 +111,7 @@ class Sprite
 
   def position=(position)
     raise "ERROR New position  for sprite #{self} is nil!" if position.nil?
-    return Logger.warn("#{self} has been disposed, can't set new position!") if disposed?
+    return Logger.debug("#{self} has been disposed, can't set new position!") if disposed?
 
     old_rect = self.rectangle
     new_rect = Rectangle.new(position.x, position.y, self.width, self.height)
@@ -137,7 +139,7 @@ class Sprite
 
   def check_out_of_screen
     if self.rectangle && !self.rectangle.collide_rect?(@@screen_rect)
-      Logger.debug("#{self} went out of screen! Disposing...")
+      Logger.debug("#{self} is out of screen! Disposing...")
       dispose
     end
   end
@@ -147,12 +149,7 @@ class Sprite
     offset_x = new_x.to_f - old_x.to_f
     return @cell = 0 if offset_x < -ZERO_EPSILON
     return @cell = 2 if offset_x > ZERO_EPSILON
-    return @cell = 1 if offset_x.between?(-ZERO_EPSILON, ZERO_EPSILON)
-  end
-
-  def reset_cell
-    return if @cell.nil?
-    @cell = 1
+    return @cell = 1 if offset_x.abs < ZERO_EPSILON
   end
 
   def width
@@ -177,6 +174,11 @@ class Sprite
     sx = @cell * @cel_width
     # Logger.trace("Updating player cell #{@cell}, cel width is #{@cel_width}, result sx #{sx}")
     self.src_rect.set(sx, 0, @cel_width, height)
+  end
+
+  def reset_cell
+    return if @cell.nil?
+    @cell = 1
   end
 
   def to_s

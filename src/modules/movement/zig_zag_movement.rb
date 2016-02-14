@@ -14,7 +14,7 @@ module ZigZagMovement
 
     @ticker -= 1
     if @ticker <= 0
-      @dir_x = self.x < Graphics.width / 2 ? :RIGHT : :LEFT
+      @dir_x = (self.x + self.width/2) < Graphics.width / 2 ? :RIGHT : :LEFT
       @ticker = rand(90)
     end
   end

@@ -85,10 +85,9 @@ class Ship
   def sprite_init
     @sprite = Sprite.create({
                                 bitmap: @config[:name],
-                                x: Graphics.width / 2,
-                                y: 0,
                                 cells: @config[:cells],
-                                limits: @config[:limits]
+                                limits: @config[:limits],
+                                init_pos: self.position_init
                             })
   end
 
@@ -180,7 +179,6 @@ class Ship
     else
       Logger.trace("#{new_weapon} is the same weapon as current.")
       @weapon.level += 1
-      ## TODO - DECIDE - set other *weapon* property pups..?
     end
   end
 

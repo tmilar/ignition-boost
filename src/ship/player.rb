@@ -26,7 +26,10 @@ class Player < Ship
 
   # @Override Ship init_position
   def position_init
-    self.position = Point.new(Graphics.width / 2 - self.width / 2, Graphics.height - 2*self.height)
+    lambda { |sprite|
+      # Logger.trace(" #{self} new pos is #{init_pos}, width: #{sprite.width}, height: #{sprite.height}. Graphics w: #{Graphics.width}, h: #{Graphics.height}")
+      Point.new(Graphics.width / 2 - (sprite.width / 2), Graphics.height - 2*sprite.height)
+    }
   end
 
   # Scene update, one per frame

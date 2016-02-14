@@ -41,7 +41,9 @@ class Enemy < Ship
   end
 
   def position_init
-    self.position = Point.new( rand(Graphics.width) , 0 - self.height + 1 )
+    lambda { |sprite|
+      Point.new( rand(Graphics.width - sprite.width), 0 - sprite.height + 1 )
+    }
   end
 
   def weapon_pos

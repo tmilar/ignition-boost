@@ -18,10 +18,12 @@ class Bullet
   # :stats
   def initialize(config ={})
     super(config)
+    config[:init_pos] = lambda { |sprite| config[:position] + Point.new(- sprite.width / 2, 0) }
+
     @sprite = Sprite.create({ name: config[:name],
-                              bitmap: config[:name]})
-    config[:position].x -= self.width / 2
-    self.position = config[:position]
+                              bitmap: config[:name],
+                              init_pos: config[:init_pos]
+                            })
 
     @direction = config[:direction]
     @stats = config[:stats]
