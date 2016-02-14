@@ -181,6 +181,22 @@ module IB
       }
   }
 
+  NUKE_PUP = {
+      name: "powerup3",
+      target: "player",
+      item: {
+          hold: true,
+          bitmap: "item_nuke",
+          name: "nuke",
+          SE: ["Explosion3",120,100],
+          target: ["enemies", "level"],
+          difficulty: 0.75,
+          stats: {
+              hp: -30,  ## enough to kill most of them
+          },
+      }
+  }
+
   #### MORE EXAMPLES ###
   SPEED_UP = {
       name: "speed_pup",
@@ -270,11 +286,11 @@ module IB
           frequency: 5,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                                       # Powerup spawner can also have phases!
               1 => {                                      # phase 1 (can define others, with propertis such as "start", "end", "max_spawn" & "BGM")
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP],
+                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
-                  timer: 10,                # set a constant timer in seconds for phase, ignoring spawner 'frequency'
+                  timer: 20,                # set a constant timer in seconds for phase, ignoring spawner 'frequency'
                   timer_increment: 1        # optional (default 0): set an increment for the next timer each time it downs to 0
               },
           },
@@ -326,19 +342,19 @@ module IB
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           phases: {
               1 => {
-                  enemies: [BOSS1],
-                  max_spawn: 1,
+                  enemies: [ENEMIGO1], ##[BOSS1],
+                  max_spawn: 100,
                   start: 0, # time when phase can start spawning enemies
               },
           }
       },
       powerup_spawner: {
-          # frequency: 10,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
-          # phases: {                    # Powerup spawner can also have phases!
-          #                              1 => {                     # phase 1
-          #                                                         powerups: [SPEED_UP, WEAPON_UP, HP_DOWN, REPAIR_PUP],
-          #                              }
-          # },
+          frequency: 20,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                    # Powerup spawner can also have phases!
+             1 => {                     # phase 1
+                powerups: [NUKE_PUP],
+             }
+          },
       }
   }
 
@@ -418,7 +434,7 @@ module IB
   #-------------------------------------------------------------------------------
 
 
-  CURRENT_LEVEL = NIVEL0 ## TEST_MECHANICS_LEVEL #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
+  CURRENT_LEVEL = NIVEL0 ##  #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
   PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
 end
