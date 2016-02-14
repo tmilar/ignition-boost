@@ -195,7 +195,7 @@ class Level
 
   def add_new_powerup(pup)
     raise 'New powerup is nil!' if pup.nil?
-    Logger.debug("New powerup #{pup.name} #{pup} entered level #{@config[:name]}.")
+    Logger.debug("#{self} New powerup #{pup.name} #{pup} entered level #{@config[:name]}.")
     @pups << pup
   end
 
@@ -229,14 +229,14 @@ class Level
 
   def add_new_enemy(enemy)
     raise 'New enemy is nil!' if enemy.nil?
-    Logger.debug("New enemy #{enemy.name} #{enemy} entered level #{@config[:name]}. Ancestors: #{enemy.class.ancestors}")
+    Logger.debug("#{self} New enemy #{enemy.name} #{enemy} entered level #{@config[:name]}. Ancestors: #{enemy.class.ancestors}")
     enemy.level_observe(self)
     @enemies << enemy
   end
 
   def add_new_lazors(data)
     raise 'Lazor(s) are empty or nil!' if data[:lazors].nil_empty?
-    Logger.trace("New lazors were shooted!!! data received: #{data}")
+    Logger.trace("#{self} New lazors were shooted!!! data received: #{data}")
     case data[:data][:shooter]
       when 'player' then @plazors.push(*data[:lazors]) unless @plazors.nil?
       when 'enemy'  then @elazors.push(*data[:lazors]) unless @elazors.nil?
@@ -260,4 +260,7 @@ class Level
     self.add_observer(screen)
   end
 
+  def to_s
+    "<#{self.class}>"
+  end
 end
