@@ -53,6 +53,8 @@ end # module Nap
 # ■ class Rectangle
 #===============================================================================
 class Rectangle
+  EPSILON = 0.00001
+
   attr_reader :x
   attr_reader :y
   attr_accessor :width
@@ -256,13 +258,13 @@ class Rectangle
 
   def add_point(point)
     self.x += point.x
-    self.x += point.y
+    self.y += point.y
     self
   end
 
   def sub_point(point)
     self.x += point.x
-    self.x += point.y
+    self.y += point.y
     self
   end
 
@@ -337,14 +339,19 @@ class Rectangle
 
   def ==(value)
     raise "Rectangle expected typeof Rectangle for == operator. Got: #{value.class} expected: #{self.class} value: #{value}" if !value.kind_of?(Rectangle)
-    @x == value.x && @y == value.y &&
-        @width == value.width && @height == value.height
+    # @x == value.x && @y == value.y &&
+    #     @width == value.width && @height == value.height
+
+    (@x - value.x).abs < EPSILON &&
+    (@y - value.y).abs < EPSILON &&
+    (@width - value.width).abs < EPSILON &&
+    (@height - value.height).abs < EPSILON
+
   end
 
   def !=(value)
     raise "Rectangle expected typeof Rectangle for != operator. Got: #{value.class} expected: #{self.class} value: #{value}" if !value.kind_of?(Rectangle)
-    !(@x == value.x && @y == value.y &&
-        @width == value.width && @height == value.height)
+    !(self == value)
   end
 
   def [] key

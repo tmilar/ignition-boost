@@ -6,6 +6,7 @@ $imported[:nap_point] = 1.04
 class Point
   attr_accessor :x
   attr_accessor :y
+  EPSILON = 0.00001
 
   #-----------------------------------------------------------------------------
   # Initialize
@@ -123,11 +124,13 @@ class Point
   end
 
   def ==(value)
-    @x == value.x && @y == value.y
+    (@x - value.x).abs < EPSILON &&
+    (@y - value.y).abs < EPSILON
+    # @x == value.x && @y == value.y
   end
 
   def !=(value)
-    !(@x == value.x && @y == value.y)
+    !(self == value)
   end
 
   def [] idx
