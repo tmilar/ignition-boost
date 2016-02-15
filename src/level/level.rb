@@ -233,7 +233,7 @@ class Level
     @enemy_spawner.stop
     notify_observers("game_over", result)
     $game_variables[IB::LEVEL_RESULT_VAR] = result
-    if IB::last_level?
+    if IB::last_level? && result == "win"
       $game_variables[IB::LEVEL_RESULT_VAR] = "completed"
     end
     Logger.info("game over! result: #{$game_variables[IB::LEVEL_RESULT_VAR]}")
