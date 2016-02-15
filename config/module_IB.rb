@@ -155,7 +155,7 @@ module IB
   }
 
   #-------------------------------------------------------------------------------
-  # **** PUPS  **** //TODO define  & include in Levels
+  # **** PUPS  ****
   #-------------------------------------------------------------------------------
 
   ### EXAMPLES ###
@@ -228,15 +228,6 @@ module IB
       difficulty: 0.5
   }
 
-  # Items are also a kind of powerup but with some key "effect" to distinguish
-  # TODAVIA NO FUNCA
-  NUKEALL_ITEM = {
-      name: "item_nuke",
-      target: "player",
-      hold: true,
-      effect: "nuke"    # keyword for item type
-  }
-
   # Weapon change power up. Will change current weapon with other one...
   BALL_WEAPON_CHANGE_PUP = {
       name: "powerup2",
@@ -286,7 +277,7 @@ module IB
           frequency: 5,                                  # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                                       # Powerup spawner can also have phases!
               1 => {                                      # phase 1 (can define others, with propertis such as "start", "end", "max_spawn" & "BGM")
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, SPEED_UP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -427,14 +418,48 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
-      logger_level: 5 # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      logger_level: 3 # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
+  LEVELS = [NIVEL0]
 
-  CURRENT_LEVEL = NIVEL0 ##  #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
+  CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
+  LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win" si gano, "loss" si perdio)
+  # CURRENT_LEVEL = NIVEL0 ##  #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
   PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
+  def self.current_level(level_idx=1)
+    # if no $game_variables (ie. web environment), return first level, or parameter level.
+    level_idx -= 1 ## actual level index is 0-based
+    if $game_variables.nil?
+      Logger.info("Configured level #{level_idx}: '#{LEVELS[level_idx][:name]}' (no $game_variables detected)")
+      return LEVELS[level_idx]
+    end
+
+    unless $game_variables[CURRENT_LEVEL_VAR].is_a?(Fixnum) && !$game_variables[CURRENT_LEVEL_VAR].nil?
+      raise "Invalid configuration for current level id, check if IB::CURRENT_LEVEL_VAR is correctly defined"
+    end
+
+    # $game_variables exist and contains a level id
+    current_level_id = $game_variables[CURRENT_LEVEL_VAR]
+
+    unless current_level_id.between?(0, LEVELS.size-1)
+      Logger.error "Current level id '#{current_level_id}' is wrong or doesn't exist! Check IB::LEVELS and IB::CURRENT_LEVEL_VAR..."
+    end
+
+    ## Limit level_id between '0' and last level (LEVELS.size - 1)
+    current_level_id = [[0, current_level_id].max, LEVELS.size-1].min
+
+    # Configured level id is correct and exists, return specified level configuration to start game.
+    Logger.info("Configured level: id #{current_level_id} '#{LEVELS[current_level_id][:name]}'")
+    LEVELS[current_level_id]
+  end
+
+  def self.last_level?
+    Logger.info("Checking last level... current is: #{$game_variables[CURRENT_LEVEL_VAR]}, last is: #{ LEVELS.size - 1}")
+    $game_variables[CURRENT_LEVEL_VAR] - 1 == LEVELS.size - 1
+  end
 end
