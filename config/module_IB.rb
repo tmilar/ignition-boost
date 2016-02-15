@@ -455,7 +455,7 @@ module IB
     end
 
     # $game_variables exist and contains a level id
-    current_level_id = $game_variables[CURRENT_LEVEL_VAR]
+    current_level_id = $game_variables[CURRENT_LEVEL_VAR] - 1
 
     unless current_level_id.between?(0, LEVELS.size-1)
       Logger.error "Current level id '#{current_level_id}' is wrong or doesn't exist! Check IB::LEVELS and IB::CURRENT_LEVEL_VAR..."
