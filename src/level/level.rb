@@ -45,10 +45,9 @@ class Level
   attr_reader :player
 
 
-  def initialize(level_options = {}, player_ship = {})
+  def initialize(level_options = {})
     #config setup
     clean_level_result
-    level_options[:player_ship] = player_ship
     Logger.trace("starter level opts: #{level_options}")
     Logger.start('level', level_options, DEFAULTS)
     @config = DEFAULTS.deep_merge(level_options).deep_clone
@@ -80,7 +79,7 @@ class Level
   def init_level_graphics
     Logger.trace("strating lvl graphics...  opts: #{@config}")
     @backdrop = Backdrop.new(@config[:backdrop])
-    Logger.trace("Conf for player ... #{@config[:player_ship]}")
+    Logger.trace("Conf for player ... '#{@config[:player_ship]}'")
     @player = Player.new(@config[:player_ship])
     @player.level_observe(self)
     @player.update

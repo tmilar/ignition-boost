@@ -250,6 +250,7 @@ module IB
   NIVEL0 = {
       name: 'first level',
       backdrop: 'backdrop',
+      player_ship: NAVE_BASE1,
       spawner: {
           spawn_cooldown: 50,
           spawn_decrement_freq: 100,
@@ -303,6 +304,7 @@ module IB
       backdrop: 'backdrop',           # FONDO imagen .jpg
       name: 'first_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
+      player_ship: NAVE_BASE1,
       target_score: 100,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
@@ -334,6 +336,7 @@ module IB
       backdrop: 'backdrop',           # FONDO imagen .jpg
       name: 'test_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
+      player_ship: NAVE_BASE1,
       target_score: 100,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
@@ -358,6 +361,7 @@ module IB
   TEST_STRESS_LEVEL = {
       name: 'STRESS level',
       backdrop: 'backdrop',
+      player_ship: NAVE_BASE1,
       spawner: {
           spawn_cooldown: 1,
           phases: {
@@ -435,11 +439,12 @@ module IB
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win" si gano, "loss" si perdio)
   # CURRENT_LEVEL = NIVEL0 ##  #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
-  PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
+  # PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
   def self.current_level(level_idx=1)
     # if no $game_variables (ie. web environment), return first level, or parameter level.
     level_idx -= 1 ## actual level index is 0-based
+
     if $game_variables.nil?
       Logger.info("Configured level #{level_idx}: '#{LEVELS[level_idx][:name]}' (no $game_variables detected)")
       return LEVELS[level_idx]
