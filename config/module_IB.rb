@@ -434,16 +434,15 @@ module IB
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
-  LEVELS = [NIVEL0]
+  LEVELS = [MY_POWERUP_LEVEL, TEST_MECHANICS_LEVEL, TEST_MECHANICS_LEVEL]
 
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win" si gano, "loss" si perdio)
   # CURRENT_LEVEL = NIVEL0 ##  #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
   # PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
-  def self.current_level(level_idx=1)
+  def self.current_level(level_idx=0)
     # if no $game_variables (ie. web environment), return first level, or parameter level.
-    level_idx -= 1 ## actual level index is 0-based
 
     if $game_variables.nil?
       Logger.info("Configured level #{level_idx}: '#{LEVELS[level_idx][:name]}' (no $game_variables detected)")
@@ -455,7 +454,7 @@ module IB
     end
 
     # $game_variables exist and contains a level id
-    current_level_id = $game_variables[CURRENT_LEVEL_VAR] - 1
+    current_level_id = $game_variables[CURRENT_LEVEL_VAR]
 
     unless current_level_id.between?(0, LEVELS.size-1)
       Logger.error "Current level id '#{current_level_id}' is wrong or doesn't exist! Check IB::LEVELS and IB::CURRENT_LEVEL_VAR..."
