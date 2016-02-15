@@ -288,7 +288,13 @@ module IB
           # destructible?: false                            # Can pups can be destroyed by bullets? (default: false)
       },
       BGM: ["Battle2", 60, 110],
-      target_score: 200
+      target_score: 200,
+      # pre_config: lambda {     ## Pre-config variables BEFORE Level start
+      #   IB::NIVEL0[:name] = "pre name"
+      # },
+      # post_config: lambda {    ## Post-config variables AFTER level start
+      #   IB::NIVEL0[:name] = "post name"
+      # }
   }
 
 

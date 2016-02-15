@@ -276,4 +276,18 @@ class Level
   def to_s
     "<#{self.class}>"
   end
+
+  def self.pre_config(level_config)
+    return unless level_config.key?(:pre_config)
+    Logger.debug("pre-configuring level #{level_config[:name]}")
+    level_config[:pre_config].call
+    Logger.debug("pre-configured level #{level_config[:name]}!")
+  end
+
+  def self.post_config(level_config)
+    return unless level_config.key?(:post_config)
+    Logger.debug("post-configuring level #{level_config[:name]}")
+    level_config[:post_config].call
+    Logger.debug("post-configured level #{level_config[:name]}!")
+  end
 end

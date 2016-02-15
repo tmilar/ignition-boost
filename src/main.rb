@@ -42,8 +42,10 @@ class Main_IB < Scene_Base
 
 
   def start_level
-    Logger.info("Starting new level!") ## #{IB::current_level[:name]}")
-    @level = Level.new(IB::current_level, IB::PLAYER_SHIP)
+    @current_level_config = IB::current_level
+    Logger.info("Starting new level! #{@current_level_config[:name]}") ## #{IB::current_level[:name]}")
+    Level.pre_config(@current_level_config)
+    @level = Level.new(@current_level_config)
     @level.screen_observe(@screen)
     Logger.debug("Configured level >> #{@level}")
   end
@@ -85,6 +87,7 @@ class Main_IB < Scene_Base
     super
     SceneManager.snapshot_for_background
     dispose_graphics
+    Level.post_config(@current_level_config)
     $game_system.replay_bgm
   end
 
