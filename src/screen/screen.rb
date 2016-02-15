@@ -47,8 +47,9 @@ class Screen
   def init_game_over(result)
     return if @game_over
 
+    result = "win" if "completed" ## TODO different ending bitmap for "completed" result?
     Sound.fade(10)
-    case result
+    case
       when "win"  then Sound.me(IB::ME_WIN)
       when "loss" then Sound.me(IB::ME_LOSS)
       else raise "Game over result #{result} invalid."
