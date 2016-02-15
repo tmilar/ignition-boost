@@ -47,6 +47,7 @@ class Level
 
   def initialize(level_options = {}, player_ship = {})
     #config setup
+    clean_level_result
     level_options[:player_ship] = player_ship
     Logger.trace("starter level opts: #{level_options}")
     Logger.start('level', level_options, DEFAULTS)
@@ -58,6 +59,10 @@ class Level
     play_bgm
     init_level_graphics
     init_spawners
+  end
+
+  def clean_level_result
+    $game_variables[IB::LEVEL_RESULT_VAR] = "incomplete" unless $game_variables.nil?
   end
 
   def play_bgm
@@ -227,6 +232,11 @@ class Level
   def init_game_over(result)
     @enemy_spawner.stop
     notify_observers("game_over", result)
+    $game_variables[IB::LEVEL_RESULT_VAR] = result
+    if IB::last_level?
+      $game_variables[IB::LEVEL_RESULT_VAR] = "completed"
+    end
+    Logger.info("game over! result: #{$game_variables[IB::LEVEL_RESULT_VAR]}")
   end
 
 
