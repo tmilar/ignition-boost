@@ -7,7 +7,6 @@ class Screen
         'high_score' => lambda { |hs| draw_high_score(hs) },
         'player_hp' => lambda { |player| draw_hp_bar(player) },
         'item_activate' => lambda { |item| activated_item(item) },
-        # 'nuke' => lambda { |nuke_pup| init_nuke(nuke_pup) },
         'game_over' => lambda { |result| init_game_over(result) },
     }
 
@@ -22,7 +21,8 @@ class Screen
     @window = Window_Base.new(0, 0, Graphics.width, Graphics.height)
     @window.opacity = 0
     draw_score(0)
-    draw_high_score(0)
+    initial_hs = $game_variables.nil? ? 0 : $game_variables[IB::HIGH_SCORE_VAR]
+    draw_high_score(initial_hs)
     draw_hp_bar
   end
 
