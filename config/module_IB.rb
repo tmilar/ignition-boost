@@ -434,12 +434,11 @@ module IB
   #  BUILD GAME
   #-------------------------------------------------------------------------------
 
+  # LEVELS = [TEST_STRESS_LEVEL , TEST_MECHANICS_LEVEL , NIVEL0 , MY_POWERUP_LEVEL]
   LEVELS = [MY_POWERUP_LEVEL, TEST_MECHANICS_LEVEL, TEST_MECHANICS_LEVEL]
 
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win" si gano, "loss" si perdio)
-  # CURRENT_LEVEL = NIVEL0 ##  #TEST_STRESS_LEVEL #TEST_MECHANICS_LEVEL #NIVEL0 #MY_POWERUP_LEVEL
-  # PLAYER_SHIP = NAVE_BASE1 #NAVE_BASE1 #TEST_STRESS_SHIP
 
   def self.current_level(level_idx=0)
     # if no $game_variables (ie. web environment), return first level, or parameter level.
@@ -471,5 +470,12 @@ module IB
   def self.last_level?
     Logger.info("Checking last level... current is: #{$game_variables[CURRENT_LEVEL_VAR]}, last is: #{ LEVELS.size - 1}")
     $game_variables[CURRENT_LEVEL_VAR] - 1 == LEVELS.size - 1
+  end
+
+  def self.levels_to_names
+    LEVELS.each_with_index.map { |level,i|
+      name = level.key?(:name) ? level[:name] : "NO NAME LEVEL"
+      "#{i}: #{name}"
+    }
   end
 end
