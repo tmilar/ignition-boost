@@ -438,7 +438,7 @@ module IB
   LEVELS = [MY_POWERUP_LEVEL, TEST_MECHANICS_LEVEL, TEST_MECHANICS_LEVEL]
 
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
-  LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win" si gano, "loss" si perdio)
+  LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win", "loss" o "incomplete", por ahora)
 
   def self.current_level(level_idx=0)
     # if no $game_variables (ie. web environment), return first level, or parameter level.
@@ -475,7 +475,7 @@ module IB
   def self.levels_to_names
     LEVELS.each_with_index.map { |level,i|
       name = level.key?(:name) ? level[:name] : "NO NAME LEVEL"
-      "#{i}: #{name}"
+      "#{i+1}: #{name}"
     }
   end
 end
