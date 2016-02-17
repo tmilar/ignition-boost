@@ -440,8 +440,10 @@ module IB
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win", "loss" o "incomplete", por ahora)
 
-  def self.current_level(level_idx=0)
+  def self.current_level(level_idx=nil)
     # if no $game_variables (ie. web environment), return first level, or parameter level.
+    @starting_idx = 1 ## in RGSS3 starting idx is 1
+    level_idx = @starting_idx if level_idx.nil?
 
     if $game_variables.nil?
       Logger.info("Configured level #{level_idx}: '#{LEVELS[level_idx][:name]}' (no $game_variables detected)")
@@ -453,7 +455,7 @@ module IB
     end
 
     # $game_variables exist and contains a level id
-    current_level_id = $game_variables[CURRENT_LEVEL_VAR]
+    current_level_id = $game_variables[CURRENT_LEVEL_VAR] - @starting_idx
 
     unless current_level_id.between?(0, LEVELS.size-1)
       Logger.error "Current level id '#{current_level_id}' is wrong or doesn't exist! Check IB::LEVELS and IB::CURRENT_LEVEL_VAR..."
@@ -468,8 +470,8 @@ module IB
   end
 
   def self.last_level?
-    Logger.info("Checking last level... current is: #{$game_variables[CURRENT_LEVEL_VAR]}, last is: #{ LEVELS.size - 1}")
-    $game_variables[CURRENT_LEVEL_VAR] - 1 == LEVELS.size - 1
+    Logger.info("Checking last level... current is: #{$game_variables[CURRENT_LEVEL_VAR]}, last is: #{ LEVELS.size }")
+    $game_variables[CURRENT_LEVEL_VAR] - @starting_idx == LEVELS.size - 1
   end
 
   def self.levels_to_names
