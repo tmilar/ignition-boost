@@ -234,6 +234,20 @@ class Level
 
   def init_game_over(result)
     @enemy_spawner.stop
+
+    if result == "win"
+      @elazors.each { |el| el.dispose unless el.disposed? }
+
+      @enemies.each { |e|
+        e.explode
+        e.dispose unless e.disposed?
+      }
+    end
+
+    if result == "loss"
+      @plazors.each { |pl| pl.dispose unless pl.disposed? }
+    end
+
     result = "completed" if IB::last_level? && result == "win"
     Logger.info("game over! result: #{result}")
     self.result = result
