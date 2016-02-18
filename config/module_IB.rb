@@ -475,9 +475,11 @@ module IB
   end
 
   def self.levels_to_names
-    LEVELS.each_with_index.map { |level,i|
+    names = LEVELS.each_with_index.map { |level,i|
       name = level.key?(:name) ? level[:name] : "NO NAME LEVEL"
       "#{i+1}: #{name}"
     }
+    Logger.info("Levels available: #{names}")
+    names
   end
 end
