@@ -3,18 +3,23 @@ module Sound
   @@last = ''
 
   def self.bgm(bgm)
-    name = bgm[0]
-    Logger.debug("last bgm> #{@@last}. #{"But is the same as actual, so nothing changed." if @@last == name}")
-    return if @@last == name
+    # name = bgm[0]
+    new_bgm = RPG::BGM.new(bgm[0], bgm[1], bgm[2])
+    last = RPG::BGM.last
+
+    Logger.debug("last bgm> #{last.name}. #{"But is the same as actual, so nothing changed." if last.name == new_bgm.name}")
+    return if last.name == new_bgm.name
 
     fade(10)
-    RPG::BGM.new(bgm[0], bgm[1], bgm[2]).play
-    @@last = bgm[0]
-    Logger.debug("Playing new bgm> #{name}, and bgm as 'last' :  #{@@last}")
+    new_bgm.play
+    # @@last = bgm[0]
+    Logger.debug("Playing new bgm> #{new_bgm.name}") ##", and bgm as 'last' :  #{@@last}")
   end
 
   def self.fade(time)
     RPG::BGM.fade(time)
+    RPG::ME.fade(time)
+    # @@last = nil
   end
 
   def self.se(se)
