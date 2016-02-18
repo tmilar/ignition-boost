@@ -8,23 +8,20 @@ class Explosion
 
   def initialize(config={})
     Logger.start("explosion", config)
-    ship = config[:ship]
-    explosion = config[:explosion]
 
-    expl_pos = ship.rectangle.center
+    expl_pos = config[:position]
     @sprite = Sprite.create({
-        x: expl_pos.x,
-        y: expl_pos.y,
-        zoom_x: explosion[:zoom],
-        zoom_y: explosion[:zoom],
-        bitmap: explosion[:bitmap]
-    })
-    # @sprite.x -= @sprite.bitmap.width / 2
-    # @sprite.y += @sprite.bitmap.height / 2
+                                x: expl_pos.x,
+                                y: expl_pos.y,
+                                zoom_x: config[:zoom],
+                                zoom_y: config[:zoom],
+                                bitmap: config[:bitmap]
+                            })
+
     @sprite.position -= Point.new(@sprite.bitmap.width / 2, @sprite.bitmap.height / 2)
 
-    @timer = explosion[:time]
-    Sound.se(explosion[:DSE])
+    @timer = config[:time]
+    Sound.se(config[:DSE])
   end
 
   def update

@@ -142,11 +142,18 @@ class Ship
   end
 
   def destroy
-    notify_observers("#{ship_type}_destroyed", { ship: self, explosion: @config[:explosion] })
-    Logger.debug("#{self} is destroyed! Starting explosion in #{self.position}, config: #{@config[:explosion]}")
+    notify_observers("#{ship_type}_destroyed", { ship: self})
+    Logger.debug("#{self} destroyed in #{self.position}")
+    self.explode
     self.dispose
   end
 
+  def explode
+    explosion_config = @config[:explosion].deep_clone
+    explosion_config[:position] = self.rectangle.center
+    notify_observers("ship_exploded", explosion_config) ## { position: self.position, explosion: @config[:explosion]})
+    Logger.debug("#{self} Starting explosion, config: #{explosion_config}")
+  end
 
   #------------------------------------------------------------------------------#
   #  SHIP PROPERTIES  || OVERRIDE GETTERS & SETTERS
