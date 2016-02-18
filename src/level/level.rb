@@ -183,6 +183,7 @@ class Level
         'new_powerup' => lambda { |pup| add_new_powerup(pup)},
         'player_destroyed' => lambda { |_| init_game_over("loss")},
         'enemy_destroyed' => lambda { |enemy| handle_enemy_destroyed(enemy)},
+        'ship_exploded' => lambda { |ship| handle_ship_exploded(ship) },
         'player_hit' => lambda { |elazor| elazor.dispose },
         'enemy_hit' => lambda { |lazor| lazor.dispose },
         'score' => lambda { |_| check_score_win },
@@ -224,8 +225,11 @@ class Level
   end
 
   def handle_enemy_destroyed(ship_data)
-    @explosions << Explosion.new(ship_data)
     @player.score += ship_data[:ship].stats[:mhp]
+  end
+
+  def handle_ship_exploded(explosion_data)
+    @explosions << Explosion.new(explosion_data)
   end
 
   def init_game_over(result)
