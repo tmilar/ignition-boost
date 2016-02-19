@@ -989,7 +989,7 @@ module IB
   # Lo importante es que el nombre sea igual que el que se uso para definirlo por primera vez, mas arriba.
   LEVELS = [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10, LEVEL_11, LEVEL_12]
 
-  CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
+  CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel a elegir (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win", "loss" o "incomplete", por ahora)
 
 end
