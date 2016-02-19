@@ -23,7 +23,7 @@ plugins = {
     },
     "config" => {
         order: ["module_IB", :rest],
-        exclude: ["original_levels", "original_levels_clean", "original_levels_new", "ib_config_original"]
+        exclude: ["original_levels", "original_levels_clean", "original_levels_new"]
     },
     "src" => {
         "modules" => {
