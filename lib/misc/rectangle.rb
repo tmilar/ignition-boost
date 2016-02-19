@@ -247,6 +247,11 @@ class Rectangle
     end
   end
 
+  def position=(point)
+    self.y = point.y
+    self.x = point.x
+  end
+
   def center=(center)
     current = self.center
     new_center = current + center
