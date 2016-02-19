@@ -46,7 +46,7 @@ class Collider
   def self.collides?(obj1, obj2)
     # Logger.trace("Rect1: #{obj1.rectangle}, Rect2: #{obj2.rectangle}, collide? #{obj1.rectangle.collide_rect?(obj2.rectangle)}")
     return false if obj1.disposed? || obj2.disposed?
-    return obj1.rectangle.collide_rect?(obj2.rectangle)
+    return (obj1.collision_rect || obj1.rectangle).collide_rect?( obj2.collision_rect || obj2.rectangle )
   end
 
 end
