@@ -4,7 +4,7 @@ class Bullet
   include Subject
 
   def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap, :name, :dispose, :disposed?
-  def_delegators :@sprite, :position, :position=, :rectangle
+  def_delegators :@sprite, :position, :position=, :rectangle, :collision_rect
   attr_accessor :sprite
 
   include LinearMovement

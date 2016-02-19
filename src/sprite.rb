@@ -1,6 +1,6 @@
 class Sprite
 
-  attr_accessor :rectangle, :float_x, :float_y
+  attr_accessor :rectangle, :float_x, :float_y, :collision_rect
   attr_accessor :name
   attr_reader :cell
   attr_accessor :gameobj_id
@@ -46,10 +46,16 @@ class Sprite
                                          new_sprite.y, ## init_pos.y,
                                          new_sprite.width,
                                          new_sprite.height)
+
     new_sprite.init_limits(config[:limits])
 
     new_sprite.position = init_pos
     new_sprite.check_out_of_screen
+
+    unless !config.key?(:collision_rect) || ( config.key?(:collision_rect) && !Rectangle.valid_limits?(config[:collision_rect]))
+      new_sprite.collision_rect = new_sprite.rectangle.limit(config[:collision_rect])
+      # Logger.trace("#{new_sprite} Created collision rect #{new_sprite.collision_rect} based on #{new_sprite.rectangle}")
+    end
 
     new_sprite
   end
@@ -122,8 +128,12 @@ class Sprite
       return
     end
 
+
     self.rectangle = new_rect
     old_rect.dispose
+
+    ## update collision rect
+    self.collision_rect.position = position unless self.collision_rect.nil?
 
     check_cells(self.x, position.x)
     @float_x = position.x

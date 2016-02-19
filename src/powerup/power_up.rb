@@ -20,7 +20,7 @@ class PowerUp
 
   extend Forwardable
   def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
-  def_delegators :@sprite, :position, :position=, :rectangle, :rectangle=
+  def_delegators :@sprite, :position, :position=, :rectangle, :rectangle=, :collision_rect
   def_delegators :@sprite, :dispose, :disposed?
 
   attr_accessor :sprite
