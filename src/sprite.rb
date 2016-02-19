@@ -134,6 +134,7 @@ class Sprite
 
     ## update collision rect
     self.collision_rect.position = position unless self.collision_rect.nil?
+    # Logger.trace("#{self} coll rect #{self.collision_rect}") if self.collision_rect
 
     check_cells(self.x, position.x)
     @float_x = position.x

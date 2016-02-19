@@ -37,6 +37,10 @@ class Ship
           :shoot_freq => 1,             ## TODO por ahora esto remplazara la @difficulty
           :nuke_power => 99            # Damage caused by nuke
       },
+      :collision_rect => {      # Define ship collision rectangle, relative to ship size.
+          :x => [0.0, 1.0],
+          :y => [0.0, 1.0]
+      },
       :weapon => DEFAULT_WEAPON,
       :explosion => {
           bitmap: "explode",

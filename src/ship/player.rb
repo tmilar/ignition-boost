@@ -9,7 +9,12 @@ class Player < Ship
       limits: {
           x: [0.0, 1.0],
           y: [0.0, 1.0]
-      }
+      },
+      :collision_rect => {      # Define ship collision rectangle, relative to ship size.
+          :x => [0.1, 0.9],
+          :y => [0.2, 0.8]
+      },
+
   }
 
   def initialize(config = {})
