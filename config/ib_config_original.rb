@@ -14,7 +14,7 @@ module IB
           cooldown: 5,            # time to wait before shooting again
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
-      SE: ["Attack2",80,150], # sound when shooting
+      SE: ["laser1",80,150], # sound when shooting
       level: 1,               # starting weapon level (optional, default 1)
   }
 
@@ -28,7 +28,7 @@ module IB
       },
       direction: [0, -1],     # Initial direction for bullets [x, -y]
       level: 1,               # starting weapon level (optional)
-      SE: ["Heal5",80,160]
+      SE: ["esfera",80,160]
   }
 
   ## arma de los enemigos por default (uso siempre la misma ) - se pueden definir otras distintas!
@@ -39,7 +39,7 @@ module IB
           damage: 1,              # bullet damage
           speed: 5,               # bullet speed
       },
-      SE: ["Attack2",80,110],
+      SE: ["laser1",80,110],
       direction: [0, 1],     # no tocar - Initial direction for bullets [x, -y]
   }
 
@@ -146,7 +146,7 @@ module IB
               damage: 1,              # bullet damage
               speed: 5,               # bullet speed
           },
-          SE: ["Attack2",80,110],
+          SE: ["laser1",80,110],
           direction: [0, 1],     # Initial direction for bullets [x, -y]
       },
   }
@@ -427,7 +427,7 @@ module IB
           frequency: 5,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -469,7 +469,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -511,7 +511,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -552,7 +552,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -593,7 +593,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -634,7 +634,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -675,7 +675,7 @@ module IB
           frequency: 4,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -724,7 +724,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -765,7 +765,7 @@ module IB
           frequency: 3,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -814,7 +814,7 @@ module IB
           frequency: 5,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -862,7 +862,7 @@ module IB
           frequency: 5,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -912,7 +912,7 @@ module IB
           frequency: 5,
           phases: {
               1 => {
-                  powerups: [REPAIR_PUP, WEAPON_UP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                  powerups: [REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               },
               2 => {
                   powerups: [RESET_PUP],
@@ -978,7 +978,7 @@ module IB
   DEBUG = {
       # borders: true  ## draw rectangle borders
       logger_level: 1, # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
-      console: false
+      console: false   # show console with log messages
   }
   #-------------------------------------------------------------------------------
   #  BUILD GAME
