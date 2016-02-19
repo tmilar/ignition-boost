@@ -9,7 +9,7 @@ class Screen
         'item_activate' => lambda { |item| activated_item(item) },
         'game_over' => lambda { |result| init_game_over(result) },
     }
-
+    Logger.info("Screen inited. viewport #{viewport}")
     @viewport = viewport
     @game_over = false
     init_window
@@ -24,6 +24,11 @@ class Screen
     initial_hs = $game_variables.nil? ? 0 : $game_variables[IB::HIGH_SCORE_VAR]
     draw_high_score(initial_hs)
     draw_hp_bar
+
+    # pre-calculate shake effect oxs
+    @screen_shake_oxs =  [] ;
+    225.times  { |c| c += 2;  @screen_shake_oxs <<  ( (200 * Math.cos( c * (Math::PI / 2))) / c ).round }
+
   end
 
   def init_nuke(activated_item)
@@ -33,6 +38,10 @@ class Screen
     @nuke.bitmap.fill_rect(@nuke.bitmap.rect,Color.new(255,255,255))
     @nuke.z = 2000
     @nuke.opacity = 225
+
+    # initialize screen shake effect
+    @screen_shake_idx = 0
+
     # Sound.se(activated_item.se) if activated_item.se
   end
 
@@ -111,6 +120,12 @@ class Screen
   def update_nuke
     return if @nuke.nil? || @nuke.opacity <= 0
     @nuke.opacity -= 3
+
+    # update shake screen effect
+    ox = @screen_shake_oxs[@screen_shake_idx]
+    # Logger.trace("viewport '#{@viewport}' ox will be #{ox}")
+    @viewport.ox = ox
+    @screen_shake_idx += 1
   end
 
   def update_game_over

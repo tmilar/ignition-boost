@@ -22,6 +22,7 @@ class Main_IB < Scene_Base
 
   def configure
     Cache.relative_path(IB::GRAPHICS_ROOT)
+    @viewport1 = Viewport.new()
     Sprite.setup(@viewport1)
     Logger.config(IB::DEBUG[:logger_level]) if IB::DEBUG.key?(:logger_level)
   end
