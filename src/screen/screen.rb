@@ -139,8 +139,9 @@ class Screen
   end
 
   def notified(msg, data={})
-    Logger.trace("Screen received notification '#{msg}', with data #{data}... #{"But is not considered." unless @reactions.key?(msg)}")
-    @reactions[msg].call(data) if @reactions.key?(msg)
+    return unless @reactions.key?(msg)
+    Logger.trace("Screen received notification '#{msg}', with data #{data}...") ###{"But is not considered." unless @reactions.key?(msg)}")
+    @reactions[msg].call(data)
   end
 
   def dispose
