@@ -30,11 +30,14 @@ module Movement
   # direction can be a Symbol (:LEFT, :UP, :DOWN, :RIGHT ) or a Point object
   def move(direction = Point.new(1, 0), calculated_speed = false)
     return Logger.debug("#{self} can't move, is disposed!") if disposed?
+
+    speed = calculated_speed || self.speed
+    return if speed.abs < 0.0001
+
     dir_xy = parse_direction(direction)
 
     # Logger.trace("[#{self}] Trying to move sprite to direction: #{dir_xy}") if (self.is_a?(Bullet) && !@logged_dir)
     # @logged_dir = true
-    speed = calculated_speed || self.speed
     self.move_xy(dir_xy * speed)
   end
 
