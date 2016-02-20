@@ -42,6 +42,7 @@ module Movement
   end
 
   def move_xy(offset_xy)
+    notify_observers("#{type}_moved", self)
     self.position += offset_xy
   end
 
