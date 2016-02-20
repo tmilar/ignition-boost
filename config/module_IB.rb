@@ -3,7 +3,7 @@ module IB
   #-------------------------------------------------------------------------------
   #  DEFINE GAME VARIABLES
   #-------------------------------------------------------------------------------
-  LEVELS = [] # do not touch
+  LEVELS, TEST_LEVELS = [], [] # do not touch
 
   #-------------------------------------------------------------------------------
   # **** WEAPONS ****
@@ -439,10 +439,14 @@ module IB
   #-------------------------------------------------------------------------------
 
   # LEVELS = [TEST_STRESS_LEVEL , TEST_MECHANICS_LEVEL , NIVEL0 , MY_POWERUP_LEVEL]
-  LEVELS = [MY_POWERUP_LEVEL, TEST_MECHANICS_LEVEL, TEST_MECHANICS_LEVEL]
+  TEST_LEVELS = [MY_POWERUP_LEVEL, TEST_MECHANICS_LEVEL]
 
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win", "loss" o "incomplete", por ahora)
+
+  def self.levels
+    DEBUG.key?(:test_levels) && DEBUG[:test_levels] ? (TEST_LEVELS + LEVELS) : LEVELS
+  end
 
   def self.current_level(level_idx=nil)
     # if no $game_variables (ie. web environment), return first level, or parameter level.
@@ -450,8 +454,8 @@ module IB
     level_idx = @starting_idx if level_idx.nil?
 
     if $game_variables.nil?
-      Logger.info("Configured level #{level_idx}: '#{LEVELS[level_idx][:name]}' (no $game_variables detected)")
-      return LEVELS[level_idx]
+      Logger.info("Configured level #{level_idx}: '#{levels[level_idx][:name]}' (no $game_variables detected)")
+      return levels[level_idx]
     end
 
     unless $game_variables[CURRENT_LEVEL_VAR].is_a?(Fixnum) && !$game_variables[CURRENT_LEVEL_VAR].nil?
@@ -461,25 +465,25 @@ module IB
     # $game_variables exist and contains a level id
     current_level_id = $game_variables[CURRENT_LEVEL_VAR] - @starting_idx
 
-    unless current_level_id.between?(0, LEVELS.size-1)
-      Logger.error "Current level id '#{current_level_id}' is wrong or doesn't exist! Check IB::LEVELS and IB::CURRENT_LEVEL_VAR..."
+    unless current_level_id.between?(0, levels.size-1)
+      Logger.error "Current level id '#{current_level_id}' is wrong or doesn't exist! Check IB::levels and IB::CURRENT_LEVEL_VAR..."
     end
 
-    ## Limit level_id between '0' and last level (LEVELS.size - 1)
-    current_level_id = [[0, current_level_id].max, LEVELS.size-1].min
+    ## Limit level_id between '0' and last level (levels.size - 1)
+    current_level_id = [[0, current_level_id].max, levels.size-1].min
 
     # Configured level id is correct and exists, return specified level configuration to start game.
-    Logger.info("Configured level: id #{current_level_id} '#{LEVELS[current_level_id][:name]}'")
-    LEVELS[current_level_id]
+    Logger.info("Configured level: id #{current_level_id} '#{levels[current_level_id][:name]}'")
+    levels[current_level_id]
   end
 
   def self.last_level?
-    Logger.info("Checking last level... current is: #{$game_variables[CURRENT_LEVEL_VAR]}, last is: #{ LEVELS.size }")
-    $game_variables[CURRENT_LEVEL_VAR] - @starting_idx == LEVELS.size - 1
+    Logger.info("Checking last level... current is: #{$game_variables[CURRENT_LEVEL_VAR]}, last is: #{ levels.size }")
+    $game_variables[CURRENT_LEVEL_VAR] - @starting_idx == levels.size - 1
   end
 
   def self.levels_to_names
-    names = LEVELS.each_with_index.map { |level,i|
+    names = levels.each_with_index.map { |level,i|
       name = level.key?(:name) ? level[:name] : "NO NAME LEVEL"
       "#{i+1}: #{name}"
     }
