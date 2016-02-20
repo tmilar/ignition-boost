@@ -191,8 +191,9 @@ class Level
         'item_activate' => lambda { |item| apply_effect(item)},
         'player_weapon_changed' => lambda { |weapon| observe_new_weapon(weapon)}
     }
-    Logger.trace("Level received notification '#{msg}', with data #{data}... #{"But is not considered." unless reactions.key?(msg)}")
-    reactions[msg].call(data) if reactions.key?(msg)
+    return unless reactions.key?(msg)
+    Logger.trace("Level received notification '#{msg}', with data #{data}... ") ###{"But is not considered." unless }")
+    reactions[msg].call(data)
   end
 
   def observe_new_weapon(weapon)
