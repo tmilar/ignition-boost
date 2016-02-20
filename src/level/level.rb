@@ -42,8 +42,7 @@ class Level
       }
   }
 
-  attr_reader :player
-
+  attr_accessor :backdrop, :enemy_spawner, :powerup_spawner, :player, :enemies, :plazors, :elazors, :powerups, :explosions
 
   def initialize(level_options = {})
     #config setup
@@ -69,30 +68,30 @@ class Level
   end
 
   def init_spawners
-    @enemy_spawner = Spawner.new(@config[:spawner])
-    @enemy_spawner.add_observer(self)
+    self.enemy_spawner = Spawner.new(@config[:spawner])
+    self.enemy_spawner.add_observer(self)
 
-    @pup_spawner = PowerUpSpawner.new(@config[:powerup_spawner])
-    @pup_spawner.add_observer(self)
+    self.powerup_spawner = PowerUpSpawner.new(@config[:powerup_spawner])
+    self.powerup_spawner.add_observer(self)
   end
 
   def init_level_graphics
     Logger.trace("strating lvl graphics...  opts: #{@config}")
-    @backdrop = Backdrop.new(@config[:backdrop])
+    self.backdrop = Backdrop.new(@config[:backdrop])
     Logger.trace("Conf for player ... '#{@config[:player_ship]}'")
-    @player = Player.new(@config[:player_ship])
-    @player.level_observe(self)
-    @player.update
-    @enemies = []
-    @plazors = []
-    @elazors = []
-    @explosions = []
-    @pups = []
+    self.player = Player.new(@config[:player_ship])
+    self.player.level_observe(self)
+    self.player.update
+    self.enemies = []
+    self.plazors = []
+    self.elazors = []
+    self.explosions = []
+    self.powerups = []
   end
 
   def update
-    @backdrop.update
-    @enemy_spawner.update
+    self.backdrop.update
+    self.enemy_spawner.update
 
     update_enemies
     update_player
@@ -103,25 +102,26 @@ class Level
     update_pup_spawner
   end
 
+
   def update_pup_spawner
-    @pup_spawner.update
+    self.powerup_spawner.update
   end
 
   def update_pups
-    @pups.each_with_index { |pup,i|
+    self.powerups.each_with_index { |pup,i|
       if pup.disposed?
-        @pups.delete_at(i)
+        self.powerups.delete_at(i)
         next
       end
       pup.update
-      Collider.check_pup(pup, @player)
+      Collider.check_pup(pup, self.player)
     }
   end
 
   def update_explosions
-    @explosions.each_with_index { |e,i|
+    self.explosions.each_with_index { |e,i|
       if e.disposed?
-        @explosions.delete_at(i)
+        self.explosions.delete_at(i)
         next
       end
       e.update
@@ -129,21 +129,21 @@ class Level
   end
 
   def update_elazors
-    @elazors.each_with_index { |el,i|
+    self.elazors.each_with_index { |el,i|
       if el.disposed?
-        @elazors.delete_at(i)
+        self.elazors.delete_at(i)
         next
       end
       el.update
-      Collider.check_lazor(el, @player)
+      Collider.check_lazor(el, self.player)
     }
   end
 
   def update_plazors
-    @plazors.each_with_index { |pl,i|
+    self.plazors.each_with_index { |pl,i|
       # return true if pl.disposed?
       if pl.disposed?
-        @plazors.delete_at(i)
+        self.plazors.delete_at(i)
         next
       end
       pl.update
@@ -151,29 +151,29 @@ class Level
   end
 
   def update_enemies
-    @enemies.each_with_index { |enemy,i|
+    self.enemies.each_with_index { |enemy,i|
       if enemy.disposed?
-        @enemies.delete_at(i)
+        self.enemies.delete_at(i)
         next
       end
       enemy.update
-      Collider.check_enemy_player(enemy, @player)
-      Collider.check_enemy_plazors(enemy, @plazors)
+      Collider.check_enemy_player(enemy, self.player)
+      Collider.check_enemy_plazors(enemy, self.plazors)
     }
   end
 
   def update_player
-    @player.update unless @player.disposed?
+    self.player.update unless self.player.disposed?
   end
 
 
   def difficulty
-    @enemy_spawner.difficulty
+    self.enemy_spawner.difficulty
   end
 
   def difficulty=(difficulty)
-    @enemy_spawner.difficulty = difficulty
-    @enemies.each {|e| e.difficulty = difficulty }
+    self.enemy_spawner.difficulty = difficulty
+    self.enemies.each {|e| e.difficulty = difficulty }
   end
 
   def notified(msg, data={})
@@ -203,7 +203,8 @@ class Level
   def add_new_powerup(pup)
     raise 'New powerup is nil!' if pup.nil?
     Logger.debug("#{self} New powerup #{pup.name} #{pup} entered level #{@config[:name]}.")
-    @pups << pup
+    pup.add_observer(@collider)
+    self.powerups << pup
   end
 
   def apply_effect(pup)
@@ -212,8 +213,8 @@ class Level
 
     targets.each { |target|
       case target
-        when "player" then @player.apply_pup(pup_effect)
-        when "enemies" then @enemies.each { |e| e.apply_pup(pup_effect) }
+        when "player" then self.player.apply_pup(pup_effect)
+        when "enemies" then self.enemies.each { |e| e.apply_pup(pup_effect) }
         when "level" then self.apply_pup(pup_effect)
         else raise "Invalid target '#{target}' for effect #{pup_effect} "
       end
@@ -222,31 +223,33 @@ class Level
   end
 
   def check_score_win
-    init_game_over("win") if @player.score >= @config[:target_score]
+    init_game_over("win") if self.player.score >= @config[:target_score]
   end
 
   def handle_enemy_destroyed(ship_data)
-    @player.score += ship_data[:ship].stats[:mhp]
+    self.player.score += ship_data[:ship].stats[:mhp]
   end
 
   def handle_ship_exploded(explosion_data)
-    @explosions << Explosion.new(explosion_data)
+    self.explosions << Explosion.new(explosion_data)
   end
 
   def init_game_over(result)
-    @enemy_spawner.stop
+    self.enemy_spawner.stop
 
     if result == "win"
-      @elazors.each { |el| el.dispose unless el.disposed? }
+      self.elazors.each { |el|
+        el.dispose unless el.disposed?
+      }
 
-      @enemies.each { |e|
+      self.enemies.each { |e|
         e.explode
         e.dispose unless e.disposed?
       }
     end
 
     if result == "loss"
-      @plazors.each { |pl| pl.dispose unless pl.disposed? }
+      self.plazors.each { |pl| pl.dispose unless pl.disposed? }
     end
 
     result = "completed" if IB::last_level? && result == "win"
@@ -266,32 +269,32 @@ class Level
     raise 'New enemy is nil!' if enemy.nil?
     Logger.debug("#{self} New enemy #{enemy.name} #{enemy} entered level #{@config[:name]}. Ancestors: #{enemy.class.ancestors}")
     enemy.level_observe(self)
-    @enemies << enemy
+    self.enemies << enemy
   end
 
   def add_new_lazors(data)
     raise 'Lazor(s) are empty or nil!' if data[:lazors].nil_empty?
     Logger.trace("#{self} New lazors were shooted!!! data received: #{data}")
     case data[:data][:shooter]
-      when 'player' then @plazors.push(*data[:lazors]) unless @plazors.nil?
-      when 'enemy'  then @elazors.push(*data[:lazors]) unless @elazors.nil?
+      when 'player' then self.plazors.push(*data[:lazors]) unless self.plazors.nil?
+      when 'enemy'  then self.elazors.push(*data[:lazors]) unless self.elazors.nil?
     end
 
     # Logger.trace("Level lazors present: Plazors > #{@plazors} | Elazors > #{@elazors}")
   end
 
   def dispose
-    @backdrop.dispose unless @backdrop.disposed?
-    @player.dispose unless @player.disposed?
-    @enemies.each { |obj| obj.dispose unless obj.disposed? }
-    @plazors.each { |obj| obj.dispose unless obj.disposed? }
-    @elazors.each { |obj| obj.dispose  unless obj.disposed? }
-    @explosions.each { |obj| obj.dispose  unless obj.disposed? }
-    @pups.each { |obj| obj.dispose  unless obj.disposed? }
+    self.backdrop.dispose unless self.backdrop.disposed?
+    self.player.dispose unless self.player.disposed?
+    self.enemies.each { |obj| obj.dispose unless obj.disposed? }
+    self.plazors.each { |obj| obj.dispose unless obj.disposed? }
+    self.elazors.each { |obj| obj.dispose  unless obj.disposed? }
+    self.explosions.each { |obj| obj.dispose  unless obj.disposed? }
+    self.powerups.each { |obj| obj.dispose  unless obj.disposed? }
   end
 
   def screen_observe(screen)
-    @player.add_observer(screen)
+    self.player.add_observer(screen)
     self.add_observer(screen)
   end
 
