@@ -132,7 +132,7 @@ class Screen
     return unless @game_over
     @game_over.opacity += 3
     if @game_over.opacity >= 255 && Input.trigger?(:C)
-      Sound.fade(10)
+      Sound.stop
       SceneManager.goto(Scene_Map)
       @game_over = false
     end

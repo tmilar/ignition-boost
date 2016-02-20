@@ -29,4 +29,9 @@ module Sound
   def self.me(me)
     RPG::ME.new(me[0], me[1], me[2]).play
   end
+
+  def self.stop
+    RPG::ME.stop
+    RPG::BGM.stop
+  end
 end
