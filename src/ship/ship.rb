@@ -78,7 +78,7 @@ class Ship
 
 
   def weapon_init(weapon_config)
-    weapon_config[:shooter] = self.ship_type
+    weapon_config[:shooter] = self.type
     Logger.trace("About to create a new weapon. Config -> #{weapon_config}")
     @weapon = Weapon.create(weapon_config)
     Logger.trace("#{self} has created a weapon! #{@weapon}.")
@@ -109,7 +109,7 @@ class Ship
   def stats_init
     @stats = @config[:stats].deep_clone
     @stats[:mhp] = @stats[:hp]
-    Logger.trace("inited ship #{ship_type} with stats: #{@stats}")
+    Logger.trace("inited ship #{type} with stats: #{@stats}")
   end
 
   def level_observe(observer)
@@ -147,7 +147,7 @@ class Ship
   end
 
   def destroy
-    notify_observers("#{ship_type}_destroyed", { ship: self})
+    notify_observers("#{type}_destroyed", {ship: self})
     Logger.debug("#{self} destroyed in #{self.position}")
     self.explode
     self.dispose
@@ -163,7 +163,7 @@ class Ship
   #------------------------------------------------------------------------------#
   #  SHIP PROPERTIES  || OVERRIDE GETTERS & SETTERS
   #------------------------------------------------------------------------------#
-  def ship_type
+  def type
     self.class.to_s.uncapitalize
   end
 
@@ -171,7 +171,7 @@ class Ship
     return if disposed?
     @stats[:hp] = [new_hp, @stats[:mhp]].min
     Logger.debug("#{self} hp changed, now is #{@stats[:hp]}") # enemy hp changed ||| player hp changed
-    notify_observers("#{ship_type}_hp", self) # notify 'enemy_hp' or 'player_hp'
+    notify_observers("#{type}_hp", self) # notify 'enemy_hp' or 'player_hp'
     self.destroy if @stats[:hp] <= 0
   end
 
@@ -186,7 +186,7 @@ class Ship
       new_weapon[:level] = @weapon.level # keep current weapon level
       Logger.trace("Changed to New weapon! #{new_weapon} ")
       weapon_init(new_weapon)
-      notify_observers("#{ship_type}_weapon_changed", @weapon)
+      notify_observers("#{type}_weapon_changed", @weapon)
       ### TODO SE for weapon change... and maybe a "reload" sound?
     else
       Logger.trace("#{new_weapon} is the same weapon as current.")

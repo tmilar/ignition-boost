@@ -40,8 +40,8 @@ class Bullet
   end
 
   def ship_hit(ship)
-    # #{ship_type}_hit = player_hit || enemy_hit
-    notify_observers("#{ship.ship_type}_hit", self)
+    # #{type}_hit = player_hit || enemy_hit
+    notify_observers("#{ship.type}_hit", self)
     self.dispose
   end
 
