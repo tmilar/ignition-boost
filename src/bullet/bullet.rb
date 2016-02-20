@@ -45,6 +45,10 @@ class Bullet
     self.dispose
   end
 
+  def type
+    self.class.to_s.uncapitalize
+  end
+
   def to_s
     "<#{self.class}> '#{self.name}'"
   end
