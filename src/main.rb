@@ -59,6 +59,13 @@ class Main_IB < Scene_Base
     update_level
     update_screen
     check_exit
+    check_logger_toggle
+  end
+
+  def check_logger_toggle
+    if IB::DEBUG.key?(:logger_toggle_key) && Input.trigger?(IB::DEBUG[:logger_toggle_key])
+      Logger.toggle
+    end
   end
 
   def update_frames_in_second

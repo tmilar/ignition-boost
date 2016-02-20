@@ -17,6 +17,14 @@ class Logger
 
   def self.config(level)
     @@level = level
+    @@original_level = level
+  end
+
+  ## cambiar @@level entre el @@old y ERROR (pocos logs)
+  def self.toggle
+
+    @@level = (@@level == @@original_level) ? ERROR : @@original_level
+    msg("Logs turned #{(@@level == @@original_level) ? 'ON' : 'OFF'}")
   end
 
   # private-like
