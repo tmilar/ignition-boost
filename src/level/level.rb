@@ -64,6 +64,7 @@ class Level
   end
 
   def play_bgm
+    Sound.stop
     Sound.bgm(@config[:BGM])
   end
 
