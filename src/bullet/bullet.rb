@@ -46,7 +46,7 @@ class Bullet
   end
 
   def type
-    self.class.to_s.uncapitalize
+    self.class.to_s.downcase
   end
 
   def to_s

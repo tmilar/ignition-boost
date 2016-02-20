@@ -69,6 +69,10 @@ class PowerUp
     effect
   end
 
+  def type
+    self.class.to_s.downcase
+  end
+
   def to_s
     "<#{self.class}> '#{self.name}'"
   end

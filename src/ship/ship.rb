@@ -112,10 +112,10 @@ class Ship
     Logger.trace("inited ship #{type} with stats: #{@stats}")
   end
 
-  def level_observe(observer)
+  def level_observe(level)
     Logger.warn("Can't observe this ship @weapon because is nil!") if @weapon.nil?
-    @weapon.add_observer(observer) unless @weapon.nil?
-    self.add_observer(observer)
+    @weapon.add_observer(level) unless @weapon.nil?
+    self.add_observer(level)
   end
   #------------------------------------------------------------------------------#
   #  SHIP BEHAVIOR METHODS
@@ -164,7 +164,7 @@ class Ship
   #  SHIP PROPERTIES  || OVERRIDE GETTERS & SETTERS
   #------------------------------------------------------------------------------#
   def type
-    self.class.to_s.uncapitalize
+    self.class.to_s.downcase
   end
 
   def hp=(new_hp)
