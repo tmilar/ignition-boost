@@ -9,6 +9,7 @@ class Logger
   TRACE = 5
 
   @@level = TRACE
+  @@toggle = true
 
   # Lazily instantiate @@log
   def self.log
@@ -22,16 +23,21 @@ class Logger
 
   ## cambiar @@level entre el @@old y ERROR (pocos logs)
   def self.toggle
-
-    @@level = (@@level == @@original_level) ? ERROR : @@original_level
-    msg("Logs turned #{(@@level == @@original_level) ? 'ON' : 'OFF'}")
+    puts "Console logs turned #{@@toggle ? 'OFF' : 'ON'}"
+    @@toggle = @@toggle ? false : true
+    @@level = @@toggle ? ERROR : @@original_level
   end
 
   # private-like
   def self.msg(log_msg)
-    puts log_msg
+    puts log_msg if @@toggle
     frame = Main_IB.frames_in_second
+
     log.puts("[#{Time.now.strftime("%d/%m/%Y %H:%M:%S:%L")}#{":#{frame}" if frame}] #{log_msg}")
+    flush
+  end
+
+  def self.flush
     log.flush
   end
 
