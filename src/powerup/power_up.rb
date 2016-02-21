@@ -53,7 +53,7 @@ class PowerUp
     Point.new(0, 1)
   end
 
-  def collision(obj=nil, destroy=false)
+  def collide_with(obj=nil, destroy=false)
     Logger.debug("Pup #{self} collided with #{obj}. #{"Destroyed!" if destroy})")
     self.dispose
   end

@@ -42,6 +42,7 @@ class Level
       }
   }
 
+  attr_reader :collider
   attr_accessor :backdrop, :enemy_spawner, :powerup_spawner, :player, :enemies, :plazors, :elazors, :powerups, :explosions
 
   def initialize(level_options = {})
@@ -55,6 +56,7 @@ class Level
 
     super(@config)
     play_bgm
+    init_collider
     init_level_graphics
     init_spawners
   end
@@ -68,6 +70,10 @@ class Level
     Sound.bgm(@config[:BGM])
   end
 
+  def init_collider
+    @collider = Collider.new(self)
+  end
+
   def init_spawners
     self.enemy_spawner = Spawner.new(@config[:spawner])
     self.enemy_spawner.add_observer(self)
@@ -77,17 +83,18 @@ class Level
   end
 
   def init_level_graphics
+    self.enemies = []
+    self.plazors = []
+    self.elazors = []
+    self.explosions = []
+    self.powerups = []
+
     Logger.trace("strating lvl graphics...  opts: #{@config}")
     self.backdrop = Backdrop.new(@config[:backdrop])
     Logger.trace("Conf for player ... '#{@config[:player_ship]}'")
     self.player = Player.new(@config[:player_ship])
     self.player.level_observe(self)
     self.player.update
-    self.enemies = []
-    self.plazors = []
-    self.elazors = []
-    self.explosions = []
-    self.powerups = []
   end
 
   def update
@@ -115,7 +122,6 @@ class Level
         next
       end
       pup.update
-      Collider.check_pup(pup, self.player)
     }
   end
 
@@ -136,7 +142,6 @@ class Level
         next
       end
       el.update
-      Collider.check_lazor(el, self.player)
     }
   end
 
@@ -158,8 +163,6 @@ class Level
         next
       end
       enemy.update
-      Collider.check_enemy_player(enemy, self.player)
-      Collider.check_enemy_plazors(enemy, self.plazors)
     }
   end
 
@@ -200,6 +203,7 @@ class Level
 
   def observe_new_weapon(weapon)
     weapon.add_observer(self)
+    weapon.add_observer(self.collider)
   end
 
   def add_new_powerup(pup)

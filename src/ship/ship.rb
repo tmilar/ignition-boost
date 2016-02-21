@@ -113,9 +113,15 @@ class Ship
   end
 
   def level_observe(level)
-    Logger.warn("Can't observe this ship @weapon because is nil!") if @weapon.nil?
-    @weapon.add_observer(level) unless @weapon.nil?
+    if @weapon.nil?
+      Logger.warn("Can't observe this ship @weapon because is nil!")
+    else
+      @weapon.add_observer(level)
+      @weapon.add_observer(level.collider)
+    end
+
     self.add_observer(level)
+    self.add_observer(level.collider)
   end
   #------------------------------------------------------------------------------#
   #  SHIP BEHAVIOR METHODS
@@ -135,6 +141,15 @@ class Ship
     @weapon.shoot(weapon_pos) if self.check_shoot
   end
 
+  def collide_with(other_game_obj)
+    case other_game_obj
+      when Ship then ship_collision(other_game_obj)
+      when Bullet then lazor_hit(other_game_obj)
+      when PowerUp then pup_hit(other_game_obj)
+      else raise "Attempted to collide #{self} with an object of unsupported type: #{other_game_obj} !"
+    end
+  end
+
   def ship_collision(ship)
     Logger.debug("#{self} collided with #{ship}, coll dmg #{ship.stats[:collide_damage]}, coll resist #{@stats[:collide_resistance]}")
     damage = ship.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
@@ -146,6 +161,13 @@ class Ship
     Logger.debug("#{self} collided with #{lazor}, coll dmg #{lazor.stats[:damage]}")
     self.flash(Color.new(255,155,155),20)
     self.hp -= lazor.stats[:damage]
+  end
+
+  def pup_hit(pup)
+    Logger.debug("#{self} hitted a powerup! #{pup}")
+    self.flash(Color.new(155,255,155),20)
+    notify_observers("powerup_grabbed", pup)
+    Sound.se(@config[:PUSE])
   end
 
   def destroy

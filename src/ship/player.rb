@@ -64,13 +64,6 @@ class Player < Ship
     @item = nil
   end
 
-  def pup_hit(pup)
-    Logger.debug("#{self} hitted a powerup! #{pup}")
-    self.flash(Color.new(155,255,155),20)
-    notify_observers("powerup_grabbed", pup)
-    Sound.se(@config[:PUSE])
-  end
-
   # ---------------------------------------------------------------------
   # PROPERTIES
   # ---------------------------------------------------------------------

@@ -45,7 +45,7 @@ class Bullet
     @sprite.update
   end
 
-  def ship_hit(ship)
+  def collide_with(ship)
     # #{type}_hit = player_hit || enemy_hit
     notify_observers("#{ship.type}_hit", self)
     self.dispose
