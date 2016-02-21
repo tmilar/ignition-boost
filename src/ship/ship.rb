@@ -184,14 +184,15 @@ class Ship
   end
 
   def weapon=(new_weapon)
-    if new_weapon.key?(:name) && (@weapon.nil? || (new_weapon[:name] != @weapon.name))
-      new_weapon[:level] = @weapon.level # keep current weapon level
-      Logger.trace("Changed to New weapon! #{new_weapon} ")
-      weapon_init(new_weapon)
+    new_weapon_config = new_weapon.deep_clone #deep clone weapon config to prevent overriding defaults
+
+    if new_weapon_config.key?(:name) && (@weapon.nil? || (new_weapon_config[:name] != @weapon.name))
+      new_weapon_config[:level] = @weapon.level # keep current weapon level
+      Logger.trace("Changed to New weapon! #{new_weapon_config} ")
+      weapon_init(new_weapon_config)
       notify_observers("#{type}_weapon_changed", @weapon)
-      ### TODO SE for weapon change... and maybe a "reload" sound?
     else
-      Logger.trace("#{new_weapon} is the same weapon as current.")
+      Logger.trace("#{new_weapon_config} is the same weapon as current.")
       @weapon.level += 1
     end
   end
