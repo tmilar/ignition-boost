@@ -137,7 +137,9 @@ class Ship
 
   def ship_collision(ship)
     Logger.debug("#{self} collided with #{ship}, coll dmg #{ship.stats[:collide_damage]}, coll resist #{@stats[:collide_resistance]}")
-    self.hp -= ship.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
+    damage = ship.stats[:collide_damage] - (@stats[:collide_resistance] || 0)
+    self.flash(Color.new(255,255,155),20)
+    self.hp -= damage if damage > 0
   end
 
   def lazor_hit(lazor)
