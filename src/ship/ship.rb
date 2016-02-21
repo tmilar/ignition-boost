@@ -180,8 +180,8 @@ class Ship
   def explode
     explosion_config = @config[:explosion].deep_clone
     explosion_config[:position] = self.rectangle.center
-    notify_observers("ship_exploded", explosion_config) ## { position: self.position, explosion: @config[:explosion]})
     Logger.debug("#{self} Starting explosion, config: #{explosion_config}")
+    notify_observers("ship_exploded", explosion_config) ## { position: self.position, explosion: @config[:explosion]})
   end
 
   #------------------------------------------------------------------------------#
