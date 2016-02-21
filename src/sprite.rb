@@ -205,10 +205,11 @@ class Sprite
   ## Only do actual dispose in a controlled, centraliced place
   alias_method :sprite_dispose, :dispose
   def dispose(force = false)
+    return if sprite_disposed?
     @sprite_disposed = true
     self.visible = false
     Logger.debug("#{self} has been disposed! #{"Forced actual dispose!" if force}")
-    sprite_dispose if force && !sprite_disposed?
+    sprite_dispose if force
   end
 
   def to_s
