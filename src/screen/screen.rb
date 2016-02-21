@@ -149,4 +149,8 @@ class Screen
     @item_held.bitmap.dispose if @item_held && @item_held.bitmap
     @window.dispose
   end
+
+  def to_s
+    "<#{self.class} #{"(#{@window.height},#{@window.width}" unless @window.disposed?}>"
+  end
 end
