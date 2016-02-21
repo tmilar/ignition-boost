@@ -94,7 +94,6 @@ class Level
     Logger.trace("Conf for player ... '#{@config[:player_ship]}'")
     self.player = Player.new(@config[:player_ship])
     self.player.level_observe(self)
-    self.player.update
   end
 
   def update
