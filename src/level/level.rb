@@ -42,8 +42,14 @@ class Level
       }
   }
 
+  GAME_ENTITIES = [:player, :enemies, :plazors, :elazors, :powerups, :explosions]
+
+  # Game entities readers
+  attr_accessors_delegate :@game_objects, *GAME_ENTITIES
+
+  ## Level elements
   attr_reader :collider
-  attr_accessor :backdrop, :enemy_spawner, :powerup_spawner, :player, :enemies, :plazors, :elazors, :powerups, :explosions
+  attr_accessor :backdrop, :enemy_spawner, :powerup_spawner
 
   def initialize(level_options = {})
     #config setup
@@ -56,9 +62,10 @@ class Level
 
     super(@config)
     play_bgm
+    init_game_objects
     init_collider
-    init_level_graphics
     init_spawners
+    init_level_graphics
   end
 
   def clean_level_result
@@ -74,6 +81,12 @@ class Level
     @collider = Collider.new(self)
   end
 
+  def init_game_objects
+    @game_objects = {}
+    GAME_ENTITIES.each {  |k| @game_objects[k] = [] }
+    Logger.debug("Initialized game objects container #{@game_objects}")
+  end
+
   def init_spawners
     self.enemy_spawner = Spawner.new(@config[:spawner])
     self.enemy_spawner.add_observer(self)
@@ -83,12 +96,6 @@ class Level
   end
 
   def init_level_graphics
-    self.enemies = []
-    self.plazors = []
-    self.elazors = []
-    self.explosions = []
-    self.powerups = []
-
     Logger.trace("strating lvl graphics...  opts: #{@config}")
     self.backdrop = Backdrop.new(@config[:backdrop])
     Logger.trace("Conf for player ... '#{@config[:player_ship]}'")
@@ -97,78 +104,42 @@ class Level
   end
 
   def update
-    self.backdrop.update
-    self.enemy_spawner.update
-
-    update_enemies
-    update_player
-    update_plazors
-    update_elazors
-    update_explosions
-    update_pups
+    update_backdrop
+    update_enemy_spawner
     update_pup_spawner
+
+    update_game_objects
   end
 
+  def update_backdrop
+    self.backdrop.update
+  end
+
+  def update_enemy_spawner
+    self.enemy_spawner.update
+  end
 
   def update_pup_spawner
     self.powerup_spawner.update
   end
 
-  def update_pups
-    self.powerups.each_with_index { |pup,i|
-      if pup.disposed?
-        self.powerups.delete_at(i)
-        next
-      end
-      pup.update
+  def update_game_objects
+    @game_objects.each { |type, game_objects|
+      # Logger.trace("About to udpate #{type} in #{self}...")
+      objects = Array(game_objects) ## Ensure array (to treat individuals and arrays the same)
+
+      objects.each_with_index {
+          |o,i|
+        if o.respond_to?(:disposed?) && o.disposed?
+          o.dispose(true)
+          objects.delete_at(i)
+          next
+        end
+        o.update
+        # Collider.check_collision(o, @game_objects)
+      }
     }
   end
-
-  def update_explosions
-    self.explosions.each_with_index { |e,i|
-      if e.disposed?
-        self.explosions.delete_at(i)
-        next
-      end
-      e.update
-    }
-  end
-
-  def update_elazors
-    self.elazors.each_with_index { |el,i|
-      if el.disposed?
-        self.elazors.delete_at(i)
-        next
-      end
-      el.update
-    }
-  end
-
-  def update_plazors
-    self.plazors.each_with_index { |pl,i|
-      # return true if pl.disposed?
-      if pl.disposed?
-        self.plazors.delete_at(i)
-        next
-      end
-      pl.update
-    }
-  end
-
-  def update_enemies
-    self.enemies.each_with_index { |enemy,i|
-      if enemy.disposed?
-        self.enemies.delete_at(i)
-        next
-      end
-      enemy.update
-    }
-  end
-
-  def update_player
-    self.player.update unless self.player.disposed?
-  end
-
 
   def difficulty
     self.enemy_spawner.difficulty
@@ -290,12 +261,12 @@ class Level
 
   def dispose
     self.backdrop.dispose unless self.backdrop.disposed?
-    self.player.dispose unless self.player.disposed?
-    self.enemies.each { |obj| obj.dispose unless obj.disposed? }
-    self.plazors.each { |obj| obj.dispose unless obj.disposed? }
-    self.elazors.each { |obj| obj.dispose  unless obj.disposed? }
-    self.explosions.each { |obj| obj.dispose  unless obj.disposed? }
-    self.powerups.each { |obj| obj.dispose  unless obj.disposed? }
+
+    @game_objects.each_value { |g_objs|
+      Array(g_objs).each { |obj|
+        obj.dispose(true)
+      }
+    }
   end
 
   def screen_observe(screen)
