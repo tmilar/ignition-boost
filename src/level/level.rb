@@ -180,7 +180,8 @@ class Level
   def notified(msg, data={})
     reactions = {
         'new_enemy' => lambda { |enemy| add_new_enemy(enemy) },
-        'new_lazors' => lambda { |lazors| add_new_lazors(lazors)},
+        'new_elazor' => lambda { |elazor| add_new_elazor(elazor)},
+        'new_plazor' => lambda { |plazor| add_new_plazor(plazor)},
         'new_powerup' => lambda { |pup| add_new_powerup(pup)},
         'player_destroyed' => lambda { |_| init_game_over("loss")},
         'enemy_destroyed' => lambda { |enemy| handle_enemy_destroyed(enemy)},
@@ -265,7 +266,6 @@ class Level
     $game_variables[IB::LEVEL_RESULT_VAR] = result
   end
 
-
   def add_new_enemy(enemy)
     raise 'New enemy is nil!' if enemy.nil?
     Logger.debug("#{self} New enemy #{enemy.name} #{enemy} entered level #{@config[:name]}. Ancestors: #{enemy.class.ancestors}")
@@ -273,15 +273,16 @@ class Level
     self.enemies << enemy
   end
 
-  def add_new_lazors(data)
-    raise 'Lazor(s) are empty or nil!' if data[:lazors].nil_empty?
-    Logger.trace("#{self} New lazors were shooted!!! data received: #{data}")
-    case data[:data][:shooter]
-      when 'player' then self.plazors.push(*data[:lazors]) unless self.plazors.nil?
-      when 'enemy'  then self.elazors.push(*data[:lazors]) unless self.elazors.nil?
-    end
+  def add_new_plazor(plazor)
+    raise 'PLazor is empty or nil!' if plazor.nil_empty?
+    Logger.trace("#{self} New plazor were shooted!!! data received: #{plazor}")
+    self.plazors.push(plazor)
+  end
 
-    # Logger.trace("Level lazors present: Plazors > #{@plazors} | Elazors > #{@elazors}")
+  def add_new_elazor(elazor)
+    raise 'Elazor is empty or nil!' if elazor.nil_empty?
+    Logger.trace("#{self} New elazor were shooted!!! data received: #{elazor}")
+    self.elazors.push(elazor)
   end
 
   def dispose

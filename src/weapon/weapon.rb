@@ -14,7 +14,8 @@ class Weapon
       type: "lazor",          # weapon name (also lazor image '.png' name)
       SE: ["Attack2",80,150], # sound when shooting
       level: 1,               # starting weapon level (optional, default 1)
-      max_level: 5
+      max_level: 5,
+      # shooter: 'player' OR 'enemy'
       # overheat: {         ##TODO overheat/refresh mechanism
       #     bullets: 6,
       #     cooldown: 3
@@ -22,7 +23,7 @@ class Weapon
   }
 
   attr_accessors_delegate :@stats, :damage, :speed, :cooldown
-  attr_readers_delegate :@config, :name, :max_level
+  attr_readers_delegate :@config, :name, :max_level, :shooter
   attr_reader :stats
   attr_accessor :level
 
@@ -63,10 +64,12 @@ class Weapon
                                       name: @config[:name],
                                       position: position,
                                       direction: @direction,
-                                      stats: @stats
+                                      stats: @stats,
+                                      shooter: self.shooter,
+                                      observers: self.observers
                                   })
 
-    notify_observers('new_lazors', {data: @config, lazors: lazors})
+    # notify_observers('new_lazors', {shooter: self.shooter, lazors: lazors})
     Sound.se(@config[:SE])
   end
 
@@ -75,7 +78,7 @@ class Weapon
   # > Each with one or more different movements...
   def emit_lazors(bullet_config={})
     lazor = Bullet.new(bullet_config)
-    Logger.trace("#{self} New lazor shooted. Pos: #{lazor.position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Parents... #{lazor.class.ancestors}")
+    Logger.trace("#{self} New lazor shooted. Pos: #{lazor.position}, Dir: #{lazor.direction}, Stats: #{lazor.stats}. Shooter: #{lazor.shooter}")
 
     [lazor]
   end
