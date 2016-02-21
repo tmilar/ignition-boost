@@ -25,7 +25,8 @@ class Logger
   def self.toggle
     puts "Console logs turned #{@@toggle ? 'OFF' : 'ON'}"
     @@toggle = @@toggle ? false : true
-    @@level = @@toggle ? ERROR : @@original_level
+    @@level = @@toggle ? @@original_level : ERROR
+    puts "Logger level changed to #{@@level}"
   end
 
   # private-like
