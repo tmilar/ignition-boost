@@ -16,6 +16,8 @@ class Bullet
   # :position
   # :direction
   # :stats
+  # :shooter
+  # :observers
   def initialize(config ={})
     super(config)
     config[:init_pos] = lambda { |sprite| config[:position] + Point.new(- sprite.width / 2, 0) }
@@ -27,6 +29,10 @@ class Bullet
 
     @direction = config[:direction]
     @stats = config[:stats]
+    @shooter = config[:shooter]
+    @observers = config[:observers]
+    notify_observers("new_#{type}", self)
+
     Logger.trace("#{self} launched, conf: #{config}")
   end
 
@@ -46,7 +52,11 @@ class Bullet
   end
 
   def type
-    self.class.to_s.downcase
+    case @shooter
+      when 'enemy' then 'elazor'
+      when 'player' then 'plazor'
+      else raise "Invalid Bullet type, shooter #{@shooter} not supported!"
+    end
   end
 
   def to_s
