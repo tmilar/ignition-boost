@@ -10,11 +10,20 @@ module Subject
 
   def initialize(config = {})
     @observers = []
+    if config.key(:observers) && !config[:observers].nil_empty?
+      Logger.trace("#{self} pushing observers #{config[:observers]} to current ones: #{@observers}")
+      add_observers(config[:observers])
+    end
+    Logger.trace("Initialized Subject #{self.class} with conf #{config}")
     super(config)
   end
 
+  def add_observers(observers)
+    Array(observers).each { |o| add_observer(o) }
+  end
+
   def add_observer(observer)
-    @observers << observer
+    @observers << observer unless @observers.include?(observer)
   end
 
   def delete_observer(observer)
