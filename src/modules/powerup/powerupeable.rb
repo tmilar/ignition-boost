@@ -12,7 +12,7 @@ module Powerupeable
     setter = "#{prop}="
 
     unless self.respond_to?(setter) && self.respond_to?(getter)
-      Logger.error("Trying to set property #{prop}, #{value} on #{self}, but doesn't respond to #{setter} or #{getter}!")
+      Logger.debug("Trying to set property #{prop}, #{value} on #{self}, but doesn't respond to #{setter} or #{getter}!")
       return
     end
 
