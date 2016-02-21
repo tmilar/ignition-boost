@@ -5,6 +5,8 @@ class Sprite
   attr_reader :cell
   attr_accessor :gameobj_id
 
+  attr_accessor :sprite_disposed
+
   @viewport = {}
 
   ZERO_EPSILON = 0.00001
@@ -25,6 +27,7 @@ class Sprite
     config = defaults.merge(args)
     # Logger.start("sprite", args, defaults)
     new_sprite = Sprite.new(@viewport)
+    new_sprite.sprite_disposed = false
     new_sprite.bitmap = Cache.space(config[:bitmap].split(':')[0])
     new_sprite.gameobj_id = config[:bitmap].split(':')[1].to_i
     new_sprite.init_cells(config[:cells]) if config[:cells] > 1
@@ -64,6 +67,7 @@ class Sprite
     new_sprite = Sprite.new(@viewport)
     new_sprite.x = pos.x if pos
     new_sprite.y = pos.y if pos
+    new_sprite.sprite_disposed = false
     new_sprite
   end
 
@@ -191,6 +195,20 @@ class Sprite
   def reset_cell
     return if @cell.nil?
     @cell = 1
+  end
+
+  alias_method :sprite_disposed?, :disposed?
+  def disposed?
+    @sprite_disposed || sprite_disposed?
+  end
+
+  ## Only do actual dispose in a controlled, centraliced place
+  alias_method :sprite_dispose, :dispose
+  def dispose(force = false)
+    @sprite_disposed = true
+    self.visible = false
+    Logger.debug("#{self} has been disposed! #{"Forced actual dispose!" if force}")
+    sprite_dispose if force && !sprite_disposed?
   end
 
   def to_s
