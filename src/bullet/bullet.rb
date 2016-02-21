@@ -48,7 +48,7 @@ class Bullet
   def collide_with(ship)
     # #{type}_hit = player_hit || enemy_hit
     notify_observers("#{ship.type}_hit", self)
-    self.dispose
+    self.dispose unless self.disposed?
   end
 
   def type
@@ -60,6 +60,6 @@ class Bullet
   end
 
   def to_s
-    "<#{self.class}> '#{self.name}'"
+    "<#{self.class}:#{type}> '#{name}'"
   end
 end
