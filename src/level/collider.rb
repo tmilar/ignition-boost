@@ -49,4 +49,8 @@ class Collider
     return (obj1.collision_rect || obj1.rectangle).collide_rect?( obj2.collision_rect || obj2.rectangle )
   end
 
+  def to_s
+    "<#{self.class}>"
+  end
+
 end
