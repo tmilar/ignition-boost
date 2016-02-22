@@ -136,7 +136,6 @@ class Level
           next
         end
         o.update
-        # Collider.check_collision(o, @game_objects)
       }
     }
   end
