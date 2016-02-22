@@ -96,7 +96,7 @@ class Weapon
   end
 
   def to_s
-    "<#{self.class}> '#{@config[:name]}'"
+    "<#{self.class}> '#{name}'"
   end
 
   # def refreshing?
