@@ -301,12 +301,12 @@ module IB
 
 
 
-  MY_POWERUP_LEVEL = {
+  DEMO_LEVEL = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
-      name: 'first_level',            # Level name - Solo estetico.
+      name: 'demo_first_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
       player_ship: NAVE_BASE1,
-      target_score: 100,
+      target_score: 250,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
@@ -314,11 +314,16 @@ module IB
           phases: {
               1 => {
                   enemies: [ENEMIGO1, ENEMIGO2],
-                  start: 15, # time when phase can start spawning enemies
+                  start: 0, # time when phase can start spawning enemies
               },
               2 => {
                   enemies: [ENEMIGO2],
-                  start: 20         # time when phase can start spawning enemies
+                  start: 10         # time when phase can start spawning enemies
+              },
+              3 => {
+                  enemies: [BOSS1],
+                  start: 20,         # time when phase can start spawning enemies
+                  max_spawn: 1
               }
           }
       },
@@ -326,25 +331,60 @@ module IB
           frequency: 45,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                    # Powerup spawner can also have phases!
               1 => {                     # phase 1
-                 powerups: [SPEED_UP, WEAPON_UP, REPAIR_PUP],
+                 powerups: [WEAPON_UP, REPAIR_PUP, REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               }
           },
           destructible?: false         # Can pups can be destroyed by bullets?
       }
   }
 
-  TEST_MECHANICS_LEVEL = {
+  POWERUPS_LEVEL = {
       backdrop: 'backdrop',           # FONDO imagen .jpg
-      name: 'test_level',            # Level name - Solo estetico.
+      name: 'test_powerups_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
       player_ship: NAVE_BASE1,
-      target_score: 100,
+      target_score: 250,
+      spawner: {
+          spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
+          spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
+          phases: {
+              # 1 => {
+              #     enemies: [ENEMIGO1],
+              #     start: 0, # time when phase can start spawning enemies
+              # },
+          }
+      },
+      powerup_spawner: {
+          frequency: 45,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                    # Powerup spawner can also have phases!
+             1 => {                     # phase 1
+                powerups: [SPEED_UP, WEAPON_UP, REPAIR_PUP, REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+             }
+          },
+          destructible?: false         # Can pups can be destroyed by bullets?
+      },
+      pre_config: lambda {
+        IB::LAZOR_WEAPON[:max_level] = 15
+        IB::BALL_WEAPON[:max_level] = 15
+      },
+      post_config: lambda {
+        IB::LAZOR_WEAPON[:max_level] = 5
+        IB::BALL_WEAPON[:max_level] = 5
+      }
+  }
+  TEST_MECHANICS_LEVEL = {
+      backdrop: 'backdrop',           # FONDO imagen .jpg
+      name: 'test_mechanics_level',            # Level name - Solo estetico.
+      BGM: ['Battle2', 60, 110],
+      player_ship: NAVE_BASE1,
+      target_score: 1,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           phases: {
               1 => {
                   enemies: [ENEMIGO1], ##[BOSS1],
-                  max_spawn: 100,
+                  max_spawn: 1,
                   start: 0, # time when phase can start spawning enemies
               },
           }
@@ -354,6 +394,33 @@ module IB
           phases: {                    # Powerup spawner can also have phases!
              1 => {                     # phase 1
                 powerups: [NUKE_PUP],
+                max_spawn: 1,
+             }
+          },
+      }
+  }
+
+  TEST_NO_ENEMIES_LEVEL = {
+      backdrop: 'backdrop',           # FONDO imagen .jpg
+      name: 'test_no_enemies_level',            # Level name - Solo estetico.
+      BGM: ['Battle2', 60, 110],
+      player_ship: NAVE_BASE1,
+      target_score: 1,
+      spawner: {
+          # spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
+          # phases: {
+          #     1 => {
+          #         enemies: [ENEMIGO1], ##[BOSS1],
+          #         max_spawn: 1,
+          #         start: 0, # time when phase can start spawning enemies
+          #     },
+          # }
+      },
+      powerup_spawner: {
+          frequency: 30,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          phases: {                    # Powerup spawner can also have phases!
+             1 => {                     # phase 1
+                powerups: [SPEED_UP, WEAPON_UP, REPAIR_PUP],
              }
           },
       }
@@ -439,7 +506,7 @@ module IB
   #-------------------------------------------------------------------------------
 
   # LEVELS = [TEST_STRESS_LEVEL , TEST_MECHANICS_LEVEL , NIVEL0 , MY_POWERUP_LEVEL]
-  TEST_LEVELS = [MY_POWERUP_LEVEL, TEST_MECHANICS_LEVEL]
+  TEST_LEVELS = [POWERUPS_LEVEL, DEMO_LEVEL, TEST_NO_ENEMIES_LEVEL, TEST_MECHANICS_LEVEL]
 
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win", "loss" o "incomplete", por ahora)
