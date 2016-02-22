@@ -28,6 +28,7 @@ class Sprite
     # Logger.start("sprite", args, defaults)
     new_sprite = Sprite.new(@viewport)
     new_sprite.sprite_disposed = false
+    new_sprite.name = config[:name] || config[:bitmap]
     new_sprite.bitmap = Cache.space(config[:bitmap].split(':')[0])
     new_sprite.gameobj_id = config[:bitmap].split(':')[1].to_i
     new_sprite.init_cells(config[:cells]) if config[:cells] > 1
@@ -43,7 +44,6 @@ class Sprite
     new_sprite.oy = 0
     new_sprite.zoom_x = config[:zoom_x]
     new_sprite.zoom_y = config[:zoom_y]
-    new_sprite.name = config[:name] || config[:bitmap]
 
     new_sprite.rectangle = Rectangle.new(new_sprite.x, ##init_pos.x,
                                          new_sprite.y, ## init_pos.y,
