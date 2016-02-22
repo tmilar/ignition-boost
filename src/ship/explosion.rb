@@ -8,30 +8,32 @@ class Explosion
 
   def initialize(config={})
     Logger.start("explosion", config)
+    super(config)
+    @timer = @config[:time]
+    sprite_init
+    Sound.se(@config[:DSE])
+  end
 
-    expl_pos = config[:position]
-    @sprite = Sprite.create({
-                                x: expl_pos.x,
-                                y: expl_pos.y,
-                                zoom_x: config[:zoom],
-                                zoom_y: config[:zoom],
-                                bitmap: config[:bitmap]
-                            })
+  def sprite_init
+    self.sprite = Sprite.create({
+                                    zoom_x: @config[:zoom],
+                                    zoom_y: @config[:zoom],
+                                    bitmap: @config[:bitmap],
+                                    init_pos: position_init
+                                })
+  end
 
-    @sprite.position -= Point.new(@sprite.bitmap.width / 2, @sprite.bitmap.height / 2)
-
-    @timer = config[:time]
-    Sound.se(config[:DSE])
+  def position_init
+    lambda { |sprite| @config[:position] - Point.new(sprite.bitmap.width / 2, sprite.bitmap.height / 2)}
   end
 
   def update
-    # Logger.trace("Updating explosion #{self}. Finished? #{self.finished?}")
-    return if finished?
-    @sprite.update
-    @timer -= 1
+    return if check_finished?
+    self.sprite.update
   end
 
-  def finished?
+  def check_finished?
+    @timer -= 1
     if @timer <= 0
       self.dispose
       return true
