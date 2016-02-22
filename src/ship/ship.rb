@@ -120,16 +120,16 @@ class Ship
   end
 
   def level_observe(level)
-    if @weapon.nil?
-      Logger.warn("Can't observe this ship @weapon because is nil!")
-    else
-      @weapon.add_observer(level)
-      @weapon.add_observer(level.collider)
-    end
-
-    self.add_observer(level)
-    self.add_observer(level.collider)
+    add_observer(level)
+    add_observer(level.collider)
   end
+
+  ## @Override | add observer to {self, @weapon, @movement}
+  def add_observer(observer)
+    super(observer)
+    self.weapon.add_observer(observer)  unless self.weapon.nil?
+  end
+
   #------------------------------------------------------------------------------#
   #  SHIP BEHAVIOR METHODS
   #------------------------------------------------------------------------------#
