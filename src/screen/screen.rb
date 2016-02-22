@@ -151,6 +151,6 @@ class Screen
   end
 
   def to_s
-    "<#{self.class} #{"(#{@window.height},#{@window.width}" unless @window.disposed?}>"
+    "<#{self.class} #{@window ? ("(#{@window.height},#{@window.width})" unless @window.disposed?) : 'uninitialized'}>"
   end
 end
