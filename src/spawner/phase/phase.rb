@@ -164,7 +164,11 @@ class Phase
   end
 
   def type
-    @config.key?(:enemies) ? "enemies" : "powerups"
+    if @config
+      @config.key?(:enemies) ? "enemies" : "powerups"
+    else
+      "uninitialized"
+    end
   end
 
   def to_s
