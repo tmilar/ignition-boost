@@ -8,6 +8,7 @@ class Explosion
 
   def initialize(config={})
     Logger.start("explosion", config)
+    @config = config.deep_clone
     super(config)
     @timer = @config[:time]
     sprite_init
