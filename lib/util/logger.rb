@@ -72,10 +72,14 @@ class Logger
 
 
   def self.start(object, options={}, defaults={})
+    return if Logger.level < Logger::WARNING
     Logger.info("New #{object} created...#{"Defined or Configured options: #{options}" if !options.empty?}")
 
+    undef_opts = {}
     (defaults.keys - options.keys).each { |key|
-      Logger.warn("Undefined #{object} option #{key.inspect}, default used: '#{defaults[key]}'")
+      undef_opts[key] = defaults[key]
     }
+    Logger.warn("Undefined #{object} options, defaults used: #{undef_opts}") unless undef_opts.nil_empty?
+
   end
 end
