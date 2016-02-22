@@ -8,7 +8,6 @@ class Collider
   # elazor -> player (opt:  pups TODO)
   # pup -> player (opt : elazors,  plazors [ TODO ... pup.collision(lazor, true) if pup.destructible? ])
 
-  # def_delegators :@game_container, :player, :enemies, :plazors, :elazors, :powerups TODO remove, unneeded?
 
   def initialize(game_container)
     @game_container = game_container
@@ -74,7 +73,7 @@ class Collider
   end
 
   def self.collides?(obj1, obj2)
-    # Logger.trace("Rect1: #{obj1.rectangle}, Rect2: #{obj2.rectangle}, collide? #{obj1.rectangle.collide_rect?(obj2.rectangle)}")
+    # Logger.trace("Rect1: #{obj1.rectangle}, Rect2: #{obj2.rectangle}, collide? #{(obj1.collision_rect || obj1.rectangle).collide_rect?( obj2.collision_rect || obj2.rectangle )}")
     return false if obj1.disposed? || obj2.disposed?
     return (obj1.collision_rect || obj1.rectangle).collide_rect?( obj2.collision_rect || obj2.rectangle )
   end
