@@ -55,21 +55,28 @@ class Ship
   attr_readers_delegate :@config, :name, :explosion, :limits
   attr_accessors_delegate :@stats, :power, :speed, :hp, :mhp, :collide_damage, :collide_resistance, :shoot_freq, :nuke_power
 
+  attr_accessor :stats
+  attr_reader :weapon
+
   #------------------------------------------------------------------------------#
   #  INITIALIZATION METHODS
   #------------------------------------------------------------------------------#
   def initialize(config = {})
-    super(config)
     self.class.count += 1
-    config[:name] += ":#{self.class.count}"
+    name_id = config[:name] + ":#{self.class.count}"
+
     #config setup
-    Logger.start("ship#'#{config[:name]}'", config, DEFAULTS)
+    Logger.start("ship#'#{name_id}'", config, DEFAULTS)
     @config = DEFAULTS.deep_clone.deep_merge(config).deep_clone
-    Logger.debug("Ship #{self} config is: #{@config}")
+    @config[:name] = name_id
     stats_init
     sprite_init
-    position_init
     weapon_init(@config[:weapon])
+
+    super(@config)
+
+    Logger.debug("Ship #{self} config is: #{@config}")
+
   end
 
   def gameobj_id
