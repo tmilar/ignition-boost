@@ -12,7 +12,7 @@ class Bullet
   attr_accessor :direction
   attr_reader :stats
 
-  attr_readers_delegate :@config, :name, :direction, :stats, :shooter, :observers
+  attr_readers_delegate :@config, :name, :direction, :stats, :shooter##, :observers
   attr_readers_delegate :@stats, :speed
 
   # :observers
@@ -25,13 +25,14 @@ class Bullet
   def initialize(config ={})
     @stats = config[:stats].deep_clone
     @config = config.deep_clone
+    sprite_init
     super(@config)
     notify_observers("new_#{type}", self)  ## new_elazor || new_plazor
     Logger.trace("#{self} launched, conf: #{@config}")
   end
 
   def sprite_init
-    Sprite.create({
+    self.sprite = Sprite.create({
                       name: @config[:name],
                       bitmap: @config[:name],
                       init_pos: self.position_init
