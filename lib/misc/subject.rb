@@ -14,7 +14,6 @@ module Subject
       Logger.trace("#{self} pushing observers #{config[:observers]} to current ones: #{@observers}")
       add_observers(config[:observers])
     end
-    Logger.trace("Initialized Subject #{self.class} with conf #{config}")
     super(config)
   end
 
