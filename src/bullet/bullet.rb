@@ -24,7 +24,8 @@ class Bullet
   # :observers
   def initialize(config ={})
     @stats = config[:stats].deep_clone
-    super(config)
+    @config = config.deep_clone
+    super(@config)
     notify_observers("new_#{type}", self)  ## new_elazor || new_plazor
     Logger.trace("#{self} launched, conf: #{@config}")
   end
