@@ -10,7 +10,7 @@ module Subject
 
   def initialize(config = {})
     @observers = []
-    if config.key(:observers) && !config[:observers].nil_empty?
+    if config.key?(:observers) && !config[:observers].nil_empty?
       Logger.trace("#{self} pushing observers #{config[:observers]} to current ones: #{@observers}")
       add_observers(config[:observers])
     end
