@@ -1,22 +1,22 @@
 class Enemy < Ship
 
-  include ZigZagMovement
-
   DEFAULTS_ENEMY = {
       cells: 1,
       stats: {
           shoot_decrement_amount: 1,
           shoot_decrement_freq: 100
-      }
+      },
+      movement_style: "zig_zag_movement"
       # limits: {
       #     x: [0.0, 1.0],
       #     y: [0.0, 1.0]
       # }
   }
   def initialize(config = {})
-    config = DEFAULTS_ENEMY.deep_merge(config)
-    super(config)
+    @config = DEFAULTS_ENEMY.deep_merge(config)
     init_shooting_cooldown
+
+    super(@config)
   end
 
   def init_shooting_cooldown

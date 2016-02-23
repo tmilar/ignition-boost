@@ -1,6 +1,4 @@
-module LinearMovement
-  include Movement
-
+class LinearMovement < Movement
   def update_movement
     move(self.direction)
   end

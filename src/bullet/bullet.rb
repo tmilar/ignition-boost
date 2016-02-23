@@ -1,14 +1,4 @@
-
-class Bullet
-  extend Forwardable
-  include Subject
-
-  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap, :name, :dispose, :disposed?
-  def_delegators :@sprite, :position, :position=, :rectangle, :collision_rect
-  attr_accessor :sprite
-
-  include LinearMovement
-
+class Bullet < GameEntity
   attr_accessor :direction
   attr_reader :stats
 
@@ -25,14 +15,14 @@ class Bullet
   def initialize(config ={})
     @stats = config[:stats].deep_clone
     @config = config.deep_clone
-    sprite_init
+    # sprite_init
     super(@config)
     notify_observers("new_#{type}", self)  ## new_elazor || new_plazor
     Logger.trace("#{self} launched, conf: #{@config}")
   end
 
   def sprite_init
-    self.sprite = Sprite.create({
+    Sprite.create({
                       name: @config[:name],
                       bitmap: @config[:name],
                       init_pos: self.position_init
@@ -44,8 +34,7 @@ class Bullet
   end
 
   def update
-    update_movement
-    @sprite.update
+    super
   end
 
   # #{type}_hit = player_hit || enemy_hit

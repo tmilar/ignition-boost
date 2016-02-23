@@ -1,4 +1,6 @@
-module Movement
+class Movement
+  include Subject
+  extend Forwardable
 
   DIRECTIONS = {
       :LEFT => Point.new(-1, 0),
@@ -7,17 +9,33 @@ module Movement
       :DOWN => Point.new(0, +1),
   }
 
-  attr_accessor :limits
+  def_delegators :@sprite, :x, :y, :position, :position=, :rectangle, :rectangle=, :collision_rect, :disposed?, :width, :height, :ox, :oy
+  def_delegators :@game_entity, :speed, :type, :direction
+  attr_accessor :sprite, :game_entity
+
+  # Receive a {movement type}, return a newly created Movement instance
+  def self.create(type, config)
+    case type.to_sym
+      when :linear_movement             then LinearMovement.new(config)
+      when :keyboard_movement           then KeyboardMovement.new(config)
+      when :zig_zag_movement            then ZigZagMovement.new(config)
+      when :none, :no_movement, :freeze then NoMovement.new(config)
+      else raise "Can't create invalid movement type #{type}! Please use a valid one"
+    end
+  end
 
   def initialize(config = {})
-    super(config)
-
-    # @logged_dir = false
+    Logger.start("Movement#'#{self.class}'", config)
+    @game_entity = config[:game_entity]
+    raise "Can' initialize movement without a defined sprite!" unless @game_entity.sprite
+    @sprite = @game_entity.sprite ##config[:sprite]
+    @observers = @game_entity.observers ##config[:observers] if config.key?(:observers) && config[:observers]
+    # @speed = (config[:speed] if config.key?(:speed) && config[:speed]) || (config[:stats][:speed] if config.key?(:stats)) || 0.5
+    # @type = config[:type]
   end
 
   def update
-    return Logger.debug("Returning from #{self.class} Movement, #{self} is disposed") if self.disposed?
-    super
+    return Logger.debug("Returning from #{self.class} Movement, #{self} is disposed") if disposed?
     update_movement
   end
 
@@ -42,7 +60,7 @@ module Movement
   end
 
   def move_xy(offset_xy)
-    notify_observers("#{type}_moved", self)
+    notify_observers("#{type}_moved", @game_entity)
     self.position += offset_xy
   end
 

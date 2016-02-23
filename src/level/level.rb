@@ -130,6 +130,8 @@ class Level
 
       objects.each_with_index {
           |o,i|
+        # Logger.trace("Checking object #{o}... type: #{o.class}, methods: #{(o.class.methods - Object.methods).sort} ")
+        # Logger.trace("Disposed result #{o.respond_to?(:disposed?) && o.disposed?}")
         if o.respond_to?(:disposed?) && o.disposed?
           o.dispose(true)
           objects.delete_at(i)

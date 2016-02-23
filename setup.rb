@@ -31,7 +31,7 @@ plugins = {
                 order: ["movement", "keyboard_movement", "zig_zag_movement", :rest]
             },
             "powerup" => {},
-            exclude: ["game_entity"]
+            # exclude: ["game_entity"]
         },
         exclude: ["old"],
         "level" => {},

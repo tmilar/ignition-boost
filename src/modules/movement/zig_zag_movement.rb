@@ -1,6 +1,4 @@
-module ZigZagMovement
-  include Movement
-
+class ZigZagMovement < Movement
   def initialize(config = {})
     super(config)
     @ticker = 0

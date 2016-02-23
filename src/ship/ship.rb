@@ -1,18 +1,9 @@
 # dependencies:
 ## Graphics to see the boundaries of the screen
 ## Sprite to load ship image
-class Ship
-  include Subject
-  extend Forwardable
+class Ship < GameEntity
+
   include Powerupeable
-
-  def_delegators :@sprite, :x, :y, :ox, :oy, :zoom_x, :zoom_y, :height, :width, :bitmap
-  def_delegators :@sprite, :position, :position=, :rectangle, :rectangle=, :collision_rect
-  def_delegators :@sprite, :dispose, :disposed?, :flash
-
-  attr_accessor :sprite
-  attr_accessor :stats
-  attr_reader :weapon
 
   DEFAULT_WEAPON = {
       name: "lazor1",         # weapon name (also lazor image '.png' name)
@@ -70,7 +61,6 @@ class Ship
     @config = DEFAULTS.deep_clone.deep_merge(config).deep_clone
     @config[:name] = name_id
     stats_init
-    sprite_init
     weapon_init(@config[:weapon])
 
     super(@config)
@@ -94,13 +84,16 @@ class Ship
 
 
   def sprite_init
-    @sprite = Sprite.create({
+    Logger.trace("#{self} initializing sprite with config... #{@config}")
+    ret_sprite = Sprite.create({
                                 bitmap: @config[:name],
                                 cells: @config[:cells],
                                 limits: @config[:limits],
                                 init_pos: self.position_init,
                                 collision_rect: @config[:collision_rect],
                             })
+    Logger.trace("initialized sprite: #{ret_sprite}! #{self.class} Ancestors: #{self.class.ancestors}, methods: #{(self.methods - Object.methods).sort}")
+    ret_sprite
   end
 
   # Place initial sprite position
@@ -128,6 +121,7 @@ class Ship
   def add_observer(observer)
     super(observer)
     self.weapon.add_observer(observer)  unless self.weapon.nil?
+    self.movement.add_observer(observer)
   end
 
   #------------------------------------------------------------------------------#
@@ -135,11 +129,7 @@ class Ship
   #------------------------------------------------------------------------------#
   def update
     weapon_update
-    sprite_update
-  end
-
-  def sprite_update
-    @sprite.update
+    super
   end
 
   def weapon_update

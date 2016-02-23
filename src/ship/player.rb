@@ -2,14 +2,13 @@
 
 class Player < Ship
 
-  include KeyboardMovement
-
   DEFAULTS_PLAYER = {
       cells: 3,
       limits: {
           x: [0.0, 1.0],
           y: [0.0, 1.0]
       },
+      movement_style: "keyboard_movement",
       :collision_rect => {      # Define ship collision rectangle, relative to ship size.
           :x => [0.1, 0.9],
           :y => [0.2, 0.8]

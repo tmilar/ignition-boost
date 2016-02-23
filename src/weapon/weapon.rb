@@ -60,14 +60,15 @@ class Weapon
     return unless @next_cooldown <= 0
     @next_cooldown = self.cooldown
 
-    lazors = emit_lazors({
-                                      name: @config[:name],
-                                      position: position,
-                                      direction: @direction,
-                                      stats: @stats,
-                                      shooter: self.shooter,
-                                      observers: self.observers
-                                  })
+    emit_lazors({
+                    name: @config[:name],
+                    position: position,
+                    direction: @direction,
+                    stats: @stats,
+                    shooter: self.shooter,
+                    observers: self.observers,
+                    movement_style: "linear_movement"
+                })
 
     # notify_observers('new_lazors', {shooter: self.shooter, lazors: lazors})
     Sound.se(@config[:SE])
