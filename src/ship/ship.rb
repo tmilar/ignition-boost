@@ -171,7 +171,7 @@ class Ship < GameEntity
     notify_observers("#{type}_destroyed", {ship: self})
     Logger.debug("#{self} destroyed in #{self.position}")
     self.explode
-    self.dispose
+    self.dispose(false)
   end
 
   def explode

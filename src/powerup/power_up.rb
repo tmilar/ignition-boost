@@ -47,7 +47,7 @@ class PowerUp < GameEntity
 
   def collide_with(obj=nil, destroy=false)
     Logger.debug("Pup #{self} collided with #{obj}. #{"Destroyed!" if destroy})")
-    self.dispose
+    self.dispose(false)
   end
 
   def targets

@@ -40,7 +40,7 @@ class Bullet < GameEntity
   # #{type}_hit = player_hit || enemy_hit
   def collide_with(ship)
     notify_observers("#{ship.type}_hit", self)
-    self.dispose unless self.disposed?
+    self.dispose(false) unless self.disposed?
   end
 
   def type

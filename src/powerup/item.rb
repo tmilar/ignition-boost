@@ -63,7 +63,7 @@ class Item
   def effect
     effect = @config.except(CONFIG_KEYS).deep_clone
     Logger.trace("#{self} been asked for effect... which is... #{effect}")
-    @sprite.dispose ## when asked for effect, remove sprite image
+    @sprite.dispose(false) ## when asked for effect, remove sprite image
     effect
   end
 

@@ -29,7 +29,7 @@ class Explosion < GameEntity
   def check_finished?
     @timer -= 1
     if @timer <= 0
-      self.dispose
+      self.dispose(false)
       return true
     end
     false

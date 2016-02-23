@@ -156,7 +156,7 @@ class Sprite
   def check_out_of_screen
     if self.rectangle && !self.rectangle.collide_rect?(@@screen_rect)
       Logger.debug("#{self} is out of screen! Disposing...")
-      dispose
+      dispose(false)
     end
   end
 
@@ -202,15 +202,16 @@ class Sprite
     @sprite_disposed || sprite_disposed?
   end
 
-  ## Only do actual dispose in a controlled, centraliced place
+  ## In-app internal logic, don't force dispose; Do actual dispose only in a controlled, centraliced place
   alias_method :sprite_dispose, :dispose
-  def dispose(force = false)
-    return if sprite_disposed?
+  def dispose(force = true)
+    return if sprite_disposed? ## internal Sprite actually disposed?
     @sprite_disposed = true
     self.visible = false
     Logger.debug("#{self} has been disposed! #{"Forced actual dispose!" if force}")
     sprite_dispose if force
   end
+
 
   def to_s
     "<#{self.class}> '#{self.name}'"

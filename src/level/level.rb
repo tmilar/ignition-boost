@@ -133,7 +133,7 @@ class Level
         # Logger.trace("Checking object #{o}... type: #{o.class}, methods: #{(o.class.methods - Object.methods).sort} ")
         # Logger.trace("Disposed result #{o.respond_to?(:disposed?) && o.disposed?}")
         if o.respond_to?(:disposed?) && o.disposed?
-          o.dispose(true)
+          o.dispose
           objects.delete_at(i)
           next
         end
@@ -160,8 +160,8 @@ class Level
         'player_destroyed' => lambda { |_| init_game_over("loss")},
         'enemy_destroyed' => lambda { |enemy| handle_enemy_destroyed(enemy)},
         'ship_exploded' => lambda { |ship| handle_ship_exploded(ship) },
-        'player_hit' => lambda { |elazor| elazor.dispose },
-        'enemy_hit' => lambda { |lazor| lazor.dispose },
+        'player_hit' => lambda { |elazor| elazor.dispose(false) },
+        'enemy_hit' => lambda { |lazor| lazor.dispose(false) },
         'score' => lambda { |_| check_score_win },
         'powerup_grabbed' => lambda { |pup| apply_effect(pup)},
         'item_activate' => lambda { |item| apply_effect(item)},
@@ -216,17 +216,17 @@ class Level
 
     if result == "win"
       self.elazors.each { |el|
-        el.dispose unless el.disposed?
+        el.dispose(false) unless el.disposed?
       }
 
       self.enemies.each { |e|
         e.explode
-        e.dispose unless e.disposed?
+        e.dispose(false) unless e.disposed?
       }
     end
 
     if result == "loss"
-      self.plazors.each { |pl| pl.dispose unless pl.disposed? }
+      self.plazors.each { |pl| pl.dispose(false) unless pl.disposed? }
     end
 
     result = "completed" if IB::last_level? && result == "win"
@@ -265,7 +265,7 @@ class Level
 
     @game_objects.each_value { |g_objs|
       Array(g_objs).each { |obj|
-        obj.dispose(true)
+        obj.dispose
       }
     }
   end

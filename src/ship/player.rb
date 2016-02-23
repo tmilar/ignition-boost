@@ -59,7 +59,7 @@ class Player < Ship
   end
 
   def dispose_item
-    @item.dispose
+    @item.dispose(false)
     @item = nil
   end
 
