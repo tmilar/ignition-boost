@@ -974,13 +974,13 @@ module IB
 
   SOUND_TIMER = 5       # Prevent enemy lazor sound spam by increasing this
 
-  # DEBUG = {
-  #     # borders: true  ## draw rectangle borders
-  #     logger_level: 5, # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
-  #     console: false,   # show console with log messages
-  #     test_levels: true,
-  #     logger_toggle_key: :F9
-  # }
+  DEBUG = {
+      # borders: true  ## draw rectangle borders
+      logger_level: 1, # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      console: false,   # show console with log messages
+      test_levels: false,
+      # logger_toggle_key: :F9
+  }
 
   #-------------------------------------------------------------------------------
   #  BUILD GAME
