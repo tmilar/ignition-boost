@@ -1,14 +1,15 @@
+### Item example (to be contained inside powerup)
+# item = {
+#     hold: true,
+#     name: "nuke",
+#     bitmap: "item_nuke",
+#     SE: ["Explosion3",120,100],
+#     target: "enemies",
+#     stats: {
+#         hp: -30,  ## enough to kill most of them
+#     },
+# }
 class Item
-  item = {
-      hold: true,
-      name: "nuke",
-      bitmap: "item_nuke",
-      SE: ["Explosion3",120,100],
-      target: "enemies",
-      stats: {
-          hp: -30,  ## enough to kill most of them
-      },
-  }
 
   DEFAULTS = {
       hold: false,

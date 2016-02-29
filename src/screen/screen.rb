@@ -21,12 +21,11 @@ class Screen
     @window = Window_Base.new(0, 0, Graphics.width, Graphics.height)
     @window.opacity = 0
     draw_score(0)
-    initial_hs = $game_variables.nil? ? 0 : $game_variables[IB::HIGH_SCORE_VAR]
-    draw_high_score(initial_hs)
+    draw_high_score($game_variables[IB::HIGH_SCORE_VAR] || 0)
     draw_hp_bar
 
     # pre-calculate shake effect oxs
-    @screen_shake_oxs =  [] ;
+    @screen_shake_oxs =  []
     225.times  { |c| c += 2;  @screen_shake_oxs <<  ( (200 * Math.cos( c * (Math::PI / 2))) / c ).round }
 
   end
