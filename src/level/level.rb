@@ -69,7 +69,7 @@ class Level
   end
 
   def clean_level_result
-    $game_variables[IB::LEVEL_RESULT_VAR] = "incomplete" unless $game_variables.nil?
+    self.result = "incomplete"
   end
 
   def play_bgm
@@ -124,7 +124,7 @@ class Level
   end
 
   def update_game_objects
-    @game_objects.each { |type, game_objects|
+    @game_objects.each { |_, game_objects|
       # Logger.trace("About to udpate #{type} in #{self}...")
       objects = Array(game_objects) ## Ensure array (to treat individuals and arrays the same)
 
@@ -238,7 +238,7 @@ class Level
 
   def result=(result)
     @result = result
-    $game_variables[IB::LEVEL_RESULT_VAR] = result
+    $game_variables[IB::LEVEL_RESULT_VAR] = @result
   end
 
   def add_new_enemy(enemy)
