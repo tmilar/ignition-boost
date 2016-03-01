@@ -239,6 +239,7 @@ class Level
 
   def result=(result)
     @result = result
+    Logger.trace("game vars LEVEL_RESULT_VAR #{IB::LEVEL_RESULT_VAR}, value #{$game_variables[IB::LEVEL_RESULT_VAR]} changing to #{@result}")
     $game_variables[IB::LEVEL_RESULT_VAR] = @result
   end
 

@@ -3,7 +3,7 @@ module IB
   #-------------------------------------------------------------------------------
   #  DEFINE GAME VARIABLES
   #-------------------------------------------------------------------------------
-  LEVELS, TEST_LEVELS = [], [] # do not touch
+  LEVELS, TEST_LEVELS, DEMO_LEVELS = [], [], [] # do not touch
 
   #-------------------------------------------------------------------------------
   # **** WEAPONS ****
@@ -110,7 +110,7 @@ module IB
       name: "alien3",
       stats: {
           power: 1,
-          speed: 0.6,
+          speed: 0.8,
           hp: 10,
           collide_damage: 6,
           shoot_freq: 15,
@@ -119,7 +119,7 @@ module IB
           name: "elazor",
           type: "lazor",
           stats: {
-              damage: 3,              # bullet damage
+              damage: 2,              # bullet damage
               speed: 3,               # bullet speed
           },
           level: 2,
@@ -133,8 +133,8 @@ module IB
       name: "boss1",
       stats: {
           power: 5,
-          speed: 0.5,
-          hp: 200,
+          speed: 0.35,
+          hp: 250,
           collide_damage: 9999,
           collide_resistance: 9999,
           shoot_freq: 18,
@@ -144,7 +144,7 @@ module IB
           type: "ball",
           stats: {
               damage: 3,              # bullet damage
-              speed: 0.8,               # bullet speed
+              speed: 0.9,               # bullet speed
           },
           level: 5,
           direction: [0, 1],     # Initial direction for bullets [x, -y]
@@ -306,32 +306,45 @@ module IB
       name: 'demo_first_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
       player_ship: NAVE_BASE1,
-      target_score: 250,
+      target_score: 350,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           spawn_decrement_amount: 1,      # Default 1 (mismo que Galv.. antes no era modificable)
           spawn_decrement_freq: 100,      # Default 100 (mismo que Galv.. antes no era modificable)
           phases: {
               1 => {
-                  enemies: [ENEMIGO1, ENEMIGO2],
+                  enemies: [ENEMIGO1],
                   start: 0, # time when phase can start spawning enemies
+                  end: 10
               },
               2 => {
                   enemies: [ENEMIGO2],
-                  start: 10         # time when phase can start spawning enemies
+                  start: 10,         # time when phase can start spawning enemies
+                  end: 20
               },
               3 => {
-                  enemies: [BOSS1],
+                  enemies: [ENEMIGO3],
                   start: 20,         # time when phase can start spawning enemies
-                  max_spawn: 1
+                  end: 30
+              },
+              4 => {
+                  enemies: [ENEMIGO2, ENEMIGO3],
+                  start: 30,
+                  end: 35
+              },
+              5 => {
+                  enemies: [BOSS1],
+                  start: 36,         # time when phase can start spawning enemies
+                  max_spawn: 1,
+                  BGM: ['Battle3', 60, 110]
               }
           }
       },
       powerup_spawner: {
-          frequency: 45,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
+          frequency: 8,               # DEFAULT "base" powerup frequency. 0 equals no pups (EXCEPT those that specify other number)
           phases: {                    # Powerup spawner can also have phases!
               1 => {                     # phase 1
-                 powerups: [WEAPON_UP, REPAIR_PUP, REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
+                 powerups: [REPAIR_PUP, REPAIR_PUP, BALL_WEAPON_CHANGE_PUP, LAZOR_WEAPON_CHANGE_PUP, NUKE_PUP],
               }
           },
           destructible?: false         # Can pups can be destroyed by bullets?
@@ -378,13 +391,13 @@ module IB
       name: 'test_mechanics_level',            # Level name - Solo estetico.
       BGM: ['Battle2', 60, 110],
       player_ship: NAVE_BASE1,
-      target_score: 1,
+      target_score: 2,
       spawner: {
           spawn_cooldown: 100,            # Default 100 (mismo que Galv SPAWN_SPEED)
           phases: {
               1 => {
                   enemies: [ENEMIGO1], ##[BOSS1],
-                  max_spawn: 1,
+                  max_spawn: 2,
                   start: 0, # time when phase can start spawning enemies
               },
           }
@@ -499,6 +512,7 @@ module IB
       logger_level: 5, # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
       console: true,
       test_levels: true,
+      demo_levels: true,
       logger_toggle_key: :F9
   }
   #-------------------------------------------------------------------------------
@@ -506,13 +520,21 @@ module IB
   #-------------------------------------------------------------------------------
 
   # LEVELS = [TEST_STRESS_LEVEL , TEST_MECHANICS_LEVEL , NIVEL0 , MY_POWERUP_LEVEL]
-  TEST_LEVELS = [POWERUPS_LEVEL, DEMO_LEVEL, TEST_NO_ENEMIES_LEVEL, TEST_MECHANICS_LEVEL]
+  TEST_LEVELS = [POWERUPS_LEVEL, TEST_NO_ENEMIES_LEVEL, TEST_MECHANICS_LEVEL]
+  DEMO_LEVELS = [DEMO_LEVEL]
+
 
   CURRENT_LEVEL_VAR = 50 # Variable id con referencia al numero de nivel (empieza a contar desde 1)
   LEVEL_RESULT_VAR = 60 ## Variable id donde se guarda el resultado del nivel ("win", "loss" o "incomplete", por ahora)
 
   def self.levels
-    DEBUG.key?(:test_levels) && DEBUG[:test_levels] ? (TEST_LEVELS + LEVELS) : LEVELS
+    levels = []
+
+    levels << DEMO_LEVELS if DEBUG.key?(:demo_levels) && DEBUG[:demo_levels]
+    levels << TEST_LEVELS if DEBUG.key?(:test_levels) && DEBUG[:test_levels]
+    levels << LEVELS unless DEBUG.key?(:hide_game_levels) && DEBUG[:hide_game_levels]
+
+    levels.flatten
   end
 
   def self.current_level(level_idx=nil)

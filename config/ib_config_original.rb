@@ -976,9 +976,11 @@ module IB
 
   DEBUG = {
       # borders: true  ## draw rectangle borders
-      logger_level: 1, # 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
-      console: false,   # show console with log messages
-      test_levels: false,
+      logger_level: 1,        # print game logs - 0 NONE, 1 ERROR, 2 WARN, 3 INFO (recommended), 4 DEBUG, 5 TRACE
+      console: false,         # open console with printed log messages
+      test_levels: false,     # show mechanics test levels
+      demo_levels: true,      # show demo levels
+      hide_game_levels: false  # hide game_levels (intended for demos)
       # logger_toggle_key: :F9
   }
 
