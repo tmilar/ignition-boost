@@ -98,12 +98,12 @@ class Ship < GameEntity
 
   # Place initial sprite position
   def position_init
-    raise "position_init method NotImplemented! Please implement in the correct Ship implementation."
+    raise 'position_init method NotImplemented! Please implement in the correct Ship implementation.'
   end
 
   # Get weapon position (relative to ship)
   def weapon_pos
-    raise "weapon_pos method NotImplemented! Must implement in Ship implementation."
+    raise 'weapon_pos method NotImplemented! Must implement in Ship implementation.'
   end
 
   def stats_init
@@ -163,7 +163,7 @@ class Ship < GameEntity
   def pup_hit(pup)
     Logger.debug("#{self} hitted a powerup! #{pup}")
     self.flash(Color.new(155,255,155),20)
-    notify_observers("powerup_grabbed", pup)
+    notify_observers('powerup_grabbed', pup)
     Sound.se(@config[:PUSE])
   end
 
@@ -178,7 +178,7 @@ class Ship < GameEntity
     explosion_config = @config[:explosion].deep_clone
     explosion_config[:position] = self.rectangle.center
     Logger.debug("#{self} Starting explosion, config: #{explosion_config}")
-    notify_observers("ship_exploded", explosion_config) ## { position: self.position, explosion: @config[:explosion]})
+    notify_observers('ship_exploded', explosion_config) ## { position: self.position, explosion: @config[:explosion]})
   end
 
   #------------------------------------------------------------------------------#
