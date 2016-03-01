@@ -134,6 +134,7 @@ class Level
         # Logger.trace("Disposed result #{o.respond_to?(:disposed?) && o.disposed?}")
         if o.respond_to?(:disposed?) && o.disposed?
           o.dispose
+          objects[i] = nil  ## set obj to nil so it won't be considered again.
           objects.delete_at(i)
           next
         end
